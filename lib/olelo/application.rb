@@ -44,7 +44,7 @@ module Olelo
 
       logger.debug env
 
-      User.current = User.find(session[:user])
+      User.current = User.find(session[:olelo_user])
       if !User.current
         invoke_hook(:auto_login)
         User.current ||= User.anonymous(request)
@@ -55,7 +55,11 @@ module Olelo
 
     # Executed after each request
     after :routing do
-      session[:user] = User.logged_in? ? User.current.name : nil
+      if User.logged_in?
+        session[:olelo_user] = User.current.name
+      else
+        session.delete(:olelo_user)
+      end
       User.current = nil
     end
 
@@ -88,7 +92,7 @@ module Olelo
     post '/login' do
       on_error :login
       User.current = User.authenticate(params[:user], params[:password])
-      redirect session.delete(:goto) || '/'
+      redirect session.delete(:olelo_goto) || '/'
     end
 
     post '/signup' do

@@ -9,7 +9,7 @@ class Olelo::Application
 
   before :routing do
     if !User.logged_in? && !PUBLIC_ACCESS.include?(request.path_info)
-      session[:goto] = request.path_info if request.path_info !~ %r{^/_/}
+      session[:olelo_goto] = request.path_info if request.path_info !~ %r{^/_/}
       redirect '/login'
     end
   end

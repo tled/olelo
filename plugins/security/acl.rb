@@ -82,7 +82,7 @@ class Olelo::Application
       else
         cache_control :no_cache => true
         @page = nil
-        session[:goto] = request.path_info if request.path_info !~ %r{^/_/}
+        session[:olelo_goto] = request.path_info if request.path_info !~ %r{^/_/}
         halt render(:access_denied)
       end
     end

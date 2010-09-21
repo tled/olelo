@@ -114,7 +114,7 @@ class Olelo::Application
   private
 
   def captcha_valid?
-    if Time.now.to_i < session[:antispam_timeout].to_i
+    if Time.now.to_i < session[:olelo_antispam_timeout].to_i
       true
     elsif params[:recaptcha_challenge_field] && params[:recaptcha_response_field]
       response = Net::HTTP.post_form(URI.parse('http://api-verify.recaptcha.net/verify'),
@@ -123,7 +123,7 @@ class Olelo::Application
                                      'challenge'  => params[:recaptcha_challenge_field],
                                      'response'   => params[:recaptcha_response_field])
       if response.body.split("\n").first == 'true'
-        session[:antispam_timeout] = Time.now.to_i + 600
+        session[:olelo_antispam_timeout] = Time.now.to_i + 600
         flash.info :captcha_valid.t
         true
       else

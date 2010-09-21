@@ -23,7 +23,7 @@ class Olelo::Cache
       yield(self)
     elsif @store.include?(key) && (!opts[:update] || opts[:defer])
       Worker.defer { update(key, opts, &block) } if opts[:update]
-      opts[:marshal] ? Marshal.restore(@store[key]) : @store[key]
+      opts[:marshal] ? Marshal.load(@store[key]) : @store[key]
     else
       update(key, opts, &block)
     end

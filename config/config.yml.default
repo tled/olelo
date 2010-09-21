@@ -81,6 +81,8 @@ disabled_plugins:
 # Rack middleware configurations
 
 rack:
+  # Secret key used to verify session integrity. Use a random string here!
+  #session_secret: 'Change the secret! Use random string!'
   # Use the deflater to compress data (Rack::Deflater)
   deflater:      true
   # Specify a list of blacklisted ips which cannot post data

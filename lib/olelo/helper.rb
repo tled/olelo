@@ -19,20 +19,13 @@ module Olelo
   module FlashHelper
     include Util
 
-    class Flash < Hash
-      def error(msg); (self[:error] ||= []) << msg; end
-      def warn(msg);  (self[:warn]  ||= []) << msg; end
-      def info(msg);  (self[:info]  ||= []) << msg; end
-    end
-
     def flash
-      session[:flash] ||= Flash.new
+      env['olelo.flash']
     end
 
     def flash_messages(action = nil)
-      if !flash.empty? && (!action || action?(action))
-        li = flash.map {|level, list| list.map {|msg| %{<li class="flash #{level}">#{escape_html msg}</li>} } }.flatten
-        flash.clear
+      if !action || action?(action)
+        li = [:error, :warn, :info].map {|level| flash[level].to_a.map {|msg| %{<li class="flash #{level}">#{escape_html msg}</li>} } }.flatten
         "<ul>#{li.join}</ul>"
       end
     end

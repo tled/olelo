@@ -1,4 +1,4 @@
-require 'rack/patches'
+require 'rack/olelo_patches'
 require 'olelo'
 require 'bacon'
 require 'rack/test'
