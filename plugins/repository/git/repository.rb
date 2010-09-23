@@ -123,21 +123,21 @@ class GitRepository < Repository
 
     object = git.root[path]
     if object
+      if attributes
+        git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes)
+      else
+        git.root.delete(path + ATTRIBUTE_EXT)
+      end
       if object.type == :tree
         if content.blank?
           git.root.delete(path + CONTENT_EXT)
         else
           git.root[path + CONTENT_EXT] = Gitrb::Blob.new(:data => content)
         end
+        fix_empty_tree(path)
       else
         git.root[path] = Gitrb::Blob.new(:data => content)
       end
-      if attributes
-        git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes)
-      else
-        git.root.delete(path + ATTRIBUTE_EXT)
-      end
-      fix_empty_tree(path)
     else
       git.root[path] = Gitrb::Blob.new(:data => content)
       git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes) if attributes
