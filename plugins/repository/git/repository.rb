@@ -1,21 +1,11 @@
 description 'Git repository backend'
 require     'gitrb'
 
-class Gitrb::Diff
-  def to_olelo
-    Olelo::Diff.new(from && from.to_olelo, to.to_olelo, patch)
-  end
-end
-
-class Gitrb::Commit
-  def to_olelo
-    Olelo::Version.new(id, Olelo::User.new(author.name, author.email), date, message, parents.map(&:id))
-  end
-end
+raise 'Newest gitrb version 0.2.7 is required. Please upgrade!' if !Gitrb.const_defined?('VERSION') || Gitrb::VERSION != '0.2.7'
 
 class GitRepository < Repository
-  CONTENT_FILE   = 'content'
-  ATTRIBUTE_FILE = 'attributes'
+  CONTENT_EXT   = '.content'
+  ATTRIBUTE_EXT = '.attributes'
 
   def initialize(config)
     logger = Plugin.current.logger
@@ -41,7 +31,7 @@ class GitRepository < Repository
   def commit(comment)
     user = User.current
     git.commit(comment, user && Gitrb::User.new(user.name, user.email))
-    tree_version = git.head.to_olelo
+    tree_version = commit_to_version(git.head)
     current_transaction.each {|f| f.call(tree_version) }
   end
 
@@ -51,30 +41,33 @@ class GitRepository < Repository
     return nil if !commit
     object = commit.tree[path]
     return nil if !object
-    Page.new(path, commit.to_olelo, current)
+    Page.new(path, commit_to_version(commit), current)
   rescue
     nil
   end
 
   def find_version(version)
-    git.get_commit(version.to_s).to_olelo
+    commit_to_version(git.get_commit(version.to_s))
   rescue
     nil
   end
 
   def load_history(page, skip, limit)
-    git.log(:max_count => limit, :skip => skip, :path => page.path).map(&:to_olelo)
+    git.log(:max_count => limit, :skip => skip,
+            :path => [page.path, page.path + ATTRIBUTE_EXT, page.path + CONTENT_EXT]).map do |c|
+      commit_to_version(c)
+    end
   end
 
   def load_version(page)
-    commits = git.log(:max_count => 2, :start => page.tree_version, :path => page.path)
+    commits = git.log(:max_count => 2, :start => page.tree_version, :path => [page.path, page.path + ATTRIBUTE_EXT, page.path + CONTENT_EXT])
 
     child = nil
-    git.git_rev_list('--reverse', '--remove-empty', "#{commits[0]}..", '--', page.path) do |io|
+    git.git_rev_list('--reverse', '--remove-empty', "#{commits[0]}..", '--', page.path, page.path + ATTRIBUTE_EXT, page.path + CONTENT_EXT) do |io|
       child = io.eof? ? nil : git.get_commit(git.set_encoding(io.readline).strip)
     end rescue nil # no error because pipe is closed intentionally
 
-    [commits[1] ? commits[1].to_olelo : nil, commits[0].to_olelo, child ? child.to_olelo : nil]
+    [commits[1] ? commit_to_version(commits[1]) : nil, commit_to_version(commits[0]), child ? commit_to_version(child) : nil]
   end
 
   def load_children(page)
@@ -89,8 +82,9 @@ class GitRepository < Repository
   end
 
   def load_content(page)
-    object = git.get_commit(page.tree_version.to_s).tree[page.path]
-    object = object[CONTENT_FILE] if object.type == :tree
+    tree = git.get_commit(page.tree_version.to_s).tree
+    object = tree[page.path]
+    object = tree[page.path + CONTENT_EXT] if object && object.type == :tree
     if object
       content = object.data
       # Try to force utf-8 encoding and revert to old encoding if this doesn't work
@@ -101,8 +95,7 @@ class GitRepository < Repository
   end
 
   def load_attributes(page)
-    object = git.get_commit(page.tree_version.to_s).tree[page.path]
-    object = object.type == :tree ? object[ATTRIBUTE_FILE] : nil
+    object = git.get_commit(page.tree_version.to_s).tree[page.path + ATTRIBUTE_EXT]
     object ? YAML.load(object.data) : {}
   end
 
@@ -122,42 +115,32 @@ class GitRepository < Repository
       object = parent[name]
       break if !object
       if object.type == :blob
-        parent.move(name, name/CONTENT_FILE)
+        parent.move(name, name + CONTENT_EXT)
         break
       end
       parent = object
     end
 
     object = git.root[path]
-
-    # Page exists
     if object
-      # Page is a tree
       if object.type == :tree
-        if attributes
-          (object[ATTRIBUTE_FILE] ||= Gitrb::Blob.new).data = attributes
+        if content.blank?
+          git.root.delete(path + CONTENT_EXT)
         else
-          object.delete(ATTRIBUTE_FILE)
+          git.root[path + CONTENT_EXT] = Gitrb::Blob.new(:data => content)
         end
-        (object[CONTENT_FILE] ||= Gitrb::Blob.new).data = content
-      # Page is a blob
       else
-        if attributes
-          git.root.move(path, path/CONTENT_FILE)
-          git.root[path/CONTENT_FILE].data = content
-          git.root[path/ATTRIBUTE_FILE] = Gitrb::Blob.new(:data => attributes)
-        else
-          git.root[path].data = content
-        end
+        git.root[path] = Gitrb::Blob.new(:data => content)
       end
-    # Page does not yet exist
-    else
       if attributes
-        git.root[path/ATTRIBUTE_FILE] = Gitrb::Blob.new(:data => attributes)
-        git.root[path/CONTENT_FILE] = Gitrb::Blob.new(:data => content) if !content.blank?
+        git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes)
       else
-        git.root[path] = Gitrb::Blob.new(:data => content) if !content.blank?
+        git.root.delete(path + ATTRIBUTE_EXT)
       end
+      fix_empty_tree(path)
+    else
+      git.root[path] = Gitrb::Blob.new(:data => content)
+      git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes) if attributes
     end
 
     current_transaction << proc {|tree_version| page.committed(path, tree_version) }
@@ -165,18 +148,25 @@ class GitRepository < Repository
 
   def move(page, destination)
     check_path(destination)
-
     git.root.move(page.path, destination)
+    git.root.move(page.path + CONTENT_EXT, destination + CONTENT_EXT) if git.root[page.path + CONTENT_EXT]
+    git.root.move(page.path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if git.root[page.path + ATTRIBUTE_EXT]
+    fix_empty_tree(page.path/'..')
     current_transaction << proc {|tree_version| page.committed(destination, tree_version) }
   end
 
   def delete(page)
     git.root.delete(page.path)
+    git.root.delete(page.path + CONTENT_EXT)
+    git.root.delete(page.path + ATTRIBUTE_EXT)
+    fix_empty_tree(page.path/'..')
     current_transaction << proc { page.committed(page.path, nil) }
   end
 
   def diff(page, from, to)
-    git.diff(:from => from && from.to_s, :to => to.to_s, :path => page.path, :detect_renames => true).to_olelo
+    diff = git.diff(:from => from && from.to_s, :to => to.to_s,
+                    :path => [page.path, page.path + CONTENT_EXT, page.path + ATTRIBUTE_EXT], :detect_renames => true)
+    Olelo::Diff.new(diff.from && commit_to_version(diff.from), commit_to_version(diff.to), diff.patch)
   end
 
   def short_version(version)
@@ -188,7 +178,7 @@ class GitRepository < Repository
   end
 
   def reserved_name?(name)
-    ATTRIBUTE_FILE == name || CONTENT_FILE == name
+    name.ends_with?(ATTRIBUTE_EXT) || name.ends_with?(CONTENT_EXT)
   end
 
   private
@@ -199,6 +189,17 @@ class GitRepository < Repository
 
   def current_transaction
     @current_transaction[Thread.current.object_id] || raise('No transaction running')
+  end
+
+  def commit_to_version(commit)
+    Olelo::Version.new(commit.id, Olelo::User.new(commit.author.name, commit.author.email),
+                       commit.date, commit.message, commit.parents.map(&:id))
+  end
+
+  def fix_empty_tree(path)
+    if !path.blank? && git.root[path].empty? && git.root[path + CONTENT_EXT]
+      git.root.move(path + CONTENT_EXT, path)
+    end
   end
 end
 
