@@ -20,6 +20,9 @@ module Olelo
       def binary!
       end
 
+      def deleted!
+      end
+
       def no_changes!
       end
 
@@ -133,13 +136,15 @@ module Olelo
           when %r{^diff.* ("?a/.*"?) ("?b/.*"?)$}
             a, b = $1, $2
             h.begin!(src, dst)
-            h.no_changes!
+            dst ? h.no_changes! : h.deleted!
             h.end!
             src, dst = unescape_path(a), unescape_path(b)
           when /^\+\+\+ (.*)/
             dst = unescape_path($1)
           when /^\-\-\- (.*)/
             src = unescape_path($1)
+          when /^deleted file/
+            dst = nil
           when /^Binary files (.*) and (.*) differ/
             src, dst = unescape_path($1), unescape_path($2)
             h.begin!(src, dst)
@@ -164,7 +169,7 @@ module Olelo
       case state
       when :header
         h.begin!(src, dst)
-        h.no_changes!
+        dst ? h.no_changes! : h.deleted!
         h.end!
       when :body
         h.end!
@@ -187,11 +192,12 @@ module Olelo
     end
 
     def initialize!
-      @html = %{<table class="patch-summary"><thead><tr><th>#{:summary.t}</th><th class="ins">+</th><th class="del">-</th></tr></thead><tbody>}
+      @html = %{<table class="patch-summary"><thead><tr><th>#{escape_html :summary.t}</th><th class="ins">+</th><th class="del">-</th></tr></thead><tbody>}
       @file = 0
     end
 
     def finalize!
+      @html << %{<tr><td colspan="3">#{escape_html :no_changes.t}</td></tr>} if @file == 0
       @html << "</tbody></table>"
     end
 
@@ -275,11 +281,15 @@ module Olelo
     end
 
     def binary!
-      @html << :binary_file.t
+      @html << escape_html(:binary_file.t)
+    end
+
+    def deleted!
+      @html << escape_html(:deleted.t)
     end
 
     def no_changes!
-      @html << :no_changes.t
+      @html << escape_html(:no_changes.t)
     end
 
     def separator!
