@@ -103,7 +103,8 @@ engine :page do
   filter do
     remove_comments.tag_shortcuts
     textile_nowiki.tag(:disable => 'html:*') { textile!.rubypants }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
   end
 end
 
@@ -114,7 +115,8 @@ engine :s5 do
   filter do
     remove_comments.tag_shortcuts
     textile_nowiki.tag(:disable => 'html:*') { textile!.rubypants }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -141,7 +143,8 @@ engine :page do
   filter do
     remove_comments.tag_shortcuts
     markdown_nowiki.tag(:disable => 'html:*') { markdown! }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
   end
 end
 
@@ -152,7 +155,8 @@ engine :s5 do
   filter do
     remove_comments.tag_shortcuts
     markdown_nowiki.tag(:disable => 'html:*') { markdown! }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -179,7 +183,8 @@ engine :page do
   filter do
     remove_comments.tag_shortcuts
     markdown_nowiki.tag(:disable => 'html:*') { kramdown! }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
   end
 end
 
@@ -190,7 +195,8 @@ engine :s5 do
   filter do
     remove_comments.tag_shortcuts
     markdown_nowiki.tag(:disable => 'html:*') { kramdown! }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -215,7 +221,8 @@ engine :page do
   filter do
     remove_comments.tag_shortcuts
     markdown_nowiki.tag(:disable => 'html:*') { maruku! }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
   end
 end
 
@@ -226,7 +233,8 @@ engine :s5 do
   filter do
     remove_comments.tag_shortcuts
     markdown_nowiki.tag(:disable => 'html:*') { maruku! }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -253,7 +261,8 @@ engine :page do
   filter do
     remove_comments.tag_shortcuts
     tag { orgmode!.rubypants }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
   end
 end
 
@@ -264,7 +273,8 @@ engine :s5 do
   filter do
     remove_comments.tag_shortcuts
     tag { orgmode!.rubypants }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    fix_img_tag.toc
+    interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
