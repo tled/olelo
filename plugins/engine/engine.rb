@@ -121,22 +121,30 @@ class Olelo::Engine
 end
 
 # Plug-in the engine subsystem
+module Olelo::PageHelper
+  def include_page(path)
+    page = Page.find(path) rescue nil
+    if page
+      Cache.cache("include-#{page.path}-#{page.version}", :update => request.no_cache?, :defer => true) do |context|
+        begin
+          Engine.find!(page, :layout => true).output(Context.new(:page => page, :params => {:included => true}))
+        rescue Engine::NotAvailable => ex
+          %{<span class="error">#{escape_html ex.message}</span>}
+        end
+      end
+    else
+      %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
+    end
+  end
+end
+
+# Plug-in the engine subsystem
 class Olelo::Application
   attribute_editor do
     attribute(:output) do
       Hash[*Engine.engines.keys.map do |name|
              [name, Olelo::I18n.translate("engine_#{name}", :fallback => capitalize_words(name))]
            end.flatten]
-    end
-  end
-
-  before :include do
-    begin
-      halt Cache.cache("include-#{page.version}", :update => request.no_cache?, :defer => true) do |context|
-        Engine.find!(page, :layout => true).output(Context.new(:page => page, :params => {:included => true}))
-      end
-    rescue Engine::NotAvailable => ex
-      halt %{<span class="error">#{escape_html ex.message}</span>}
     end
   end
 

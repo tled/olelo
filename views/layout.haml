@@ -22,7 +22,7 @@
             %input{:type=>'text',:id=>'pattern',:name=>'pattern', :value=> params[:pattern] || :search.t, :class=> !params[:pattern] && 'placeholder'}
     #menu!= render(:menu, :layout => false)
     #container
-      #sidebar
+      #sidebar!= include_page(Olelo::Config.sidebar_page)
       #content!= yield
     #footer
       #themes.noprint

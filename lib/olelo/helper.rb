@@ -34,6 +34,11 @@ module Olelo
   module PageHelper
     include Util
 
+    def include_page(path)
+      page = Page.find(path) rescue nil
+      page ? page.content : %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
+    end
+
     def pagination(path, last_page, page_nr, opts = {})
       if last_page > 0
         li = []
