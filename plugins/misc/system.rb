@@ -162,7 +162,9 @@ __END__
 - if Olelo.const_defined? 'Tag'
   #tab-tags.tab
     %h2 Markup tags
-    %p Markup tags can be included in the wikitext like normal html tags. These tags are provided by plugins as wikitext extensions.
+    %p
+      Markup tags can be included in the wikitext like normal html tags. These tags are provided by plugins as wikitext extensions.
+      The namespace prefixes are optional and can be used in case of ambiguities.
     %table.zebra.full
       %thead
         %tr
@@ -171,9 +173,9 @@ __END__
           %th Provided by plugin
           %th Required attributes
       %tbody
-        - Olelo::Tag.tags.each do |name, tag|
+        - Olelo::Tag.tags.values.uniq.sort_by(&:full_name).each do |tag|
           %tr
-            %td= name
+            %td= tag.full_name
             %td= tag.description
             %td= tag.plugin.name
             %td= tag.requires.join(', ')

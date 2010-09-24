@@ -4,7 +4,7 @@ dependencies 'engine/filter'
 class TagSoupParser
   include Util
 
-  NAME            = /[:\-\w]+/
+  NAME            = /[\-\w]+(?:\:[\-\w]+)?/
   QUOTED_VALUE    = /"[^"]*"|'[^']*'/
   UNQUOTED_VALUE  = /(?:[^\s'"\/>]|\/+[^'"\/>])+/
   QUOTED_ATTR     = /(#{NAME})=(#{QUOTED_VALUE})/
@@ -122,12 +122,17 @@ class Olelo::Tag < AroundFilter
     @@tags
   end
 
-  def self.define(tag, options = {}, &block)
-    method = "TAG #{tag}"
+  def self.define(name, options = {}, &block)
+    method = "TAG #{name}"
     define_method(method, &block)
     plugin = Plugin.current(1) || Plugin.current
-    options = { :plugin => plugin, :description => plugin.description }.merge(options)
-    @@tags[tag.to_s] = TagInfo.new(method, options)
+    ns = plugin.name.split('/').last
+    options = { :plugin      => plugin,
+                :description => plugin.description,
+                :name        => name,
+                :namespace   => ns,
+                :method      => method }.merge(options)
+    @@tags["#{ns}:#{name}"] = @@tags[name.to_s] = TagInfo.new(options)
   end
 
 
@@ -162,10 +167,9 @@ class Olelo::Tag < AroundFilter
 
   def tag_list(*list)
     @@tags.select do |name, tag|
-      namespace = tag.plugin.name.split('/').last
-      list.include?("#{namespace}:#{name}") ||
-      list.include?("#{namespace}:*") ||
-      list.include?(name)
+      list.include?(tag.name) ||
+      list.include?(tag.full_name) ||
+      list.include?("#{tag.namespace}:*")
     end.map(&:first)
   end
 
@@ -174,9 +178,13 @@ class Olelo::Tag < AroundFilter
   BLOCK_ELEMENT_REGEX = /<(#{BLOCK_ELEMENTS.join('|')})/
 
   class TagInfo
-    attr_accessor :limit, :requires, :immediate, :method, :description, :plugin
-    def initialize(method, options)
-      @method = method
+    attr_accessor :name, :namespace, :limit, :requires, :immediate, :method, :description, :plugin
+
+    def full_name
+      "#{namespace}:#{name}"
+    end
+
+    def initialize(options)
       options.each_pair {|k,v| send("#{k}=", v) }
       @requires = [*@requires].compact
     end
