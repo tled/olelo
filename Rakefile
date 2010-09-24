@@ -31,16 +31,20 @@ end
 
 file('static/script.js' => Dir.glob('static/script/*.js')) { |t| shrink_js(t) }
 file('plugins/treeview/script.js' => Dir.glob('plugins/treeview/script/*.js')) {|t| shrink_js(t) }
-file('plugins/gallery/script.js' => Dir.glob('plugins/gallery/script/*.js')) {|t| shrink_js(t) }
+file('plugins/misc/fancybox/script.js' => Dir.glob('plugins/misc/fancybox/script/*.js')) {|t| shrink_js(t) }
 file('plugins/editor/markup/script.js' => Dir.glob('plugins/editor/markup/script/*.js')) {|t| shrink_js(t) }
 
 namespace :gen do
   desc('Shrink JS files')
-  task :js => %w(static/script.js plugins/treeview/script.js plugins/gallery/script.js plugins/editor/markup/script.js)
+  task :js => %w(static/script.js plugins/treeview/script.js plugins/misc/fancybox/script.js plugins/editor/markup/script.js)
 
   desc('Compile CSS files')
-  task :css => %w(static/themes/atlantis/style.css plugins/treeview/treeview.css
-                  plugins/utils/pygments.css plugins/gallery/gallery.css plugins/blog/blog.css)
+  task :css => %w(static/themes/atlantis/style.css
+                  plugins/treeview/treeview.css
+                  plugins/utils/pygments.css
+                  plugins/gallery/gallery.css
+                  plugins/misc/fancybox/jquery.fancybox.css
+                  plugins/blog/blog.css)
 end
 
 namespace :test do

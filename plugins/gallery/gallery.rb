@@ -1,7 +1,6 @@
 description    'Gallery engine'
 dependencies   'engine/engine', 'utils/assets'
-export_scripts '*.js', '*.css'
-export_assets  'images/*'
+export_scripts '*.css'
 
 Engine.create(:gallery, :priority => 3, :layout => true, :hidden => true, :cacheable => true) do
   def accepts?(page); !page.children.empty?; end
@@ -26,12 +25,11 @@ __END__
       - row.each do |image|
         :ruby
           thumb_path = page_path(image, :output => 'image', :geometry => '150x150>')
-          image_path = page_path(image, :output => 'image', :geometry => '800x800>')
-          info_path  = page_path(image, :output => 'imageinfo')
+          info_path  = page_path(image)
           description = image.attributes['description'] ||
                         image.attributes['title'] ||
                         image.name.gsub(/([^\s])[_\-]/, '\1 ')
         %td
-          %a(href=image_path rel='thumb' title="#{description}")
+          %a.fancybox(href=info_path rel="gallery" title="#{description}")
             %img(src=thumb_path alt='')
           %a.title(href=info_path)= description
