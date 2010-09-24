@@ -15,7 +15,7 @@ module Olelo
     end
 
     patterns :path => Page::PATH_PATTERN
-    attr_reader :logger, :timer, :page
+    attr_reader :logger, :page
     attr_setter :on_error
 
     class<< self
@@ -36,8 +36,6 @@ module Olelo
 
     # Executed before each request
     before :routing do
-      @timer = Timer.start
-
       # Set request ip as progname
       @logger = logger.dup
       logger.progname = request.ip

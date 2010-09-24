@@ -4,9 +4,6 @@ path = ::File.expand_path(::File.dirname(__FILE__))
 $: << ::File.join(path, 'lib')
 Dir[::File.join(path, 'deps', '*', 'lib')].each {|x| $: << x }
 
-require 'olelo/timer'
-timer = Olelo::Timer.start
-
 # Require newest rack
 raise 'Rack 1.1.0 or newer required' if Rack.version < '1.1'
 
@@ -46,6 +43,7 @@ logger.level = ::Logger.const_get(Olelo::Config.log.level)
 
 use_lint if !Olelo::Config.production?
 
+use Rack::Runtime
 use Rack::ShowExceptions if !Olelo::Config.production?
 
 if !Olelo::Config.rack.blacklist.empty?
@@ -80,4 +78,4 @@ end
 
 run Olelo::Application.new(nil, :logger => logger)
 
-logger.info "Olelo started in #{timer.stop.elapsed_ms}ms (#{Olelo::Config.production? ? 'Production' : 'Development'} mode)"
+logger.info "Olelo started in #{Olelo::Config.production? ? 'production' : 'development'} mode"
