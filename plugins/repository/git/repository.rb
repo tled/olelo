@@ -72,7 +72,12 @@ class GitRepository < Repository
       child = io.eof? ? nil : git.get_commit(git.set_encoding(io.readline).strip)
     end rescue nil # no error because pipe is closed intentionally
 
-    [commits[1] ? commit_to_version(commits[1]) : nil, commit_to_version(commits[0]), child ? commit_to_version(child) : nil]
+    # Deleted pages have next version (Issue #11)
+    child = nil if child && !find_page(page.path, child.id, false)
+
+    [commits[1] ? commit_to_version(commits[1]) : nil, # previous version
+     commit_to_version(commits[0]),                    # current version
+     child ? commit_to_version(child) : nil]           # next version
   end
 
   def load_children(page)

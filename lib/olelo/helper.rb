@@ -211,6 +211,14 @@ module Olelo
       env['rack.session'] ||= {}
     end
 
+    def base_path
+      if page && page.root?
+        url = request.url_without_path
+        url << 'version'/page.version << '/' if !page.current?
+        %{<base href="#{escape_html url}"/>}
+      end
+    end
+
     def render(name, opts = {})
       layout = opts.delete(:layout)
       output = super(name, opts)

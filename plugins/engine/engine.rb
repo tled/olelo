@@ -15,7 +15,7 @@ class Olelo::Context
     @page     = attrs[:page]
     @parent   = attrs[:parent]
     @private  = attrs[:private]  || Hash.with_indifferent_access
-    @params   = attrs[:params]   || Hash.with_indifferent_access
+    @params   = Hash.with_indifferent_access.merge(attrs[:params] || {})
     @request  = attrs[:request]
     @response = attrs[:response] || Hash.with_indifferent_access
     invoke_hook(:initialized)

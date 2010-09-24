@@ -3,6 +3,7 @@
   %head
     %title= Olelo::Config.title + ' - ' + title
     %link(rel='shortcut icon' href='#{absolute_path "static/images/favicon.png?1"}' type='image/png')
+    != base_path
     != self.class.theme_links
   %body
     #header

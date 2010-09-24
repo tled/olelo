@@ -5,7 +5,7 @@ module Olelo
       base.class_eval { include Hooks }
     end
 
-    attr_reader :params, :response, :request, :env
+    attr_reader :params, :original_params, :response, :request, :env
 
     def call(env)
       dup.call!(env)
@@ -16,6 +16,7 @@ module Olelo
       @request  = Rack::Request.new(env)
       @response = Rack::Response.new
       @params = @original_params = @request.params.with_indifferent_access
+      @original_params.freeze
 
       catch(:forward) do
         with_hooks(:request) { perform! }
