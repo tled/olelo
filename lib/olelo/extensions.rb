@@ -149,8 +149,8 @@ class String
     result
   end
 
-  # Check if string begins with s
-  def begins_with?(s)
+  # Check if string starts with s
+  def starts_with?(s)
     index(s) == 0
   end
 

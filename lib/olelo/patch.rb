@@ -179,7 +179,7 @@ module Olelo
     end
 
     def self.unescape_path(path)
-      path = unescape_backslash(path[1..-2]) if path.begins_with? '"'
+      path = unescape_backslash(path[1..-2]) if path.starts_with? '"'
       path == '/dev/null' ? nil : path[2..-1]
     end
   end

@@ -203,7 +203,7 @@ module Olelo
       if params[:action]
         params[:action].split('-').include?(action.to_s)
       else
-        unescape(request.path_info).begins_with?("/#{action}")
+        unescape(request.path_info).starts_with?("/#{action}")
       end
     end
 

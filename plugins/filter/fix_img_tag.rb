@@ -4,8 +4,8 @@ dependencies 'engine/filter'
 Filter.create :fix_img_tag do |context, content|
  content.gsub!(/(<img[^>+]src=")([^"]+)"/) do |match|
     prefix, path = $1, $2
-    if path =~ %r{^w+://} || path.begins_with?(absolute_path('_')) ||
-        (path.begins_with?('/') && !path.begins_with?(absolute_path(''))) ||
+    if path =~ %r{^w+://} || path.starts_with?(absolute_path('_')) ||
+        (path.starts_with?('/') && !path.starts_with?(absolute_path(''))) ||
         path.include?('output=')
       match
     else

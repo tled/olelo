@@ -6,13 +6,13 @@ Filter.create :link_classifier do |context, content|
   doc.css('a[href]').each do |link|
     href =  link['href']
     classes = [link['class']].compact
-    if href.begins_with?('http://') || href.begins_with?('https://')
+    if href.starts_with?('http://') || href.starts_with?('https://')
       classes << 'external'
-    elsif !href.begins_with?('#')
+    elsif !href.starts_with?('#')
       path, query = href.split('?')
-      if path.begins_with? Config.base_path
+      if path.starts_with? Config.base_path
         path = path[Config.base_path.length-1..-1]
-      elsif !path.begins_with? '/'
+      elsif !path.starts_with? '/'
         path = context.page.path/'..'/path
       end
       classes << 'internal'

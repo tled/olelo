@@ -7,9 +7,9 @@ describe 'String extensions' do
       c}.unindent.should.equal "a\nb\nc"
   end
 
-  it 'should have #begins_with?' do
-    '123456789'.begins_with?('12').should.equal true
-    '123456789'.begins_with?('23').should.not.equal true
+  it 'should have #starts_with?' do
+    '123456789'.starts_with?('12').should.equal true
+    '123456789'.starts_with?('23').should.not.equal true
   end
 
   it 'should have #ends_with?' do

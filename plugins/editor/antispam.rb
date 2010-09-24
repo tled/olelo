@@ -16,7 +16,7 @@ class SpamEvaluator
 
   def evaluate
     level = 0
-    SpamEvaluator.instance_methods.select {|m| m.to_s.begins_with?('eval_') }.each do |m|
+    SpamEvaluator.instance_methods.select {|m| m.to_s.starts_with?('eval_') }.each do |m|
       level += send(m) || 0
     end
     level.to_i
