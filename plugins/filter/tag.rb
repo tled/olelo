@@ -1,4 +1,4 @@
-description  'Support for XML tag soup in wiki text'
+description  'Extends wiki text with custom xml tags'
 dependencies 'engine/filter'
 
 class TagSoupParser
@@ -125,7 +125,7 @@ class Olelo::Tag < AroundFilter
   def self.define(name, options = {}, &block)
     method = "TAG #{name}"
     define_method(method, &block)
-    plugin = Plugin.current(1) || Plugin.current
+    plugin = options[:plugin] || Plugin.current(1) || Plugin.current
     ns = plugin.name.split('/').last
     options = { :plugin      => plugin,
                 :description => plugin.description,

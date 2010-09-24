@@ -1,5 +1,5 @@
 description    'Blog engine'
-dependencies   'filter/tag', 'utils/assets'
+dependencies   'tag/dynamic', 'utils/assets'
 export_scripts '*.css'
 
 class Olelo::Application
@@ -11,26 +11,19 @@ class Olelo::Application
     params[:output] = 'blog'
     send('GET /')
   end
-
-  hook :layout, 999 do |name, doc|
-    doc.css('blog-menu').each do |element|
-      menu = Cache.cache("blog-menu-#{element['path']}-#{element['version']}", :update => request.no_cache?, :defer => true) do
-        page = Page.find(element['path'], element['version']) rescue nil
-        if page
-          years = {}
-          page.children.each do |child|
-            (years[child.version.date.year] ||= [])[child.version.date.month] = true
-          end
-          render :menu, :locals => {:years => years, :page => page}, :layout => false
-        end
-      end
-      element.replace menu
-    end
-  end
 end
 
-Tag.define 'blog-menu', :description => 'Show blog menu' do |context, attrs, content|
-  %{<blog-menu path="#{escape_html attrs['path']}" version="#{context.page.tree_version}"/>}
+Tag.define 'menu', :description => 'Show blog menu', :dynamic => true do |attrs, content|
+  page = Page.find(attrs[:path]) rescue nil
+  if page
+    Cache.cache("blog-menu-#{page.path}-#{page.version}", :update => request.no_cache?, :defer => true) do
+      years = {}
+      page.children.each do |child|
+        (years[child.version.date.year] ||= [])[child.version.date.month] = true
+      end
+      render :menu, :locals => {:years => years, :page => page}, :layout => false
+    end
+  end
 end
 
 Engine.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidden => true) do

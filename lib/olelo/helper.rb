@@ -136,7 +136,7 @@ module Olelo
       if opts[:no_cache]
         response.headers.delete('ETag')
         response.headers.delete('Last-Modified')
-        response['Cache-Control'] = 'no-cache'
+        response.headers.delete('Cache-Control')
         return
       end
 
