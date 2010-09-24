@@ -16,10 +16,12 @@ class GitRepository < Repository
     @git = {}
   end
 
+  # Access the underlying gitrb repository instance
   def git
     @git[Thread.current.object_id] ||= @shared_git.dup
   end
 
+  # Start a transaction. Every thread has its own transaction.
   def transaction(&block)
     raise 'Transaction already running' if @current_transaction[Thread.current.object_id]
     @current_transaction[Thread.current.object_id] = []
@@ -28,6 +30,7 @@ class GitRepository < Repository
     @current_transaction.delete(Thread.current.object_id)
   end
 
+  # Commit a transaction. You must provide a commit comment.
   def commit(comment)
     user = User.current
     git.commit(comment, user && Gitrb::User.new(user.name, user.email))
@@ -35,6 +38,8 @@ class GitRepository < Repository
     current_transaction.each {|f| f.call(tree_version) }
   end
 
+  # Find a page by name and optional version.
+  # The current flag determines if you want to browse the current repository tree.
   def find_page(path, tree_version, current)
     check_path(path)
     commit = !tree_version.blank? ? git.get_commit(tree_version.to_s) : git.head
@@ -108,6 +113,8 @@ class GitRepository < Repository
     content = content.read if content.respond_to? :read
     attributes = page.attributes.empty? ? nil : YAML.dump(page.attributes).sub(/\A\-\-\-\s*\n/s, '')
 
+    # Convert blob parents to trees
+    # to allow children
     names = path.split('/')
     names.pop
     parent = git.root
@@ -134,7 +141,7 @@ class GitRepository < Repository
         else
           git.root[path + CONTENT_EXT] = Gitrb::Blob.new(:data => content)
         end
-        fix_empty_tree(path)
+        collapse_empty_tree(path)
       else
         git.root[path] = Gitrb::Blob.new(:data => content)
       end
@@ -151,7 +158,7 @@ class GitRepository < Repository
     git.root.move(page.path, destination)
     git.root.move(page.path + CONTENT_EXT, destination + CONTENT_EXT) if git.root[page.path + CONTENT_EXT]
     git.root.move(page.path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if git.root[page.path + ATTRIBUTE_EXT]
-    fix_empty_tree(page.path/'..')
+    collapse_empty_tree(page.path/'..')
     current_transaction << proc {|tree_version| page.committed(destination, tree_version) }
   end
 
@@ -159,7 +166,7 @@ class GitRepository < Repository
     git.root.delete(page.path)
     git.root.delete(page.path + CONTENT_EXT)
     git.root.delete(page.path + ATTRIBUTE_EXT)
-    fix_empty_tree(page.path/'..')
+    collapse_empty_tree(page.path/'..')
     current_transaction << proc { page.committed(page.path, nil) }
   end
 
@@ -196,7 +203,9 @@ class GitRepository < Repository
                        commit.date, commit.message, commit.parents.map(&:id))
   end
 
-  def fix_empty_tree(path)
+  # If a tree consists only of tree/, tree.content and tree.attributes without
+  # children, tree.content can be moved to tree ("collapsing").
+  def collapse_empty_tree(path)
     if !path.blank? && git.root[path].empty? && git.root[path + CONTENT_EXT]
       git.root.move(path + CONTENT_EXT, path)
     end
