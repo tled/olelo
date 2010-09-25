@@ -1,5 +1,5 @@
 description    'Blog engine'
-dependencies   'tag/dynamic', 'utils/assets'
+dependencies   'filter/tag', 'utils/assets'
 export_scripts '*.css'
 
 class Olelo::Application
@@ -13,10 +13,10 @@ class Olelo::Application
   end
 end
 
-Tag.define 'menu', :description => 'Show blog menu', :dynamic => true do |attrs, content|
+Tag.define 'menu', :description => 'Show blog menu', :dynamic => true do |context, attrs, content|
   page = Page.find(attrs[:path]) rescue nil
   if page
-    Cache.cache("blog-menu-#{page.path}-#{page.version}", :update => request.no_cache?, :defer => true) do
+    Cache.cache("blog-#{page.path}-#{page.version}", :update => context.request.no_cache?, :defer => true) do
       years = {}
       page.children.each do |child|
         (years[child.version.date.year] ||= [])[child.version.date.month] = true

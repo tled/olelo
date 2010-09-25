@@ -3,7 +3,9 @@ dependencies 'engine/engine'
 
 class Olelo::MandatoryFilterNotFound < NameError; end
 
-# Basic linear filter
+# Filter base class. Multiple filters can be chained
+# to build a filter engine.
+# A filter can manipulate the text and the engine context.
 class Olelo::Filter
   include PageHelper
   include Templates
@@ -12,33 +14,42 @@ class Olelo::Filter
   attr_accessor :previous
   attr_reader :name, :description, :plugin, :options
 
+  # Initialize filter
   def initialize(name, options)
     @name        = name.to_s
     @plugin      = options[:plugin] || Plugin.current(1) || Plugin.current
     @description = options[:description] || @plugin.description
   end
 
+  # Configure the filter. Takes an option hash
   def configure(options)
     @options = options
   end
 
+  # Main entry point of a filter
+  # Calls previous filter, creates a duplicate from itself
+  # and calls filter on it.
   def call(context, content)
-    dup.call!(context, content)
-  end
-
-  def call!(context, content)
     content = previous ? previous.call(context, content) : content
-    filter(context, content)
+    dup.filter(context, content)
   end
 
+  # Filter the content. Implement this method!
+  def filter(context, content)
+    raise NotImplementedError
+  end
+
+  # Print filter definition. For debugging purposes.
   def definition
     previous ? "#{previous.definition} > #{name}" : name
   end
 
+  # Register a filter class
   def self.register(name, klass, options = {})
     super(name, klass.new(name, options))
   end
 
+  # Create a filter from a given block.
   def self.create(name, options = {}, &block)
     klass = Class.new(self)
     klass.class_eval { define_method(:filter, &block) }

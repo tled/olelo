@@ -86,8 +86,8 @@ engine :latex do
   accepts 'text/x-creole'
   mime 'text/plain; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    creole_nowiki.tag { creole!.rubypants }
+    remove_comments.tag_shortcuts.creole_nowiki
+    tag(:static => true) { creole!.rubypants }
     toc.interwiki(:map => interwiki_map)
     html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
   end
@@ -101,8 +101,8 @@ engine :page do
   is_cacheable.needs_layout.has_priority(1)
   accepts 'text/x-textile'
   filter do
-    remove_comments.tag_shortcuts
-    textile_nowiki.tag(:disable => 'html:*') { textile!.rubypants }
+    remove_comments.tag_shortcuts.textile_nowiki
+    tag(:disable => 'html:*') { textile!.rubypants }
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
   end
@@ -113,8 +113,8 @@ engine :s5 do
   accepts 'text/x-textile'
   mime 'application/xhtml+xml; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    textile_nowiki.tag(:disable => 'html:*') { textile!.rubypants }
+    remove_comments.tag_shortcuts.textile_nowiki
+    tag(:disable => 'html:*') { textile!.rubypants }
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
@@ -126,8 +126,8 @@ engine :latex do
   accepts 'text/x-textile'
   mime 'text/plain; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    textile_nowiki.tag(:disable => 'html:*') { textile!.rubypants }
+    remove_comments.tag_shortcuts.textile_nowiki
+    tag(:static => true, :disable => 'html:*') { textile!.rubypants }
     toc.interwiki(:map => interwiki_map)
     html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
   end
@@ -141,8 +141,8 @@ engine :page do
   is_cacheable.needs_layout.has_priority(1)
   accepts 'text/x-markdown'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { markdown! }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:disable => 'html:*') { markdown! }
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
   end
@@ -153,8 +153,8 @@ engine :s5 do
   accepts 'text/x-markdown'
   mime 'application/xhtml+xml; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { markdown! }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:disable => 'html:*') { markdown! }
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
@@ -166,8 +166,8 @@ engine :latex do
   accepts 'text/x-markdown'
   mime 'text/plain; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { markdown! }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:static => true, :disable => 'html:*') { markdown! }
     toc.interwiki(:map => interwiki_map)
     html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
   end
@@ -181,8 +181,8 @@ engine :page do
   is_cacheable.needs_layout.has_priority(2)
   accepts 'text/x-markdown(.kramdown)?'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { kramdown! }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:disable => 'html:*') { kramdown! }
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
   end
@@ -193,8 +193,8 @@ engine :s5 do
   accepts 'text/x-markdown(.kramdown)?'
   mime 'application/xhtml+xml; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { kramdown! }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:disable => 'html:*') { kramdown! }
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
@@ -206,8 +206,8 @@ engine :latex do
   accepts 'text/x-markdown(.kramdown)?'
   mime 'text/plain; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { kramdown!(:latex => true) }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:static => true, :disable => 'html:*') { kramdown!(:latex => true) }
   end
 end
 
@@ -219,8 +219,8 @@ engine :page do
   is_cacheable.needs_layout.has_priority(3)
   accepts 'text/x-markdown(.maruku)?'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { maruku! }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:disable => 'html:*') { maruku! }
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
   end
@@ -231,8 +231,8 @@ engine :s5 do
   accepts 'text/x-markdown(.maruku)?'
   mime 'application/xhtml+xml; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { maruku! }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:disable => 'html:*') { maruku! }
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
     html_wrapper!.s5!
@@ -244,8 +244,8 @@ engine :latex do
   accepts 'text/x-markdown(.maruku)?'
   mime 'text/plain; charset=utf-8'
   filter do
-    remove_comments.tag_shortcuts
-    markdown_nowiki.tag(:disable => 'html:*') { maruku! }
+    remove_comments.tag_shortcuts.markdown_nowiki
+    tag(:static => true, :disable => 'html:*') { maruku! }
     toc.interwiki(:map => interwiki_map)
     html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
   end
@@ -285,7 +285,7 @@ engine :latex do
   mime 'text/plain; charset=utf-8'
   filter do
     remove_comments.tag_shortcuts
-    tag { orgmode!.rubypants }
+    tag(:static => true) { orgmode!.rubypants }
     toc.interwiki(:map => interwiki_map)
     html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
   end

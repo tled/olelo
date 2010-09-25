@@ -31,7 +31,7 @@ __END__
       %a(href="#tab-filters") Filters
   - if Olelo.const_defined? 'Tag'
     %li#tabhead-tags
-      %a(href="#tab-tags") Markup tags
+      %a(href="#tab-tags") Tags
 #tab-runtime.tab
   %h2 Runtime
   %table.zebra
@@ -161,15 +161,17 @@ __END__
           %td= engine.definition
 - if Olelo.const_defined? 'Tag'
   #tab-tags.tab
-    %h2 Markup tags
+    %h2 Tags
     %p
-      Markup tags can be included in the wikitext like normal html tags. These tags are provided by plugins as wikitext extensions.
+      Tags can be included in the wikitext like normal html tags. These tags are provided by plugins as wikitext extensions.
       The namespace prefixes are optional and can be used in case of ambiguities.
     %table.zebra.full
       %thead
         %tr
           %th Name
           %th Description
+          %th Immediate
+          %th Dynamic
           %th Provided by plugin
           %th Required attributes
       %tbody
@@ -177,5 +179,7 @@ __END__
           %tr
             %td= tag.full_name
             %td= tag.description
+            %td!= check_mark tag.immediate
+            %td!= check_mark tag.dynamic
             %td= tag.plugin.name
             %td= tag.requires.join(', ')
