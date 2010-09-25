@@ -26,6 +26,19 @@ base_path:      '/'
 # Temporary directory used for caches etc. Uncomment this!
 #tmp_path:        '/home/user/wiki/tmp'
 
+# Main cache store. Uncomment this!
+# Available caches: memory, file, memcached, pstore
+#cache_store:
+#  type:   file
+#  file:
+#    root: '/home/user/wiki/tmp/cache'
+#  memcached:
+#    prefix: ''
+#    server: localhost:11211
+#  memory:
+#  pstore:
+#    file: '/home/user/wiki/tmp/cache.pstore'
+
 ##################################################
 # Authentication backend configuration
 

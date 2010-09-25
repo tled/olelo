@@ -26,9 +26,9 @@ Olelo::Config['plugins_path'] = ::File.join(path, 'plugins')
 Olelo::Config['views_path'] = ::File.join(path, 'views')
 Olelo::Config['themes_path'] = ::File.join(path, 'static', 'themes')
 Olelo::Config['tmp_path'] = ::File.join(path, '.wiki', 'tmp')
+Olelo::Config['cache_store'] = { :type => 'file', 'file.root' => ::File.join(path, '.wiki', 'tmp', 'cache') }
 Olelo::Config['authentication.yamlfile.store'] = ::File.join(path, '.wiki', 'users.yml')
-Olelo::Config['repository.git.path'] = ::File.join(path, '.wiki', 'repository')
-Olelo::Config['repository.git.bare'] = false
+Olelo::Config['repository.git'] = { :path => ::File.join(path, '.wiki', 'repository'), :bare => false }
 Olelo::Config['log.file'] = ::File.join(path, '.wiki', 'log')
 Olelo::Config['rack.session_secret'] = SecureRandom.hex
 

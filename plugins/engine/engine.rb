@@ -153,7 +153,7 @@ class Olelo::Application
       params[:output] ||= 'tree' if params[:path].to_s.ends_with? '/'
       @engine_name, layout, response, content =
         Cache.cache("engine-#{page.path}-#{page.version}-#{build_query(params)}",
-                    :marshal => true, :update => request.no_cache?, :defer => true) do |cache|
+                    :update => request.no_cache?, :defer => true) do |cache|
         engine = Engine.find!(page, :name => params[:output])
         cache.disable! if !engine.cacheable?
         context = Context.new(:page => page, :params => params, :request => request)

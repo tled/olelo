@@ -25,6 +25,12 @@ describe 'requests' do
       :views_path        => File.join(@app_path, 'views'),
       :themes_path       => File.join(@app_path, 'static', 'themes'),
       :tmp_path          => File.join(@test_path, 'tmp'),
+      :cache_store       => {
+        :type => 'file',
+        :file => {
+          :root => File.join(@test_path, 'tmp', 'cache')
+        }
+      },
       :base_path         => '/',
       :production        => true,
       :locale	         => 'en_US',
