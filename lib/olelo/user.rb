@@ -39,8 +39,30 @@ module Olelo
       include Util
       extend Factory
 
-      def method_missing(name, *args)
-        raise AuthenticationError, :auth_unsupported.t(:name => name)
+      class NotSupportedError < AuthenticationError
+        def initialize(name)
+          super(:auth_unsupported.t(:name => name))
+        end
+      end
+
+      def find(name)
+        raise NotImplementedError
+      end
+
+      def authenticate(name, password)
+        raise NotImplementedError
+      end
+
+      def create(user, password)
+        raise NotSupportedError('create')
+      end
+
+      def update(user)
+        raise NotSupportedError('update')
+      end
+
+      def change_password(user, oldpassword, password)
+        raise NotSupportedError('change_password')
       end
     end
 

@@ -262,6 +262,58 @@ module Olelo
       end
     end
 
+    def transaction(&block)
+      raise NotImplementedError
+    end
+
+    def commit(comment)
+      raise NotImplementedError
+    end
+
+    def find_page(path, tree_version, current)
+      raise NotImplementedError
+    end
+
+    def find_version(version)
+      raise NotImplementedError
+    end
+
+    def load_history(page, skip, limit)
+      raise NotImplementedError
+    end
+
+    def load_version(page)
+      raise NotImplementedError
+    end
+
+    def load_children(page)
+      raise NotImplementedError
+    end
+
+    def load_content(page)
+      raise NotImplementedError
+    end
+
+    def load_attributes(page)
+      raise NotImplementedError
+    end
+
+    def save(page)
+      raise NotImplementedError
+    end
+
+    def move(page, destination)
+      raise NotImplementedError
+    end
+
+    def delete(page)
+      raise NotImplementedError
+    end
+
+    def diff(page, from, to)
+      raise NotImplementedError
+    end
+
     def short_version(version)
       version
     end
