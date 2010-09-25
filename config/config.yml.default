@@ -66,6 +66,14 @@ authentication:
     - yamlfile
     - portal
 
+# Where to store authentication tokens for persistent login.
+# See the store types of cache_store.
+# Uncomment this!
+#tokens_store:
+#  type: pstore
+#  pstore:
+#    file: '/home/user/wiki/tmp/tokens.pstore'
+
 ##################################################
 # Mime detection order
 # Possible values are extension, content/magic and a specific mime type

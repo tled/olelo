@@ -101,7 +101,7 @@ module Olelo
     end
 
     get '/logout' do
-      User.current = nil
+      User.current = User.anonymous(request)
       redirect '/'
     end
 
