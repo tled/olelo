@@ -1,7 +1,5 @@
 description 'Searching via git-grep'
 
-raise 'Git repository required' if Config.repository.type != 'git'
-
 class Olelo::Application
   get '/search' do
     @matches = {}
