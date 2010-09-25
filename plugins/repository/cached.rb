@@ -4,8 +4,8 @@ require      'delegate'
 
 class CachedRepository < DelegateClass(Repository)
   def initialize(config)
-    super(Repository[config.backend].new(Config.repository[config.backend]))
-    @cache = Store.create(config.store)
+    super(Repository[config[:backend]].new(Config.repository[config[:backend]]))
+    @cache = Store.create(config[:store])
     @in_transaction = {}
   end
 

@@ -3,7 +3,6 @@ module Olelo
     include Enumerable
 
     attr_reader :base, :hash
-    alias to_hash hash
     undef_method :type rescue nil if RUBY_VERSION < '1.9'
 
     def initialize(hash = nil, base = nil)
@@ -65,6 +64,14 @@ module Olelo
 
     def self.method_missing(key, *args)
       instance.send(key, *args)
+    end
+
+    def to_hash
+      hash = Hash.with_indifferent_access
+      each do |k, v|
+        hash[k] = Config === v ? v.to_hash : v
+      end
+      hash
     end
 
     private

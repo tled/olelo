@@ -3,8 +3,8 @@ require     'yaml/store'
 
 class YamlfileService < User::Service
   def initialize(config)
-    FileUtils.mkdir_p File.dirname(config.store), :mode => 0755
-    @store = ::YAML::Store.new(config.store)
+    FileUtils.mkdir_p File.dirname(config[:store]), :mode => 0755
+    @store = ::YAML::Store.new(config[:store])
   end
 
   def find(name)

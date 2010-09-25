@@ -9,9 +9,9 @@ class GitRepository < Repository
 
   def initialize(config)
     logger = Plugin.current.logger
-    logger.info "Opening git repository: #{config.path}"
-    @shared_git = Gitrb::Repository.new(:path => config.path, :create => true,
-                                        :bare => config.bare, :logger => logger)
+    logger.info "Opening git repository: #{config[:path]}"
+    @shared_git = Gitrb::Repository.new(:path => config[:path], :create => true,
+                                        :bare => config[:bare], :logger => logger)
     @current_transaction = {}
     @git = {}
   end

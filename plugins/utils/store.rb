@@ -1,8 +1,12 @@
 description 'Key/value store'
 require 'delegate'
 
-# Simple interface to key/value stores
-# with Hash-like interface
+# Simple interface to key/value stores with Hash-like interface.
+#
+# Store supports a subset of the Moneta interface,
+# Moneta can be used as a drop-in replacement.
+# It is recommended to wrap the moneta store in a Olelo::Store::Delegated
+# to only expose the Olelo::Store interface.
 class Olelo::Store
   extend Factory
 
@@ -45,7 +49,7 @@ class Olelo::Store
 
   # Create store instance
   def self.create(config)
-    self[config.type].new(config[config.type])
+    self[config[:type]].new(config[config[:type]])
   end
 
   # Delegated store
@@ -78,30 +82,33 @@ class Olelo::Store
 
   # Memcached client, requires memcached library
   class Memcached < Store
+    include Util
+
     def initialize(config)
       require 'memcached'
-      @server = ::Memcached.new(config.server, :prefix_key => (config.prefix rescue nil))
+      @server = ::Memcached.new(config[:server], :prefix_key => (config[:prefix] rescue nil))
     end
 
     def key?(key)
-      @server.get(key, false)
+      @server.get(encode64(key), false)
       true
     rescue ::Memcached::NotFound
       false
     end
 
     def [](key)
-      @server.get(key)
+      @server.get(encode64(key))
     rescue ::Memcached::NotFound
     end
 
     def []=(key, value)
-      @server.set(key, value)
+      @server.set(encode64(key), value)
       value
     end
 
     def delete(key)
-      value = @server.get(key)
+      key = encode64(key)
+      value = @server.get()
       @server.delete(key)
       value
     rescue ::Memcached::NotFound
@@ -118,7 +125,7 @@ class Olelo::Store
   class PStore < Store
     def initialize(config)
       require 'pstore'
-      @store = ::PStore.new(config.file)
+      @store = ::PStore.new(config[:file])
     end
 
     def key?(key)
@@ -151,7 +158,7 @@ class Olelo::Store
   # File based store
   class File < Store
     def initialize(config)
-      @root = config.root
+      @root = config[:root]
     end
 
     def key?(key)

@@ -10,7 +10,7 @@ class << Olelo::Tag
       Application.class_eval { define_method("DYNTAG #{name}", &block) }
       original_define(name, options) do |context, attrs, content|
         data = [name, attrs, content]
-        %{<div class="dyntag">#{[Marshal.dump(data)].pack('m')}</div>}
+        %{<div class="dyntag">#{encode64 Marshal.dump(data)}</div>}
       end
     else
       original_define(name, options, &block)
@@ -24,7 +24,7 @@ Application.hook :layout do |name, doc|
   cache_control(:no_cache => true) if !tags.empty?
   tags.each do |element|
     content = begin
-      data = Marshal.load(element.content.unpack('m').first)
+      data = Marshal.load(decode64(element.content))
       send("DYNTAG #{data[0]}", data[1], data[2]).to_s
     rescue Exception => ex
       Plugin.current.logger.error ex

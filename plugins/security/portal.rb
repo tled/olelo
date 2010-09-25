@@ -4,7 +4,7 @@ require     'openssl'
 
 class PortalService < User::Service
   def initialize(config)
-    @url = config.url
+    @url = config[:url]
   end
 
   def authenticate(name, password)

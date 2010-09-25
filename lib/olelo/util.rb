@@ -145,6 +145,16 @@ module Olelo
       Marshal.load(Marshal.dump(object))
     end
 
+    # Decode base64 encoded string
+    def decode64(s)
+      s.unpack('m').first
+    end
+
+    # Encode string as base64
+    def encode64(s)
+      [s].pack('m').gsub(/\n/, '')
+    end
+
     # Truncate string and add omission
     if ''.respond_to?(:encoding)
       def truncate(s, max, omission = '...')
