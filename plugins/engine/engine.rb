@@ -152,22 +152,22 @@ class Olelo::Application
     begin
       params[:output] ||= 'tree' if params[:path].to_s.ends_with? '/'
       @engine_name, layout, response, content =
-        Cache.cache("engine-#{page.path}-#{page.version}-#{build_query(params)}",
+        Cache.cache("engine-#{page.path}-#{page.version}-#{build_query(original_params)}",
                     :update => request.no_cache?, :defer => true) do |cache|
         engine = Engine.find!(page, :name => params[:output])
         cache.disable! if !engine.cacheable?
         context = Context.new(:page => page, :params => params, :request => request)
-        content = engine.output(context)
+        result = engine.output(context)
         context.response['Content-Type'] ||= engine.mime.to_s if engine.mime
         context.response['Content-Type'] ||= page.mime.to_s if !engine.layout?
-        [engine.name, engine.layout?, context.response.to_hash, content]
+        [engine.name, engine.layout?, context.response.to_hash, result]
       end
       self.response.header.merge!(response)
       if layout
-        if request.xhr?
-          content = "<h1>#{escape_html page.title}</h1>#{content}" if !page.attributes['no_title']
-        else
+        if !request.xhr?
           content = render(:show, :locals => {:content => content})
+        elsif !page.attributes['no_title']
+          content = "<h1>#{escape_html page.title}</h1>#{content}"
         end
       end
       halt content
@@ -182,7 +182,7 @@ class Olelo::Application
 
   hook :layout do |name, doc|
     doc.css('#menu .action-view').each do |link|
-      menu = Cache.cache("engine-menu-#{page.path}-#{page.version}-#{build_query(params)}",
+      menu = Cache.cache("engine-menu-#{page.path}-#{page.version}-#{params[:output]}",
                          :update => request.no_cache?, :defer => true) do
         engines = Olelo::Engine.find_all(page).select {|e| !e.hidden? || e.name == @engine_name }.map do |e|
           [Olelo::I18n.translate("engine_#{e.name}", :fallback => capitalize_words(e.name)), e]

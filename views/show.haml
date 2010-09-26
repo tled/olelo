@@ -5,9 +5,7 @@
     |
   = :version.t
   %a.version{:href => absolute_path(page, :version => page.version), :title => page.version }= page.version.short
-  = :by.t
-  = page.version.author.name
-  ! , #{date page.version.date}
+  ! #{:by.t} #{page.version.author.name}, #{date page.version.date}
 - if !page.attributes['no_title']
   %h1= title
 != content

@@ -4,10 +4,10 @@ dependencies 'engine/engine'
 class Olelo::Application
   hook :layout do |name, doc|
     if name == :edit
-      if @preview
-        doc.css('#content .tabs').before %{<div class="preview">#{@preview}</div>}
-      elsif @patch
-        doc.css('#content .tabs').before @patch
+      if flash[:preview]
+        doc.css('#content .tabs').before %{<div class="preview">#{flash[:preview]}</div>}
+      elsif flash[:changes]
+        doc.css('#content .tabs').before flash[:changes]
       end
 
       doc.css('#tab-edit button[type=submit]').before(
@@ -29,7 +29,7 @@ class Olelo::Application
       engine = Engine.find(page, :layout => true)
       page.content = params[:content]
     end
-    @preview = engine && engine.output(Context.new(:page => page))
+    flash.now[:preview] = engine && engine.output(Context.new(:page => page))
     halt render(:edit)
   end
 
@@ -48,7 +48,7 @@ class Olelo::Application
     # Read in binary mode and fix encoding afterwards
     patch = IO.popen("diff -u '#{original.path}' '#{new.path}'", 'rb') {|io| io.read }
     patch.force_encoding(Encoding::UTF_8) if patch.respond_to? :force_encoding
-    @patch = PatchParser.parse(patch, PatchFormatter.new).html
+    flash.now[:changes] = PatchParser.parse(patch, PatchFormatter.new).html
 
     halt render(:edit)
   end

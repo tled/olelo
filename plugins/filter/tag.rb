@@ -150,25 +150,23 @@ class Olelo::Tag < AroundFilter
   # of this class can be called from the tag block.
   # Dynamic tags are an exception. They are executed later from the layout hook.
   def self.define(name, options = {}, &block)
-    if options[:dynamic]
-      raise 'Dynamic tag cannot be immediate' if options[:immediate]
+    raise 'Dynamic tag cannot be immediate' if options[:dynamic] && options[:immediate]
+    # Find the plugin which provided this tag.
+    plugin = Plugin.current(1) || Plugin.current
+    options.merge!(:name => name.to_s, :plugin => plugin)
+    tag = TagInfo.new({ :description => plugin.description, :namespace => plugin.name.split('/').last }.merge(options))
+    @@tags[tag.full_name] = @@tags[tag.name] = tag
+    if tag.dynamic
       klass = Class.new
       klass.class_eval do
         include PageHelper
         include Templates
         define_method(:call, &block)
       end
-      options[:dynamic] = klass.new
+      tag.dynamic = klass.new
     else
-      define_method("TAG #{name}", &block)
+      define_method("TAG #{tag.full_name}", &block)
     end
-    # Find the plugin which provided this tag.
-    plugin = Plugin.current(1) || Plugin.current
-    options.merge!(:name => name, :plugin => plugin)
-    # These options can be overwritten
-    options = { :description => plugin.description,
-                :namespace => plugin.name.split('/').last }.merge(options)
-    @@tags["#{options[:namespace]}:#{name}"] = @@tags[name.to_s] = TagInfo.new(options)
   end
 
   # Configure the tag filter
@@ -205,9 +203,10 @@ class Olelo::Tag < AroundFilter
 
   # Main filter method
   def filter(context, content)
-    @protected_elements = []
+    @protected_tags = []
     @protection_prefix = "TAG#{object_id}X"
-    replace_protected_elements(subfilter(context, content))
+    @protection_suffix = 'X'
+    replace_protected_tags(subfilter(context, content))
   end
 
   private
@@ -240,6 +239,8 @@ class Olelo::Tag < AroundFilter
 
   def process_tag(name, attrs, content, context)
     tag = @@tags[name]
+    name = tag.full_name
+
     tag_counter = context.private[:tag_counter] ||= {}
     tag_counter[name] ||= 0
     tag_counter[name] += 1
@@ -262,19 +263,19 @@ class Olelo::Tag < AroundFilter
     if tag.immediate
       content
     else
-      @protected_elements << content
-      "#{@protection_prefix}#{@protected_elements.length-1}"
+      @protected_tags << content
+      "#{@protection_prefix}#{@protected_tags.length-1}#{@protection_suffix}"
     end
   rescue Exception => ex
     Plugin.current.logger.error ex
-    "#{name}: #{escape_html ex.message}"
+    "#{name} - #{ex.message}"
   end
 
-  def replace_protected_elements(content)
+  def replace_protected_tags(content)
     # Protected elements can be nested into each other
     MAX_RECURSION.times do
-      break if !content.gsub!(/#{@protection_prefix}(\d+)/) do
-        element = @protected_elements[$1.to_i]
+      break if !content.gsub!(/#{@protection_prefix}(\d+)#{@protection_suffix}/) do
+        element = @protected_tags[$1.to_i]
 
         # Remove unwanted <p>-tags around block-level-elements
         prefix = $`
@@ -305,7 +306,7 @@ Application.hook :layout, 666 do |name, doc|
                     Tag.tags[name].dynamic.call(context, attrs, content).to_s
                   rescue Exception => ex
                     Plugin.current.logger.error ex
-                    "#{name}: #{escape_html ex.message}"
+                    "#{name} - #{escape_html ex.message}"
                   end
         element.replace(content)
       rescue Exception => ex
