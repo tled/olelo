@@ -80,46 +80,89 @@ class Olelo::Store
 
   register :memory, Memory
 
-  # Memcached client, requires memcached library
-  class Memcached < Store
-    include Util
-
+  # Memcached client
+  class Memcached < Delegated
     def initialize(config)
-      require 'memcached'
-      @server = ::Memcached.new(config[:server], :prefix_key => (config[:prefix] rescue nil))
+      super(Store::Synchronized(Native).new(config))
+    rescue LoadError
+      super(Ruby.new(config))
     end
 
-    def key?(key)
-      @server.get(encode64(key), false)
-      true
-    rescue ::Memcached::NotFound
-      false
+    # Uses the memcached gem
+    class Native < Store
+      include Util
+
+      def initialize(config)
+        require 'memcached'
+        @server = ::Memcached.new(config[:server], :prefix_key => (config[:prefix] rescue nil))
+      end
+
+      def key?(key)
+        @server.get(md5(key), false)
+        true
+      rescue ::Memcached::NotFound
+        false
+      end
+
+      def [](key)
+        @server.get(md5(key))
+      rescue ::Memcached::NotFound
+      end
+
+      def []=(key, value)
+        @server.set(md5(key), value)
+        value
+      end
+
+      def delete(key)
+        key = md5(key)
+        value = @server.get(key)
+        @server.delete(key)
+        value
+      rescue ::Memcached::NotFound
+      end
+
+      def clear
+        @server.flush
+      end
     end
 
-    def [](key)
-      @server.get(encode64(key))
-    rescue ::Memcached::NotFound
-    end
+    # Uses the memcache-client gem
+    class Ruby < Store
+      include Util
 
-    def []=(key, value)
-      @server.set(encode64(key), value)
-      value
-    end
+      def initialize(config)
+        require 'memcache'
+        @server = ::MemCache.new(config[:server], :namespace => (config[:prefix] rescue nil))
+      end
 
-    def delete(key)
-      key = encode64(key)
-      value = @server.get()
-      @server.delete(key)
-      value
-    rescue ::Memcached::NotFound
-    end
+      def key?(key)
+        !@server.get(md5(key)).nil?
+      end
 
-    def clear
-      @server.flush
+      def [](key)
+        deserialize(@server.get(md5(key)))
+      end
+
+      def []=(key, value)
+        @server.set(md5(key), serialize(value))
+        value
+      end
+
+      def delete(key)
+        key = md5(key)
+        value = deserialize(@server.get(key))
+        @server.delete(key)
+        value
+      end
+
+      def clear
+        @server.flush_all
+      end
     end
   end
 
-  register :memcached, Synchronized(Memcached)
+  register :memcached, Memcached
 
   # PStore based store
   class PStore < Store
