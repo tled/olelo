@@ -7,7 +7,7 @@ module Olelo
           @session = session
           raise 'No session available' if !session
           [*opts[:accessors]].compact.each {|a| def_accessor(a) }
-          [*opts[:array_accessors]].compact.each {|a| def_array_accessor(a) }
+          [*opts[:set_accessors]].compact.each {|a| def_set_accessor(a) }
         end
 
         # Remove an entry from the session and return its value. Cache result in
@@ -24,8 +24,7 @@ module Olelo
         end
 
         # Store a flash entry for only the current request, swept regardless of
-        # whether or not it was actually accessed. Useful for AJAX requests, where
-        # you want a flash message, even though you're response isn't redirecting.
+        # whether or not it was actually accessed
         def now
           cache
         end
@@ -43,17 +42,6 @@ module Olelo
           @session.delete(:olelo_flash)
         end
 
-        # Mark existing entries to allow for sweeping.
-        def flag!
-          @flagged = values.keys
-        end
-
-        # Remove flagged entries from flash session, clear flagged list.
-        def sweep!
-          @flagged.to_a.each {|key| values.delete(key) }
-          @flagged = nil
-        end
-
         # Hide the underlying olelo.flash session key and only expose values stored
         # in the flash.
         def inspect
@@ -64,7 +52,6 @@ module Olelo
         def to_s
           values.inspect
         end
-
 
         private
 
@@ -92,12 +79,13 @@ module Olelo
           end
         end
 
-        # Generate array accessor method for the given entry key
-        def def_array_accessor(key)
+        # Generate set accessor method for the given entry key
+        def def_set_accessor(key)
           key = key.to_sym
           raise ArgumentError.new('Invalid entry type: %s' % key) if respond_to?(key)
           metaclass.class_eval do
-            define_method(key) {|*val| val.size > 0 ? (self[key] ||= []).push(*val) : self[key] }
+            define_method(key) {|*val| val.size > 0 ? (self[key] ||= Set.new).merge(val) : self[key] }
+            define_method("#{key}!") {|*val| val.size > 0 ? (cache[key] ||= Set.new).merge(val) : cache[key] }
           end
         end
       end
@@ -109,9 +97,7 @@ module Olelo
       def call(env)
         session = env['rack.session']
         env['olelo.flash'] ||= FlashHash.new(session, @opts)
-        env['olelo.flash'].flag! if @opts[:sweep]
         result = @app.call(env)
-        env['olelo.flash'].sweep! if @opts[:sweep]
         session.delete(:olelo_flash) if session[:olelo_flash].blank?
         result
       end

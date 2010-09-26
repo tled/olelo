@@ -71,7 +71,7 @@ module Olelo
     hook StandardError do |error|
       if on_error
         logger.error error
-        (error.try(:messages) || [error.message]).each {|msg| flash.error(msg) }
+        (error.try(:messages) || [error.message]).each {|msg| flash.error!(msg) }
         halt render(on_error)
       end
     end
@@ -117,7 +117,7 @@ module Olelo
         u.change_password(params[:oldpassword], params[:password], params[:confirm]) if !params[:password].blank?
         u.email = params[:email]
       end
-      flash.info :changes_saved.t
+      flash.info! :changes_saved.t
       render :profile
     end
 
@@ -182,7 +182,7 @@ module Olelo
 
     get '/new(/:path)' do
       @page = Page.new(params[:path])
-      flash.error :reserved_path.t if self.class.reserved_path?(page.path)
+      flash.error! :reserved_path.t if self.class.reserved_path?(page.path)
       params[:path] = !page.root? && Page.find(page.path) ? page.path + '/' : page.path
       render :edit
     end
@@ -259,11 +259,11 @@ module Olelo
           raise 'Invalid action'
         end
 
-        flash.info :changes_saved.t
         if @close
           flash.clear
           redirect absolute_path(page)
         else
+          flash.info! :changes_saved.t
           render :edit
         end
       end

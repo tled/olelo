@@ -62,7 +62,7 @@ end
 
 use Rack::StaticCache, :urls => ['/static'], :root => path
 use Rack::Session::Cookie, :key => 'olelo.session', :secret => Olelo::Config.rack.session_secret
-use Olelo::Middleware::Flash, :sweep => true, :array_accessors => %w(error warn info)
+use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
 
 class LoggerOutput
   def initialize(logger); @logger = logger; end

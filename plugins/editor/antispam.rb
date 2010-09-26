@@ -84,7 +84,7 @@ end
 
 class Olelo::Application
   hook(:layout, 1000) do |name, doc|
-    if @show_captcha
+    if flash[:show_captcha]
       doc.css('#tab-edit button[type=submit]').before(
         %{<br/><label for="recaptcha">#{:captcha.t}</label><br/><div id="recaptcha"></div><br/>})
       doc.css('body').first <<\
@@ -103,8 +103,8 @@ class Olelo::Application
 
   redefine_method :post_edit do
     if !captcha_valid? && SpamEvaluator.new(params, page).evaluate >= 100
-      flash.info :enter_captcha.t
-      @show_captcha = true
+      flash.info! :enter_captcha.t
+      flash.now[:show_captcha] = true
       halt render(:edit)
     else
       super()
@@ -124,10 +124,10 @@ class Olelo::Application
                                      'response'   => params[:recaptcha_response_field])
       if response.body.split("\n").first == 'true'
         session[:olelo_antispam_timeout] = Time.now.to_i + 600
-        flash.info :captcha_valid.t
+        flash.info! :captcha_valid.t
         true
       else
-        flash.error :captcha_invalid.t
+        flash.error! :captcha_invalid.t
         false
       end
     end
