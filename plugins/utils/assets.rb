@@ -17,7 +17,7 @@ class Olelo::Application
     js = Application.scripts['js']
     if js
       path = absolute_path "_/assets/assets.js?#{js.first.to_i}"
-      doc.css('body').first << %{<script src="#{escape_html path}" type="text/javascript"/>}
+      doc.css('body').first << %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}
     end
   end
 
