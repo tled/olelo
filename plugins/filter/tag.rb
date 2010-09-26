@@ -292,7 +292,7 @@ class Olelo::Tag < AroundFilter
 end
 
 # Evaluate and replace all dynamic tags on the page
-Application.hook :layout do |name, doc|
+Application.hook :layout, 666 do |name, doc|
   tags = doc.css('.dyntag')
   if !tags.empty?
     cache_control(:no_cache => true)

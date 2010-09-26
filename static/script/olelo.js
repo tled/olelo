@@ -20,7 +20,9 @@
         $('#history-table', parent).historyTable();
         $('.zebra, #history-table, #tree-table', parent).zebra();
 	$('.date', parent).dateToggler();
-        $('.tabs > li', parent).tabs();
+        $('.tabs', parent).each(function() {
+	    $('> li', this).tabWidget();
+	});
         $('input.placeholder', parent).placeholder();
         $('*[accesskey]', parent).underlineAccessKey();
     }

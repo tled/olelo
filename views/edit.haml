@@ -19,7 +19,7 @@
         %input(type='hidden' name='pos' value='#{params[:pos]}')
         - if params[:len]
           %input(type='hidden' name='len' value='#{params[:len]}')
-    %textarea#edit-content(name='content' cols='100' rows='20')= edit_content(page)
+    %textarea#edit-content.confirm(name='content' cols='100' rows='20')= edit_content(page)
     %br
     %label(for='edit-comment')= :comment.t
     %input#edit-comment(type='text' name='comment' value='#{params[:comment]}' size='50')
@@ -39,7 +39,7 @@
       %input(type='hidden' name='version' value='#{page.version}')
     != flash_messages :upload
     %label(for='upload-file')= :file.t
-    %input#upload-file(name='file' type='file')
+    %input#upload-file.confirm(name='file' type='file')
     %br
     %button(type='submit' name='action' value='upload')= :save.t
     %button(type='submit' name='action' value='upload-close')= :save_and_close.t

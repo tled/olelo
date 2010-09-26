@@ -25,19 +25,21 @@ module Olelo
         html = %{<label for="attribute_#{key}" title="#{escape_html title}">#{label}</label>}
 	case type
         when :integer, :string
-          html << %{<input type="text" id="attribute_#{key}" name="attribute_#{key}" value="#{escape_html attr}"/>}
+          html << %{<input class="confirm" type="text" id="attribute_#{key}" name="attribute_#{key}" value="#{escape_html attr}"/>}
         when :stringlist
-          html << %{<input type="text" id="attribute_#{key}" name="attribute_#{key}" value="#{escape_html attr.to_a.join(', ')}"/>}
+          html << %{<input class="confirm" type="text" id="attribute_#{key}" name="attribute_#{key}" value="#{escape_html attr.to_a.join(', ')}"/>}
         when :boolean
-          html << %{<input type="checkbox" id="attribute_#{key}" name="attribute_#{key}" value="true"#{attr ? ' checked="checked"' : ''}/>}
+          html << %{<input class="confirm" type="checkbox" id="attribute_#{key}" name="attribute_#{key}" value="true"#{attr ? ' checked="checked"' : ''}/>}
         when Hash
-          html << %{<select id="attribute_#{key}" name="attribute_#{key}"><option></option>}
+          html << %{<select class="confirm" id="attribute_#{key}" name="attribute_#{key}">
+                    <option#{type.any? {|value,label| attr == value} ? '' : ' selected="selected"'}></option>}
           type.sort_by(&:last).each do |value,label|
             html << %{<option value="#{escape_html value}"#{attr == value ? ' selected="selected"' : ''}>#{escape_html label}</option>}
           end
           html << '</select>'
         when Array
-          html << %{<select id="attribute_#{key}" name="attribute_#{key}"><option></option>}
+          html << %{<select class="confirm" id="attribute_#{key}" name="attribute_#{key}">
+                    <option#{type.any? {|value| attr == value} ? '' : ' selected="selected"'}></option>}
           type.sort.each do |value|
             html << %{<option#{attr == value ? ' selected="selected"' : ''}>#{escape_html value}</option>}
           end
