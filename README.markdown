@@ -2,7 +2,7 @@ README
 ======
 
 Ōlelo is a wiki that stores pages in a [Git][] repository.
-See the demo installation at <http://git.awiki.org/> or <http://git-wiki.kicks-ass.org/>.
+See the demo installation at <http://git.awiki.org/>.
 
 Features
 --------
@@ -35,7 +35,7 @@ First, you have to install the [Gem][] dependencies via `gem`:
     gem install haml
     gem install rack
     gem install nokogiri
-    gem install mongrel --source http://gems.rubyinstaller.org
+    gem install unicorn
 
 ### Optional:
 
@@ -47,15 +47,15 @@ First, you have to install the [Gem][] dependencies via `gem`:
     gem install org-ruby
     gem install yajl-ruby
 
-Then, run the program using the command:
+Then, run the program using the command in the application directory:
 
-    rackup -smongrel -p4567
+    unicorn
 
-Point your web browser at <http://localhost:4567>.
+Point your web browser at <http://localhost:8080>.
 
 Git-Wiki automatically creates a repository in the directory `./.wiki`.
-For production purposes, I recommend that you deploy the wiki with Mongrel.
-I tested other webservers like unicorn, thin and webrick.
+For production purposes, I recommend that you deploy the wiki with Unicorn.
+I tested other webservers like thin, rainbows, webrick and mongrel.
 Git-Wiki works with all of them thanks to rack.
 
 Configuration

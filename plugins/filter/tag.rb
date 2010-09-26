@@ -245,7 +245,8 @@ class Olelo::Tag < AroundFilter
     tag_counter[name] += 1
 
     raise 'Tag limit exceeded' if tag.limit && tag_counter[name] > tag.limit
-    raise %{Attribute "#{attr}" is required} if attr = tag.requires.find {|a| !attrs.include?(a) }
+    attr = tag.requires.find {|a| !attrs.include?(a) }
+    raise %{Attribute "#{attr}" is required} if attr
 
     content =
       if tag.dynamic
