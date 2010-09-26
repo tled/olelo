@@ -1,7 +1,6 @@
 require 'rack'
 require 'rack/session/abstract/id'
 require 'socket'
-require 'securerandom'
 
 class Rack::Request
   # Remote host name
@@ -26,6 +25,7 @@ end
 
 # FIXME: Secure random
 # http://rack.lighthouseapp.com/projects/22435-rack/tickets/85-securerandom-for-secure-key-generation
+#require 'securerandom'
 #class Rack::Session::Abstract::ID
 #  def generate_sid
 #    SecureRandom.hex

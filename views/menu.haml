@@ -29,6 +29,3 @@
             %a.action-delete{:href=> action_path(page, :delete) }= :delete.t
     %li
       %a.action-history{:href=>action_path(page, :history), :accesskey=>'h'}= :history.t
-  - elsif !page
-    %li
-      %a.action-new{:href=>'/new', :accesskey=>'n'}= :new_page.t
