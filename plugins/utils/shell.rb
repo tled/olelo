@@ -38,6 +38,6 @@ class Olelo::Shell
   end
 
   def self.method_missing(*args, &block)
-    new.cmd(*args, &block)
+    new.send(*args, &block)
   end
 end

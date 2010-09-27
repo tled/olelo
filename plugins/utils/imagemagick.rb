@@ -15,7 +15,7 @@ class Olelo::ImageMagick < Olelo::Shell
   end
 
   def label(text)
-    convert('-pointsize', 16, '-background', 'transparent', "label:#{label}", 'PNG:-') rescue nil
+    convert('-pointsize', 16, '-background', 'transparent', "label:#{text}", 'PNG:-').run rescue nil
   end
 
   def method_missing(name, *args, &block)

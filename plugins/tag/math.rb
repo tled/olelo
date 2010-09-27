@@ -77,19 +77,24 @@ class BlahtexMLRenderer < MathRenderer
 end
 
 class BlahtexImageRenderer < MathRenderer
+  include PageHelper
+
   def load
     `blahtex`
   end
 
-  def directory
+  def self.directory
     @directory ||= File.join(Config.tmp_path, 'blahtex').tap {|dir| FileUtils.mkdir_p dir, :mode => 0755 }
   end
 
   def render(code, display)
-    content = Shell.blahtex('--png', '--png-directory', directory).run(code.strip)
-    content =~ %r{<md5>(.*)</md5>}m
-    path = absolute_path "_/tag/math/blahtex/#{$1}.png"
-    %{<img src="#{escape_html path}" alt="#{escape_html code}" class="math #{display}"/>}
+    content = Shell.blahtex('--png', '--png-directory', BlahtexImageRenderer.directory).run(code.strip)
+    if content =~ %r{<md5>(.*)</md5>}m
+      path = absolute_path "_/tag/math/blahtex/#{$1}.png"
+      %{<img src="#{escape_html path}" alt="#{escape_html code}" class="math #{display}"/>}
+    elsif content.include?('error') && content =~ %r{<message>(.*)</message>}
+      raise $1
+    end
   end
 end
 
@@ -99,19 +104,24 @@ class GoogleRenderer < MathRenderer
   end
 end
 
+class LaTeXRenderer < MathRenderer
+  def render(code, display)
+    display == 'inline' ? "\\(#{escape_html(code)}\\)" : "\\[#{escape_html(code)}\\]"
+  end
+end
+
 MathRenderer.registry = {
-  'itex'         => ItexRenderer.new,
-  'ritex'        => RitexRenderer.new,
-  'blahtexml'    => BlahtexMLRenderer.new,
-  'blahteximage' => BlahtexImageRenderer.new,
-  'google'       => GoogleRenderer.new,
-  'image'        => %w(google blahteximage),
-  'mathml'       => %w(blahtexml itex ritex),
+  'mathml/itex'    => ItexRenderer.new,
+  'mathml/ritex'   => RitexRenderer.new,
+  'mathml/blahtex' => BlahtexMLRenderer.new,
+  'mathml/mathjax' => LaTeXRenderer.new,
+  'image/blahtex'  => BlahtexImageRenderer.new,
+  'image/google'   => GoogleRenderer.new,
 }
 
 Tag.define :math do |context, attrs, code|
   raise('Limits exceeded') if code.size > 10240
-  mode = attrs['mode'] || context.page.attributes['math'] || 'image'
+  mode = context.page.attributes['math'] || Config.math_renderer
   MathRenderer.choose(mode).render(code, attrs['display'] == 'block' ? 'block' : 'inline')
 end
 
@@ -120,10 +130,16 @@ class Olelo::Application
     attribute :math, MathRenderer.registry.keys
   end
 
+  hook :layout_xml do |name, xml|
+    if xml =~ /\\\[|\\\(|\\begin\{/
+      xml.sub!('</body>', %{<script src="#{absolute_path 'static/mathjax/MathJax.js'}" type="text/javascript" async="async"/></body>})
+    end
+  end
+
   get '/_/tag/math/blahtex/:name', :name => /[\w\.]+/ do
     begin
-      file = File.join(MathRenderer.get('blahteximage').directory, params[:name])
       response['Content-Type'] = 'image/png'
+      file = File.join(BlahtexImageRenderer.directory, params[:name])
       response['Content-Length'] ||= File.stat(file).size.to_s
       halt BlockFile.open(file, 'rb')
     rescue => ex

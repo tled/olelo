@@ -39,6 +39,16 @@ base_path:      '/'
 #  pstore:
 #    file: '/home/user/wiki/tmp/cache.pstore'
 
+# Default math renderer
+# Available renderers:
+#   * mathml/mathjax - just works, but requires javascript
+#   * mathml/itex    - needs itex2MML executable on path
+#   * mathml/ritex   - needs ruby ritex gem
+#   * mathml/blahtex - needs blahtex executable on path
+#   * image/blahtex  - needs blahtex executable on path
+#   * image/google   - uses google charts api
+math_renderer: mathml/mathjax
+
 ##################################################
 # Authentication backend configuration
 
