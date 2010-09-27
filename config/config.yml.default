@@ -38,13 +38,13 @@ base_path:      '/'
 
 # Default math renderer
 # Available renderers:
-#   * mathml/mathjax - just works, but requires javascript
-#   * mathml/itex    - needs itex2MML executable on path
-#   * mathml/ritex   - needs ruby ritex gem
-#   * mathml/blahtex - needs blahtex executable on path
-#   * image/blahtex  - needs blahtex executable on path
-#   * image/google   - uses google charts api
-math_renderer: mathml/mathjax
+#   * mathjax      - MathML, recommended, just works, but requires javascript
+#   * itex         - MathML, needs itex2MML executable on path
+#   * ritex        - MathML, needs ruby ritex gem
+#   * blahteximage - Image, needs blahtex executable on path
+#   * blahtexml    - MathML, recommended, needs blahtex executable on path
+#   * google       - Image, only short formulas, uses google charts api
+math_renderer: mathjax
 
 # Directory where the blahtex math renderer stores the images.
 # Uncomment this!

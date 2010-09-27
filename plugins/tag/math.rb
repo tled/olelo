@@ -3,70 +3,57 @@ dependencies 'filter/tag'
 
 class Olelo::MathRenderer
   include Util
+  extend Factory
 
-  def initialize
-    @loaded = false
-  end
-
-  def init
-    @loaded ||= load rescue false
-  end
-
-  def load
-    true
-  end
-
-  class << self
-    attr_accessor :registry
-
-    def get_first(renderers)
-      renderers.each do |r|
-        r = get(r)
-        return r if r
+  def self.setup
+    registry.each do |name, klass|
+      begin
+        registry[name] = klass.new
+      rescue Exception => ex
+        registry.delete(name)
+        Plugin.current.logger.warn "Failed to initialize math renderer #{name}: #{ex.message}"
       end
-    end
-
-    def get(name)
-      renderer = registry[name] || raise("Renderer #{name} not found")
-      if Array === renderer
-        get_first(renderer)
-      elsif String === renderer
-        get(renderer)
-      elsif renderer.init
-        renderer
-      end
-    end
-
-    def choose(name)
-      get(name) || get_first(registry.keys) || raise('No renderer found')
     end
   end
 end
 
+def setup
+  MathRenderer.setup
+end
+
 class RitexRenderer < MathRenderer
-  def load
+  def initialize
     require 'ritex'
-    true
   end
 
   def render(code, display)
     Ritex::Parser.new.parse(code)
   end
+
+  def description
+
+  end
+
+  register 'ritex', RitexRenderer
 end
 
 class ItexRenderer < MathRenderer
-  def load
+  def initialize
     `itex2MML --version`
+    raise 'itex2MML not found on path' if $?.exitstatus != 0
   end
 
   def render(code, display)
     Shell.itex2MML(display == 'block' ? '--display' : '--inline').run(code.strip)
   end
+
+  register 'itex', ItexRenderer
 end
 
 class BlahtexMLRenderer < MathRenderer
-  def load
+  def initialize
     `blahtex`
+    raise 'blahtex not found on path' if $?.exitstatus != 0
   end
 
   def render(code, display)
@@ -74,15 +61,17 @@ class BlahtexMLRenderer < MathRenderer
     content =~ %r{<mathml>(.*)</mathml>}m
     '<mathml xmlns="http://www.w3.org/1998/Math/MathML" display="' + display + '">' + $1.to_s + '</mathml>'
   end
+
+  register 'blahtexml', BlahtexMLRenderer
 end
 
 class BlahtexImageRenderer < MathRenderer
   include PageHelper
 
-  def load
+  def initialize
     `blahtex`
+    raise 'blahtex not found on path' if $?.exitstatus != 0
     FileUtils.mkpath(Config.blahtex_directory)
-    true
   end
 
   def render(code, display)
@@ -94,42 +83,42 @@ class BlahtexImageRenderer < MathRenderer
       raise $1
     end
   end
+
+  register 'blahteximage', BlahtexImageRenderer
 end
 
 class GoogleRenderer < MathRenderer
   def render(code, display)
     %{<img src="http://chart.apis.google.com/chart?cht=tx&amp;chl=#{escape code}" alt="#{escape_html code}" class="math #{display}"/>}
   end
+
+  register 'google', GoogleRenderer
 end
 
 class LaTeXRenderer < MathRenderer
   def render(code, display)
     display == 'inline' ? "\\(#{escape_html(code)}\\)" : "\\[#{escape_html(code)}\\]"
   end
-end
 
-MathRenderer.registry = {
-  'mathml/itex'    => ItexRenderer.new,
-  'mathml/ritex'   => RitexRenderer.new,
-  'mathml/blahtex' => BlahtexMLRenderer.new,
-  'mathml/mathjax' => LaTeXRenderer.new,
-  'image/blahtex'  => BlahtexImageRenderer.new,
-  'image/google'   => GoogleRenderer.new,
-}
+  register 'latex',   LaTeXRenderer
+  register 'mathjax', LaTeXRenderer
+end
 
 Tag.define :math do |context, attrs, code|
   raise('Limits exceeded') if code.size > 10240
-  mode = context.page.attributes['math'] || Config.math_renderer
-  MathRenderer.choose(mode).render(code, attrs['display'] == 'block' ? 'block' : 'inline')
+  renderer = context.page.attributes['math'] || Config.math_renderer
+  (MathRenderer[renderer] || MathRenderer['latex']).render(code, attrs['display'] == 'block' ? 'block' : 'inline')
 end
 
 class Olelo::Application
   attribute_editor do
-    attribute :math, MathRenderer.registry.keys
+    attribute :math do
+      Hash[*MathRenderer.registry.keys.map {|m| [m, I18n.translate("math_#{m}")] }.flatten]
+    end
   end
 
   hook :layout_xml do |name, xml|
-    if xml =~ /\\\[|\\\(|\\begin\{/
+    if xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config.math_renderer) == 'mathjax'
       xml.sub!('</body>', %{<script src="#{absolute_path 'static/mathjax/MathJax.js'}" type="text/javascript" async="async"/></body>})
     end
   end
