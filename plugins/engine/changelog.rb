@@ -30,13 +30,13 @@ Engine.create(:changelog, :cacheable => true, :hidden => true) do
   end
 end
 
-Application.hook :layout do |name, doc|
-  doc.css('head').first << %{<link rel="alternate" href="#{escape_html absolute_path('/', :output => 'changelog', :format => 'atom')}"
-                             type="application/atom+xml" title="Sitewide Atom Changelog"/>
-                             <link rel="alternate" href="#{escape_html absolute_path('/', :output => 'changelog', :format => 'rss')}"
-                             type="application/rss+xml" title="Sitewide RSS Changelog"/>}.unindent
-  doc.css('head').first << %{<link rel="alternate" href="#{escape_html(absolute_path(page, :output => 'changelog', :format => 'atom'))}"
-                             type="application/atom+xml" title="#{escape_html page.path} Atom Changelog"/>
-                             <link rel="alternate" href="#{escape_html(absolute_path(page, :output => 'changelog', :format => 'rss'))}"
-                             type="application/rss+xml" title="#{escape_html page.path} RSS Changelog"/>}.unindent if page && !page.new? && !page.root?
+Application.hook :layout_xml do |name, xml|
+  xml.sub!('</head>', %{<link rel="alternate" href="#{escape_html absolute_path('/', :output => 'changelog', :format => 'atom')}"
+                        type="application/atom+xml" title="Sitewide Atom Changelog"/>
+                        <link rel="alternate" href="#{escape_html absolute_path('/', :output => 'changelog', :format => 'rss')}"
+                        type="application/rss+xml" title="Sitewide RSS Changelog"/></head>}.unindent)
+  xml.sub!('</head>', %{<link rel="alternate" href="#{escape_html(absolute_path(page, :output => 'changelog', :format => 'atom'))}"
+                        type="application/atom+xml" title="#{escape_html page.path} Atom Changelog"/>
+                        <link rel="alternate" href="#{escape_html(absolute_path(page, :output => 'changelog', :format => 'rss'))}"
+                        type="application/rss+xml" title="#{escape_html page.path} RSS Changelog"/></head>}.unindent) if page && !page.new? && !page.root?
 end

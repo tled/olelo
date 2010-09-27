@@ -83,6 +83,15 @@ module Olelo
       render :error, :locals => {:error => error}
     end
 
+    # Layout hook which parses xml and calls layout_doc hook
+    hook :layout_xml, 1000 do |name, xml|
+      doc = XMLDocument(xml)
+      invoke_hook :layout, name, doc
+      # FIXME: Nokogiri bug #339 - duplicate xml:lang attribute
+      doc.xpath('//*[@lang]').each {|elem| elem.delete('xml:lang') }
+      xml.replace(doc.to_xhtml)
+    end
+
     get '/login' do
       render :login
     end

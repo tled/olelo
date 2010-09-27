@@ -24,8 +24,8 @@ Context.hook(:initialized) do
 end
 
 # Export variables to javascript for client extensions
-Application.hook :layout do |name, doc|
+Application.hook :layout_xml do |name, xml|
   vars = page ? params.merge(Plugin.current.variables(page)) : params.dup
   vars.merge!('user_logged_in' => !User.logged_in?, 'user_name' => User.current.name)
-  doc.css('head').children.before %{<script type="text/javascript">Olelo = #{escape_json(vars.to_json)};</script>}
+  xml.sub!('<head>', %{<head><script type="text/javascript">Olelo = #{escape_json(vars.to_json)};</script>})
 end

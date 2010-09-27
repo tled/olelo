@@ -228,12 +228,8 @@ module Olelo
       layout = opts.delete(:layout)
       output = super(name, opts)
       if layout != false
-        content = super(:layout, opts) { output }
-        doc = XMLDocument(content)
-        invoke_hook :layout, name, doc
-        # FIXME: Nokogiri bug #339 - duplicate xml:lang attribute
-        doc.xpath('//*[@lang]').each {|elem| elem.delete('xml:lang') }
-        output = doc.to_xhtml
+        output = super(:layout, opts) { output }
+        invoke_hook :layout_xml, name, output
       end
       output
     end

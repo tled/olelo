@@ -254,7 +254,7 @@ class Olelo::Tag < AroundFilter
         if @static
           tag.dynamic.call(context, attrs, content).to_s
         else
-          %{<div class="dyntag">#{encode64 Marshal.dump([name, attrs, content])}</div>}
+          %{DYNTAG(#{encode64 Marshal.dump([name, attrs, content])})}
         end
       else
         send("TAG #{name}", context, attrs, content).to_s
@@ -293,28 +293,26 @@ class Olelo::Tag < AroundFilter
 end
 
 # Evaluate and replace all dynamic tags on the page
-Application.hook :layout, 666 do |name, doc|
-  tags = doc.css('.dyntag')
-  if !tags.empty?
-    cache_control(:no_cache => true)
-    tags.each do |element|
+Application.hook :layout_xml, 2000 do |name, xml|
+  no_cache = false
+  xml.gsub!(/DYNTAG\(([^\)]+)\)/) do
+    no_cache = true
+    begin
+      name, attrs, content = Marshal.load(decode64($1))
+      raise 'Invalid dynamic tag' unless Hash === attrs && String === content && Tag.tags[name] && Tag.tags[name].dynamic
       begin
-        name, attrs, content = Marshal.load(decode64(element.content))
-        raise 'Invalid dynamic tag' unless Hash === attrs && String === content && Tag.tags[name] && Tag.tags[name].dynamic
-        content = begin
-                    context = Context.new(:page => page, :params => params, :request => request, :response => response)
-                    Tag.tags[name].dynamic.call(context, attrs, content).to_s
-                  rescue Exception => ex
-                    Plugin.current.logger.error ex
-                    "#{name} - #{escape_html ex.message}"
-                  end
-        element.replace(content)
+        context = Context.new(:page => page, :params => params, :request => request, :response => response)
+        Tag.tags[name].dynamic.call(context, attrs, content).to_s
       rescue Exception => ex
-        element.remove
         Plugin.current.logger.error ex
+        "#{name} - #{escape_html ex.message}"
       end
+    rescue Exception => ex
+      Plugin.current.logger.error ex
+      ''
     end
   end
+  cache_control(:no_cache => true) if no_cache
 end
 
 Filter.register :tag, Tag, :description => 'Process extension tags'
