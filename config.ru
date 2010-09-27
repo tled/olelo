@@ -25,10 +25,9 @@ Olelo::Config['initializers_path'] = ::File.join(path, 'config', 'initializers')
 Olelo::Config['plugins_path'] = ::File.join(path, 'plugins')
 Olelo::Config['views_path'] = ::File.join(path, 'views')
 Olelo::Config['themes_path'] = ::File.join(path, 'static', 'themes')
-Olelo::Config['tmp_path'] = ::File.join(path, '.wiki', 'tmp')
-Olelo::Config['cache_store'] = { :type => 'file', 'file.root' => ::File.join(path, '.wiki', 'tmp', 'cache') }
+Olelo::Config['cache_store'] = { :type => 'file', 'file.root' => ::File.join(path, '.wiki', 'cache') }
 Olelo::Config['authentication.yamlfile.store'] = ::File.join(path, '.wiki', 'users.yml')
-Olelo::Config['tokens_store'] = { :type => 'pstore', 'pstore.file' => ::File.join(path, '.wiki', 'tmp', 'tokens.pstore') }
+Olelo::Config['tokens_store'] = { :type => 'pstore', 'pstore.file' => ::File.join(path, '.wiki', 'tokens.pstore') }
 Olelo::Config['repository.git'] = { :path => ::File.join(path, '.wiki', 'repository'), :bare => false }
 Olelo::Config['log.file'] = ::File.join(path, '.wiki', 'log')
 Olelo::Config['rack.session_secret'] = SecureRandom.hex
@@ -36,9 +35,7 @@ Olelo::Config['rack.session_secret'] = SecureRandom.hex
 Olelo::Config.load!(::File.join(path, 'config', 'config.yml.default'))
 Olelo::Config.load(ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG'] || ::File.join(path, 'config', 'config.yml'))
 
-FileUtils.mkpath Olelo::Config.tmp_path, :mode => 0755
-FileUtils.mkpath ::File.dirname(Olelo::Config.log.file), :mode => 0755
-
+FileUtils.mkpath ::File.dirname(Olelo::Config.log.file)
 logger = ::Logger.new(Olelo::Config.log.file, 25, 1024000)
 logger.level = ::Logger.const_get(Olelo::Config.log.level)
 

@@ -24,11 +24,10 @@ describe 'requests' do
       :initializers_path => File.join(@app_path, 'config', 'initializers'),
       :views_path        => File.join(@app_path, 'views'),
       :themes_path       => File.join(@app_path, 'static', 'themes'),
-      :tmp_path          => File.join(@test_path, 'tmp'),
       :cache_store       => {
         :type => 'file',
         :file => {
-          :root => File.join(@test_path, 'tmp', 'cache')
+          :root => File.join(@test_path, 'cache')
         }
       },
       :base_path         => '/',
@@ -63,7 +62,6 @@ describe 'requests' do
     Olelo::Config.update(default_config)
     Olelo::Repository.instance = nil
 
-    FileUtils.mkpath Olelo::Config.tmp_path, :mode => 0755
     logger = Logger.new(File.join(@app_path, 'test.log'))
 
     @app = Rack::Builder.new do

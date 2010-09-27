@@ -168,6 +168,7 @@ class Olelo::Store
   class PStore < Store
     def initialize(config)
       require 'pstore'
+      FileUtils.mkpath(::File.dirname(config[:file]))
       @store = ::PStore.new(config[:file])
     end
 
@@ -215,10 +216,10 @@ class Olelo::Store
 
     def []=(key, value)
       temp_file = ::File.join(@root, "value-#{$$}-#{Thread.current.object_id}")
-      FileUtils.mkdir_p(@root)
+      FileUtils.mkpath(@root)
       ::File.open(temp_file, 'wb') {|file| file.write(serialize(value)) }
       path = store_path(key)
-      FileUtils.mkdir_p(::File.dirname(path))
+      FileUtils.mkpath(::File.dirname(path))
       ::File.unlink(path) if ::File.exist?(path)
       FileUtils.mv(temp_file, path)
     rescue

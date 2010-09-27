@@ -63,7 +63,8 @@ desc 'Cleanup'
 task :clean do |t|
   FileUtils.rm_rf 'doc/api'
   FileUtils.rm_rf 'coverage'
-  FileUtils.rm_rf '.wiki/tmp'
+  FileUtils.rm_rf '.wiki/cache'
+  FileUtils.rm_rf '.wiki/blahtex'
   FileUtils.rm_rf '.wiki/log'
 end
 

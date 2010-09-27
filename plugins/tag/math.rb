@@ -81,14 +81,12 @@ class BlahtexImageRenderer < MathRenderer
 
   def load
     `blahtex`
-  end
-
-  def self.directory
-    @directory ||= File.join(Config.tmp_path, 'blahtex').tap {|dir| FileUtils.mkdir_p dir, :mode => 0755 }
+    FileUtils.mkpath(Config.blahtex_directory)
+    true
   end
 
   def render(code, display)
-    content = Shell.blahtex('--png', '--png-directory', BlahtexImageRenderer.directory).run(code.strip)
+    content = Shell.blahtex('--png', '--png-directory', Config.blahtex_directory).run(code.strip)
     if content =~ %r{<md5>(.*)</md5>}m
       path = absolute_path "_/tag/math/blahtex/#{$1}.png"
       %{<img src="#{escape_html path}" alt="#{escape_html code}" class="math #{display}"/>}
@@ -139,7 +137,7 @@ class Olelo::Application
   get '/_/tag/math/blahtex/:name', :name => /[\w\.]+/ do
     begin
       response['Content-Type'] = 'image/png'
-      file = File.join(BlahtexImageRenderer.directory, params[:name])
+      file = File.join(Config.blahtex_directory, params[:name])
       response['Content-Length'] ||= File.stat(file).size.to_s
       halt BlockFile.open(file, 'rb')
     rescue => ex

@@ -115,12 +115,12 @@ module Olelo
     end
 
     get '/profile' do
-      raise 'Anonymous users don not have a profile.' if !User.logged_in?
+      raise 'Anonymous users do not have a profile.' if !User.logged_in?
       render :profile
     end
 
     post '/profile' do
-      raise 'Anonymous users don not have a profile.' if !User.logged_in?
+      raise 'Anonymous users do not have a profile.' if !User.logged_in?
       on_error :profile
       User.current.modify do |u|
         u.change_password(params[:oldpassword], params[:password], params[:confirm]) if !params[:password].blank?

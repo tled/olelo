@@ -23,21 +23,18 @@ sidebar_page:    'Sidebar'
 # Use a different base directory as root to support installation in user homes
 base_path:      '/'
 
-# Temporary directory used for caches etc. Uncomment this!
-#tmp_path:        '/home/user/wiki/tmp'
-
 # Main cache store. Uncomment this!
 # Available caches: memory, file, memcached, pstore
 #cache_store:
 #  type:   file
 #  file:
-#    root: '/home/user/wiki/tmp/cache'
+#    root: '/home/user/wiki/cache'
 #  memcached:
 #    prefix: ''
 #    server: localhost:11211
 #  memory:
 #  pstore:
-#    file: '/home/user/wiki/tmp/cache.pstore'
+#    file: '/home/user/wiki/cache.pstore'
 
 # Default math renderer
 # Available renderers:
@@ -48,6 +45,10 @@ base_path:      '/'
 #   * image/blahtex  - needs blahtex executable on path
 #   * image/google   - uses google charts api
 math_renderer: mathml/mathjax
+
+# Directory where the blahtex math renderer stores the images.
+# Uncomment this!
+#blahtex_directory: '/home/user/wiki/blahtex'
 
 ##################################################
 # Authentication backend configuration
@@ -82,7 +83,7 @@ authentication:
 #tokens_store:
 #  type: pstore
 #  pstore:
-#    file: '/home/user/wiki/tmp/tokens.pstore'
+#    file: '/home/user/wiki/tokens.pstore'
 
 ##################################################
 # Mime detection order

@@ -3,7 +3,7 @@ require     'yaml/store'
 
 class YamlfileService < User::Service
   def initialize(config)
-    FileUtils.mkdir_p File.dirname(config[:store]), :mode => 0755
+    FileUtils.mkpath(File.dirname(config[:store]))
     @store = ::YAML::Store.new(config[:store])
   end
 
