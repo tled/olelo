@@ -18,32 +18,28 @@ class Olelo::Application
     :bad_request
   end
 
-  # TODO: Implement more methods if they are needed
-  metaclass.redefine_method :final_routes do
-    super()
-
-    put '/(:path)' do
-      if request.form_data?
-        :not_implemented
-      else
-        webdav_post
-      end
+  put '/(:path)', :tail => true do
+    if request.form_data?
+      :not_implemented
+    else
+      webdav_post
     end
-
-    post '/(:path)' do
-      if request.form_data?
-        super()
-      else
-        webdav_post
-      end
-    end
-
-    add_route('PROPFIND', '/(:path)')  { :not_found }
-    add_route('PROPPATCH', '/(:path)') { :not_implemented }
-    add_route('MKCOL', '/(:path)')     { :not_implemented }
-    add_route('COPY', '/(:path)')      { :not_implemented }
-    add_route('MOVE', '/(:path)')      { :not_implemented }
-    add_route('LOCK', '/(:path)')      { :not_implemented }
-    add_route('UNLOCK', '/(:path)')    { :not_implemented }
   end
+
+  post '/(:path)', :tail => true do
+    if request.form_data?
+      super()
+    else
+      webdav_post
+    end
+  end
+
+  # TODO: Implement more methods if needed
+  add_route('PROPFIND', '/(:path)', :tail => true)  { :not_found }
+  add_route('PROPPATCH', '/(:path)', :tail => true) { :not_implemented }
+  add_route('MKCOL', '/(:path)', :tail => true)     { :not_implemented }
+  add_route('COPY', '/(:path)', :tail => true)      { :not_implemented }
+  add_route('MOVE', '/(:path)', :tail => true)      { :not_implemented }
+  add_route('LOCK', '/(:path)', :tail => true)      { :not_implemented }
+  add_route('UNLOCK', '/(:path)', :tail => true)    { :not_implemented }
 end

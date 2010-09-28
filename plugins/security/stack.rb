@@ -7,6 +7,7 @@ class StackService < User::Service
     end
   end
 
+  # @override
   def authenticate(name, password)
     @stack.any? do |service|
       user = service.authenticate(name, password) rescue nil

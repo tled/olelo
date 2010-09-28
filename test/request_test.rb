@@ -70,7 +70,7 @@ describe 'requests' do
         use Olelo::Middleware::ForceEncoding
       end
       use Rack::Session::Pool
-      use Olelo::Middleware::Flash, :sweep => true, :array_accessors => %w(error warn info)
+      use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
       run Olelo::Application.new(nil, :logger => logger)
     end
   end

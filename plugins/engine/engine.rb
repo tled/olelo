@@ -143,7 +143,7 @@ class Olelo::Application
   attribute_editor do
     attribute(:output) do
       Hash[*Engine.engines.keys.map do |name|
-             [name, Olelo::I18n.translate("engine_#{name}", :fallback => capitalize_words(name))]
+             [name, Olelo::Locale.translate("engine_#{name}", :fallback => titlecase(name))]
            end.flatten]
     end
   end
@@ -185,7 +185,7 @@ class Olelo::Application
       menu = Cache.cache("engine-menu-#{page.path}-#{page.version}-#{params[:output]}",
                          :update => request.no_cache?, :defer => true) do
         engines = Olelo::Engine.find_all(page).select {|e| !e.hidden? || e.name == @engine_name }.map do |e|
-          [Olelo::I18n.translate("engine_#{e.name}", :fallback => capitalize_words(e.name)), e]
+          [Olelo::Locale.translate("engine_#{e.name}", :fallback => titlecase(e.name)), e]
         end.sort_by(&:first)
         li = engines.select {|name, e| e.layout? }.map do |name, e|
           %{<li#{e.name == @engine_name ? ' class="selected"': ''}>

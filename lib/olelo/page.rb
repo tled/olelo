@@ -1,56 +1,25 @@
 module Olelo
-  class Version
-    attr_reader :id, :author, :date, :comment, :parents
-
-    def initialize(id, author, date, comment, parents)
-      @id = id
-      @author = author
-      @date = date
-      @comment = comment
-      @parents = parents
-    end
-
-    def self.find(id)
-      repository.find_version(id)
-    end
-
-    def self.find!(id)
-      find(id) || raise(NotFound, id)
-    end
-
-    def short
-      Version.short(id)
-    end
-
-    def self.short(id)
-      repository.short_version(id)
-    end
-
-    def to_s
-      id
-    end
-
-    def ==(other)
-      other.to_s == id
-    end
-
-    def self.repository
-      Repository.instance
-    end
-  end
-
-  Diff = Struct.new(:from, :to, :patch)
-
+  # Wiki page object
   class Page
     include Util
     include Hooks
 
+    # Pattern for valid paths
+    # @api public
     PATH_PATTERN = '[^\s](?:.*[^\s]+)?'
+
+    # Mime type for empty page
+    # @api public
     EMPTY_MIME = MimeMagic.new('application/x-empty')
+
+    # Mime type for directory
+    # @api public
     DIRECTORY_MIME = MimeMagic.new('inode/directory')
 
     attr_reader :path, :tree_version
     attr_reader? :current
+
+    @current_transaction = {}
 
     def initialize(path, tree_version = nil, current = true)
       @path = path.to_s.cleanpath.freeze
@@ -60,18 +29,30 @@ module Olelo
     end
 
     def self.transaction(&block)
+      raise 'Transaction already running' if @current_transaction[Thread.current.object_id]
+      @current_transaction[Thread.current.object_id] = []
       repository.transaction(&block)
+    ensure
+      @current_transaction.delete(Thread.current.object_id)
+    end
+
+    def self.current_transaction
+      @current_transaction[Thread.current.object_id] || raise('No transaction running')
     end
 
     def self.commit(comment)
-      repository.commit(comment)
+      tree_version = repository.commit(comment)
+      current_transaction.each {|proc| proc.call(tree_version) }
     end
 
     # Throws exceptions if access denied, returns nil if not found
-    def self.find(path, tree_version = nil, current = nil)
+    def self.find(path, version = nil, current = nil)
       path = path.to_s.cleanpath
       check_path(path)
-      repository.find_page(path, tree_version, current.nil? ? tree_version.blank? : current)
+      tree_version = repository.get_version(version)
+      if repository.path_exists?(path, tree_version)
+        Page.new(path, tree_version, current.nil? ? version.blank? : current)
+      end
     end
 
     # Throws if not found
@@ -100,7 +81,7 @@ module Olelo
 
     def history(skip = nil, limit = nil)
       raise 'Page is new' if new?
-      repository.load_history(self, skip, limit)
+      repository.get_history(path, skip, limit)
     end
 
     def parent
@@ -109,23 +90,27 @@ module Olelo
     end
 
     def move(destination)
+      current_transaction
       raise 'Page is new' if new?
       raise 'Page is not current' unless current?
       destination = destination.to_s.cleanpath
       Page.check_path(destination)
       raise :already_exists.t(:page => destination) if Page.find(destination)
-      with_hooks(:move, destination) { repository.move(self, destination) }
+      with_hooks(:move, destination) { repository.move(path, destination) }
+      after_transaction {|tree_version| update(destination, tree_version) }
     end
 
     def delete
+      current_transaction
       raise 'Page is new' if new?
       raise 'Page is not current' unless current?
-      with_hooks(:delete) { repository.delete(self) }
+      with_hooks(:delete) { repository.delete(path) }
+      after_transaction {|tree_version| update(path, nil) }
     end
 
     def diff(from, to)
       raise 'Page is new' if new?
-      repository.diff(self, from, to)
+      repository.diff(path, from, to)
     end
 
     def new?
@@ -146,21 +131,12 @@ module Olelo
       i ? path[i+1..-1] : ''
     end
 
-    def committed(path, tree_version)
-      @path = path.freeze
-      @tree_version = tree_version
-      @version = @next_version = @previous_version =
-        @parent = @children = @mime =
-        @attributes = @saved_attributes =
-        @content = @saved_content = nil
-    end
-
     def attributes
       @attributes ||= deep_copy(saved_attributes)
     end
 
     def saved_attributes
-      @saved_attributes ||= new? ? {} : repository.load_attributes(self)
+      @saved_attributes ||= new? ? {} : repository.get_attributes(path, tree_version)
     end
 
     def attributes=(a)
@@ -172,7 +148,7 @@ module Olelo
     end
 
     def saved_content
-      @saved_content ||= new? ? '' : repository.load_content(self)
+      @saved_content ||= new? ? '' : repository.get_content(path, tree_version)
     end
 
     def content
@@ -191,9 +167,14 @@ module Olelo
     end
 
     def save
+      current_transaction
       raise 'Page is not current' unless current?
       raise :already_exists.t(:page => path) if new? && Page.find(path)
-      with_hooks(:save) { repository.save(self) }
+      with_hooks(:save) do
+        repository.set_content(path, content)
+        repository.set_attributes(path, attributes)
+      end
+      after_transaction {|tree_version| update(path, tree_version) }
     end
 
     def mime
@@ -201,7 +182,14 @@ module Olelo
     end
 
     def children
-      @children ||= new? ? [] : repository.load_children(self).sort_by(&:name)
+      @children ||=
+        if new?
+          []
+        else
+          repository.get_children(path, tree_version).sort.map do |name|
+            Page.new(path/name, tree_version, current?)
+          end
+        end
     end
 
     def self.default_mime
@@ -210,6 +198,19 @@ module Olelo
     end
 
     private
+
+    def update(path, tree_version)
+      @path = path.freeze
+      @tree_version = tree_version
+      @version = @next_version = @previous_version =
+        @parent = @children = @mime =
+        @attributes = @saved_attributes =
+        @content = @saved_content = nil
+    end
+
+    def after_transaction(&block)
+      Page.current_transaction << block
+    end
 
     def self.check_path(path)
       raise :invalid_path.t if !valid_xml_chars?(path) || !(path.blank? || path =~ /^#{PATH_PATTERN}$/)
@@ -238,7 +239,7 @@ module Olelo
     def init_versions
       if !@version && @tree_version
         raise 'Page is new' if new?
-        @previous_version, @version, @next_version = repository.load_version(self)
+        @previous_version, @version, @next_version = repository.get_path_version(path, tree_version)
       end
     end
 
@@ -248,74 +249,6 @@ module Olelo
 
     def self.repository
       Repository.instance
-    end
-  end
-
-  class Repository
-    include Util
-    extend Factory
-
-    class << self
-      attr_writer :instance
-      def instance
-        @instance ||= self[Config.repository.type].new(Config.repository[Config.repository.type])
-      end
-    end
-
-    def transaction(&block)
-      raise NotImplementedError
-    end
-
-    def commit(comment)
-      raise NotImplementedError
-    end
-
-    def find_page(path, tree_version, current)
-      raise NotImplementedError
-    end
-
-    def find_version(version)
-      raise NotImplementedError
-    end
-
-    def load_history(page, skip, limit)
-      raise NotImplementedError
-    end
-
-    def load_version(page)
-      raise NotImplementedError
-    end
-
-    def load_children(page)
-      raise NotImplementedError
-    end
-
-    def load_content(page)
-      raise NotImplementedError
-    end
-
-    def load_attributes(page)
-      raise NotImplementedError
-    end
-
-    def save(page)
-      raise NotImplementedError
-    end
-
-    def move(page, destination)
-      raise NotImplementedError
-    end
-
-    def delete(page)
-      raise NotImplementedError
-    end
-
-    def diff(page, from, to)
-      raise NotImplementedError
-    end
-
-    def short_version(version)
-      version
     end
   end
 end

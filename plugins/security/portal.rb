@@ -7,6 +7,7 @@ class PortalService < User::Service
     @url = config[:url]
   end
 
+  # @override
   def authenticate(name, password)
     xml = open(@url,
                :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE,

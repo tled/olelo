@@ -32,7 +32,7 @@ module Olelo
       registry[name] = klass
     end
 
-    def[](name)
+    def [](name)
       registry[name.to_s] || raise(NameError, "Implementation '#{name}' for '#{self.name}' not found")
     end
   end
@@ -100,84 +100,141 @@ module Olelo
       end
     end
 
+    # Escape html entities in string
+    #
+    # @param [String] s String
+    # @return [String] Escaped string
     def escape_html(s)
       CGI.escapeHTML(s.to_s)
     end
 
+    # Unescape html entities in string
+    #
+    # @param [String] s String with escaped html entities
+    # @return [String] Unescaped string
     def unescape_html(s)
       CGI.unescapeHTML(s.to_s)
     end
 
-    JSON_ESCAPE = { '&' => '\u0026', '>' => '\u003E', '<' => '\u003C' }
+    # Hash used by {#escape_javascript}
+    # @api private
+    JAVASCRIPT_ESCAPE = { '&' => '\u0026', '>' => '\u003E', '<' => '\u003C' }
 
-    def escape_json(s)
-      s.to_s.gsub(/[&><]/) { |x| JSON_ESCAPE[x] }
+    # Escape javascript code for embedding in html
+    #
+    # @param [String] s String
+    # @return [String] Escaped string
+    def escape_javascript(s)
+      s.to_s.gsub(/[&><]/) { |x| JAVASCRIPT_ESCAPE[x] }
     end
 
+    # Compute md5 hash of string
+    #
+    # @param [String] String
+    # @return [String] md5 hash of string
+    #
     def md5(s)
       Digest::MD5.hexdigest(s)
     end
 
+    # Compute sha256 hash of string
+    #
+    # @param [String] String
+    # @return [String] sha256 hash of string
+    #
     def sha256(s)
       Digest::SHA256.hexdigest(s)
     end
 
+    # Build query from parameter hash
+    #
+    # Similar to {Rack::Utils#build_query} but sorts parameters.
+    # This allows the query string to be used as key for caching etc.
+    #
+    # @param [Hash] params Parameter hash
+    # @return [String] query string
+    #
     def build_query(params)
-      params.to_a.map {|k,v| [k.to_s, v ] }.sort.map do |k, v|
+      params.map {|k,v| [k.to_s, v ] }.sort.map do |k, v|
         if v.class == Array
           build_query(v.map { |x| [k, x] })
         else
-          "#{escape(k.to_s)}=#{escape(v.to_s)}"
+          "#{escape(k)}=#{escape(v.to_s)}"
         end
       end.join('&')
     end
 
-    def XMLDocument(content)
-      Nokogiri::HTML(content, nil, 'UTF-8')
+    # Parse xml document string and return DOM object (Nokogiri)
+    #
+    # @param [String] xml document string
+    # @return [Nokogiri::HTML::Document] Nokogiri Document
+    def XMLDocument(xml)
+      Nokogiri::HTML(xml, nil, 'UTF-8')
     end
 
-    def XMLFragment(content)
-      Nokogiri::HTML::DocumentFragment.new(XMLDocument(nil), content)
+    # Parse xml fragment and return DOM object (Nokogiri)
+    #
+    # @param [String] xml fragment string
+    # @return [Nokogiri::HTML::DocumentFragment] Nokogiri Document Fragment
+    def XMLFragment(xml)
+      Nokogiri::HTML::DocumentFragment.new(XMLDocument(nil), xml)
     end
 
-    # Hack to create deep copy
+    # Creates deep copy of object by abusing `Marshal`
+    # This method is slow and not adequate for huge objects.
+    # It can only copy objects which are serializable.
+    #
+    # @param [Object] Serializable object
+    # @return [Object] Deep copy of object
     def deep_copy(object)
       Marshal.load(Marshal.dump(object))
     end
 
     # Decode base64 encoded string
+    #
+    # @param [String] Base64 encoded string
+    # @return [String] Decoded string
     def decode64(s)
       s.unpack('m').first
     end
 
     # Encode string as base64
+    #
+    # @param [String] String
+    # @return [String] Base64 encoded string
     def encode64(s)
       [s].pack('m').gsub(/\n/, '')
     end
 
-    # Truncate string and add omission
-    if ''.respond_to?(:encoding)
-      def truncate(s, max, omission = '...')
-        s = s.to_s
-        (s.length > max ? s[0...max] + omission : s)
-      end
-    else
-      def truncate(s, max, omission = '...')
-        s = s.to_s
-        if s.length > max
+    # Truncate string if it is too long and add omission
+    #
+    # @param [String]  String to truncate
+    # @param [Integer] Maximum length
+    # @param [String]  Omission string, e.g. ellipsis
+    # @return [String] Truncated string
+    def truncate(s, max, omission = '...')
+      s = s.to_s
+      if s.length > max
+        # Ensure that string consists only of full characters
+        if !s.respond_to?(:encoding)
           max += 1 until max >= s.length || valid_xml_chars?(s[0...max])
-          s[0...max] + omission
-        else
-          s
         end
+        s[0...max] + omission
+      else
+        s
       end
     end
 
-    def capitalize_words(s)
+    # Capitalizes all the words to create a nicer looking title
+    #
+    # @param [String] lowercase_string_with_underscore
+    # @return [String] Lowercase String With Underscore
+    def titlecase(s)
       s.to_s.tr('_', ' ').split(/\s+/).map(&:capitalize).join(' ')
     end
 
-    # See http://www.w3.org/TR/REC-xml/#charsets for details.
+    # Used by {#valid_xml_chars?}
+    # @api private
     VALID_XML_CHARS = [
       0x9, 0xA, 0xD,
       (0x20..0xD7FF),
@@ -185,8 +242,12 @@ module Olelo
       (0x10000..0x10FFFF)
     ]
 
-    # Check if string contains only valid chars
     if ''.respond_to?(:encoding)
+      # Check if string contains only characters which are valid in XML
+      #
+      # @see http://www.w3.org/TR/REC-xml/#charsets XML charset
+      # @param [String] s
+      # @return [Boolean]
       def valid_xml_chars?(s)
         s = s.to_s
         if s.encoding == Encoding::UTF_8
@@ -202,6 +263,12 @@ module Olelo
       end
     else
       require 'iconv'
+
+      # Check if string contains only characters which are valid in XML
+      #
+      # @see http://www.w3.org/TR/REC-xml/#charsets
+      # @param [String] s
+      # @return [Boolean]
       def valid_xml_chars?(s)
         s = s.to_s
         Iconv.conv('utf-8', 'utf-8', s)

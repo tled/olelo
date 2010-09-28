@@ -2,6 +2,7 @@
 *.swp
 *.rbc
 .wiki
+.yardoc
 config.yml
 doc/api
 coverage

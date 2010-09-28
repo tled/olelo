@@ -18,33 +18,28 @@ module Olelo
 
     private
 
-    class TemplateLoader
-      def context
-        Plugin.current.try(:name)
-      end
-
-      def load(name)
-        plugin = Plugin.current
-        fs = []
-        fs << DirectoryFS.new(File.dirname(plugin.file)) << InlineFS.new(plugin.file) if plugin
-        fs << DirectoryFS.new(Config.views_path)
-        UnionFS.new(*fs).read(name)
-      end
-    end
-
     def init_locale
-      I18n.locale = Config.locale
-      I18n.load(File.join(File.dirname(__FILE__), 'locale.yml'))
+      Locale.locale = Config.locale
+      Locale.load(File.join(File.dirname(__FILE__), 'locale.yml'))
     end
 
     def init_templates
       Templates.enable_caching if Config.production?
-      Templates.loader = TemplateLoader.new
+      Templates.loader = Class.new do
+        def context
+          Plugin.current.try(:name)
+        end
+
+        def load(name)
+          VirtualFS::Union.new(Plugin.current.try(:virtual_fs),
+                               VirtualFS::Native.new(Config.views_path)).read(name)
+        end
+      end.new
     end
 
     def init_plugins
       # Load locales for loaded plugins
-      Plugin.after(:load) { I18n.load(File.join(File.dirname(file), 'locale.yml')) }
+      Plugin.after(:load) { Locale.load(File.join(File.dirname(file), 'locale.yml')) }
 
       # Configure plugin system
       Plugin.logger = @logger
@@ -68,9 +63,8 @@ module Olelo
 
     def init_routes
       Application.reserved_paths = Application.router.map do |method, router|
-        router.map { |name, pattern, keys| [pattern, /#{pattern.source[0..-2]}/] }
+        router.head.map {|name, pattern, keys| pattern }
       end.flatten
-      Application.final_routes
       Application.router.each do |method, router|
         @logger.debug method
         router.each do |name, pattern, keys|

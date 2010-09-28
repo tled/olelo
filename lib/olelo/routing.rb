@@ -7,10 +7,23 @@ module Olelo
 
     attr_reader :params, :original_params, :response, :request, :env
 
+    # Process rack request
+    #
+    # This method duplicates the object and calls {#call!} on it.
+    #
+    # @api public
+    # @param [Hash] env Rack environment
+    # @return [Array] Rack return value
+    # @see http://rack.rubyforge.org/doc/SPEC.html
     def call(env)
       dup.call!(env)
     end
 
+    # Process rack request
+    #
+    # @api public
+    # @param [Hash] env Rack environment
+    # @return [Array] Rack return value
     def call!(env)
       @env      = env
       @request  = Rack::Request.new(env)
@@ -27,18 +40,41 @@ module Olelo
       @app ? @app.call(env) : error!(NotFound.new(@request.path_info))
     end
 
+    # Halt routing with response
+    #
+    # Possible responses:
+    #   * String or Object with #each
+    #   * Symbol
+    #   * [Symbol, String or Object with #each]
+    #
+    # @param [Symbol, String, #each] *response
+    # @return [void]
+    # @api public
     def halt(*response)
       throw :halt, response.length == 1 ? response.first : response
     end
 
+    # Redirect to uri
+    #
+    # @param uri Target uri
+    # @return [void]
+    # @api public
     def redirect(uri)
       throw :redirect, uri
     end
 
+    # Pass to next matching route
+    #
+    # @return [void]
+    # @api public
     def pass
       throw :pass
     end
 
+    # Forward to next application on the rack stack
+    #
+    # @return [void]
+    # @api public
     def forward
       throw :forward
     end
@@ -48,7 +84,7 @@ module Olelo
     def error!(ex)
       response.status = Rack::Utils.status_code(ex.try(:status) || :internal_server_error)
       response.body   = [ex.message]
-      invoke_hook(ex.class, ex).join
+      invoke_exception_hook(ex).join
     end
 
     def perform!
@@ -104,9 +140,10 @@ module Olelo
       }
 
       include Enumerable
+      attr_reader :head, :tail
 
       def initialize
-        @routes = []
+        @head, @tail = [], []
       end
 
       def find(path)
@@ -120,10 +157,11 @@ module Olelo
       end
 
       def each(&block)
-        @routes.each(&block)
+        (@head + @tail).each(&block)
       end
 
       def add(path, patterns = {})
+        tail = patterns.delete(:tail)
         pattern = Regexp.escape(path)
         SYNTAX.each {|k,v| pattern.gsub!(k, v) }
         keys = []
@@ -131,7 +169,7 @@ module Olelo
           keys << $1
           patterns.key?($1) ? "(#{patterns[$1]})" : "([^/?&#\.]+)"
         end
-        @routes << [path, /^#{pattern}$/, keys]
+        (tail ? @tail : @head) << [path, /^#{pattern}$/, keys]
       end
     end
 

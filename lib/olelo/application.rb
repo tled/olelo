@@ -132,8 +132,8 @@ module Olelo
 
     get '/changes/:version(/:path)' do
       @page = Page.find!(params[:path])
-      @version = Version.find!(params[:version])
-      @diff = page.diff(nil, @version)
+      @diff = page.diff(nil, params[:version])
+      @version = @diff.to
       cache_control :etag => @version, :last_modified => @version.date
       render :changes
     end
@@ -229,7 +229,7 @@ module Olelo
     end
 
     def post_attributes
-      page.attributes = parse_attributes
+      page.attributes = parse_attributes(params)
       redirect absolute_path(page) if @close && !page.modified?
       check do |errors|
         errors << :version_conflict.t if !page.new? && page.version.to_s != params[:version]
@@ -239,52 +239,50 @@ module Olelo
       Page.commit(:attributes_edited.t(:page => page.title))
     end
 
-    def self.final_routes
-      get '/version/:version(/:path)|/(:path)' do
-        begin
-          @page = Page.find!(params[:path], params[:version])
-          cache_control :etag => page.version, :last_modified => page.version.date
-          @menu_versions = true
-          with_hooks :show do
-            halt render(:show, :locals => {:content => page.try(:content)})
-          end
-        rescue NotFound
-          redirect absolute_path('new'/params[:path].to_s) if params[:version].blank?
-          raise
+    get '/version/:version(/:path)|/(:path)', :tail => true do
+      begin
+        @page = Page.find!(params[:path], params[:version])
+        cache_control :etag => page.version, :last_modified => page.version.date
+        @menu_versions = true
+        with_hooks :show do
+          halt render(:show, :locals => {:content => page.try(:content)})
         end
+      rescue NotFound
+        redirect absolute_path('new'/params[:path].to_s) if params[:version].blank?
+        raise
       end
+    end
 
-      post '/(:path)' do
-        on_error :edit
+    post '/(:path)', :tail => true do
+      on_error :edit
 
-        action, @close = params[:action].to_s.split('-')
-        if respond_to? "post_#{action}"
-          Page.transaction do
-            @page = Page.find(params[:path]) || Page.new(params[:path])
-            raise :reserved_path.t if self.class.reserved_path?(page.path)
-            send("post_#{action}")
-          end
-        else
-          raise 'Invalid action'
-        end
-
-        if @close
-          flash.clear
-          redirect absolute_path(page)
-        else
-          flash.info! :changes_saved.t
-          render :edit
-        end
-      end
-
-      delete '/:path' do
+      action, @close = params[:action].to_s.split('-')
+      if respond_to? "post_#{action}"
         Page.transaction do
-          @page = Page.find!(params[:path])
-          on_error :delete
-          page.delete
-          Page.commit(:page_deleted.t(:page => page.path))
-          render :deleted
+          @page = Page.find(params[:path]) || Page.new(params[:path])
+          raise :reserved_path.t if self.class.reserved_path?(page.path)
+          send("post_#{action}")
         end
+      else
+        raise 'Invalid action'
+      end
+
+      if @close
+        flash.clear
+        redirect absolute_path(page)
+        else
+        flash.info! :changes_saved.t
+        render :edit
+      end
+    end
+
+    delete '/:path', :tail => true do
+      Page.transaction do
+        @page = Page.find!(params[:path])
+          on_error :delete
+        page.delete
+        Page.commit(:page_deleted.t(:page => page.path))
+        render :deleted
       end
     end
   end

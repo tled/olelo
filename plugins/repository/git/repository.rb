@@ -12,7 +12,6 @@ class GitRepository < Repository
     logger.info "Opening git repository: #{config[:path]}"
     @shared_git = Gitrb::Repository.new(:path => config[:path], :create => true,
                                         :bare => config[:bare], :logger => logger)
-    @current_transaction = {}
     @git = {}
   end
 
@@ -21,80 +20,65 @@ class GitRepository < Repository
     @git[Thread.current.object_id] ||= @shared_git.dup
   end
 
-  # Start a transaction. Every thread has its own transaction.
+  # @override
   def transaction(&block)
-    raise 'Transaction already running' if @current_transaction[Thread.current.object_id]
-    @current_transaction[Thread.current.object_id] = []
     git.transaction(&block)
-  ensure
-    @current_transaction.delete(Thread.current.object_id)
   end
 
-  # Commit a transaction. You must provide a commit comment.
+  # @override
   def commit(comment)
     user = User.current
     git.commit(comment, user && Gitrb::User.new(user.name, user.email))
-    tree_version = commit_to_version(git.head)
-    current_transaction.each {|f| f.call(tree_version) }
+    commit_to_version(git.head)
   end
 
-  # Find a page by name and optional version.
-  # The current flag determines if you want to browse the current repository tree.
-  def find_page(path, tree_version, current)
+  # @override
+  def path_exists?(path, version)
     check_path(path)
-    commit = !tree_version.blank? ? git.get_commit(tree_version.to_s) : git.head
-    return nil if !commit
-    object = commit.tree[path]
-    return nil if !object
-    Page.new(path, commit_to_version(commit), current)
-  rescue
-    nil
+    !get_object(path, version).nil? rescue false
   end
 
-  def find_version(version)
-    commit_to_version(git.get_commit(version.to_s))
-  rescue
-    nil
+  # @override
+  def get_version(version)
+    commit_to_version(version ? (get_commit(version) rescue nil) : git.head)
   end
 
-  def load_history(page, skip, limit)
+  # @override
+  def get_history(path, skip, limit)
     git.log(:max_count => limit, :skip => skip,
-            :path => [page.path, page.path + ATTRIBUTE_EXT, page.path + CONTENT_EXT]).map do |c|
+            :path => [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT]).map do |c|
       commit_to_version(c)
     end
   end
 
-  def load_version(page)
-    commits = git.log(:max_count => 2, :start => page.tree_version, :path => [page.path, page.path + ATTRIBUTE_EXT, page.path + CONTENT_EXT])
+  # @override
+  def get_path_version(path, version)
+    commits = git.log(:max_count => 2, :start => version, :path => [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT])
 
-    child = nil
-    git.git_rev_list('--reverse', '--remove-empty', "#{commits[0]}..", '--', page.path, page.path + ATTRIBUTE_EXT, page.path + CONTENT_EXT) do |io|
-      child = io.eof? ? nil : git.get_commit(git.set_encoding(io.readline).strip)
+    succ = nil
+    git.git_rev_list('--reverse', '--remove-empty', "#{commits[0]}..", '--', path, path + ATTRIBUTE_EXT, path + CONTENT_EXT) do |io|
+      succ = io.eof? ? nil : get_commit(git.set_encoding(io.readline).strip)
     end rescue nil # no error because pipe is closed intentionally
 
     # Deleted pages have next version (Issue #11)
-    child = nil if child && !find_page(page.path, child.id, false)
+    succ = nil if succ && !path_exists?(path, succ.id)
 
-    [commits[1] ? commit_to_version(commits[1]) : nil, # previous version
-     commit_to_version(commits[0]),                    # current version
-     child ? commit_to_version(child) : nil]           # next version
+    [commit_to_version(commits[1]), # previous version
+     commit_to_version(commits[0]), # current version
+     commit_to_version(succ)]      # next version
   end
 
-  def load_children(page)
-    object = git.get_commit(page.tree_version.to_s).tree[page.path]
-    if object.type == :tree
-      object.map do |name, child|
-        Page.new(page.path/name, page.tree_version, page.current?) if !reserved_name?(name)
-      end.compact
-    else
-      []
-    end
+  # @override
+  def get_children(path, version)
+    object = get_object(path, version)
+    object && object.type != :tree ? [] : object.names.reject {|name| reserved_name?(name) }
   end
 
-  def load_content(page)
-    tree = git.get_commit(page.tree_version.to_s).tree
-    object = tree[page.path]
-    object = tree[page.path + CONTENT_EXT] if object && object.type == :tree
+  # @override
+  def get_content(path, version)
+    tree = get_commit(version).tree
+    object = tree[path]
+    object = tree[path + CONTENT_EXT] if object && object.type == :tree
     if object
       content = object.data
       # Try to force utf-8 encoding and revert to old encoding if this doesn't work
@@ -104,83 +88,67 @@ class GitRepository < Repository
     end
   end
 
-  def load_attributes(page)
-    object = git.get_commit(page.tree_version.to_s).tree[page.path + ATTRIBUTE_EXT]
-    object ? YAML.load(object.data) : {}
+  # @override
+  def get_attributes(path, version)
+    object = get_object(path + ATTRIBUTE_EXT, version)
+    object && object.type == :blob ? YAML.load(object.data) : {}
   end
 
-  def save(page)
-    path = page.path
-
+  # @override
+  def set_content(path, content)
     check_path(path)
-
-    content = page.content
     content = content.read if content.respond_to? :read
-    attributes = page.attributes.empty? ? nil : YAML.dump(page.attributes).sub(/\A\-\-\-\s*\n/s, '')
-
-    # Convert blob parents to trees
-    # to allow children
-    names = path.split('/')
-    names.pop
-    parent = git.root
-    names.each do |name|
-      object = parent[name]
-      break if !object
-      if object.type == :blob
-        parent.move(name, name + CONTENT_EXT)
-        break
-      end
-      parent = object
-    end
-
+    expand_tree(path)
     object = git.root[path]
-    if object
-      if attributes
-        git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes)
+    if object && object.type == :tree
+      if content.blank?
+        git.root.delete(path + CONTENT_EXT)
       else
-        git.root.delete(path + ATTRIBUTE_EXT)
+        git.root[path + CONTENT_EXT] = Gitrb::Blob.new(:data => content)
       end
-      if object.type == :tree
-        if content.blank?
-          git.root.delete(path + CONTENT_EXT)
-        else
-          git.root[path + CONTENT_EXT] = Gitrb::Blob.new(:data => content)
-        end
-        collapse_empty_tree(path)
-      else
-        git.root[path] = Gitrb::Blob.new(:data => content)
-      end
+      collapse_empty_tree(path)
     else
       git.root[path] = Gitrb::Blob.new(:data => content)
-      git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes) if attributes
     end
-
-    current_transaction << proc {|tree_version| page.committed(path, tree_version) }
   end
 
-  def move(page, destination)
+  # @override
+  def set_attributes(path, attributes)
+    check_path(path)
+    attributes = attributes.blank? ? nil : YAML.dump(attributes).sub(/\A\-\-\-\s*\n/s, '')
+    expand_tree(path)
+    if attributes
+      git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes)
+    else
+      git.root.delete(path + ATTRIBUTE_EXT)
+    end
+  end
+
+  # @override
+  def move(path, destination)
     check_path(destination)
-    git.root.move(page.path, destination)
-    git.root.move(page.path + CONTENT_EXT, destination + CONTENT_EXT) if git.root[page.path + CONTENT_EXT]
-    git.root.move(page.path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if git.root[page.path + ATTRIBUTE_EXT]
-    collapse_empty_tree(page.path/'..')
-    current_transaction << proc {|tree_version| page.committed(destination, tree_version) }
+    git.root.move(path, destination)
+    git.root.move(path + CONTENT_EXT, destination + CONTENT_EXT) if git.root[path + CONTENT_EXT]
+    git.root.move(path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if git.root[path + ATTRIBUTE_EXT]
+    collapse_empty_tree(path/'..')
   end
 
-  def delete(page)
-    git.root.delete(page.path)
-    git.root.delete(page.path + CONTENT_EXT)
-    git.root.delete(page.path + ATTRIBUTE_EXT)
-    collapse_empty_tree(page.path/'..')
-    current_transaction << proc { page.committed(page.path, nil) }
+  # @override
+  def delete(path)
+    git.root.delete(path)
+    git.root.delete(path + CONTENT_EXT)
+    git.root.delete(path + ATTRIBUTE_EXT)
+    collapse_empty_tree(path/'..')
   end
 
-  def diff(page, from, to)
+  # @override
+  def diff(path, from, to)
     diff = git.diff(:from => from && from.to_s, :to => to.to_s,
-                    :path => [page.path, page.path + CONTENT_EXT, page.path + ATTRIBUTE_EXT], :detect_renames => true)
-    Olelo::Diff.new(diff.from && commit_to_version(diff.from), commit_to_version(diff.to), diff.patch)
+                    :path => [path, path + CONTENT_EXT, path + ATTRIBUTE_EXT], :detect_renames => true)
+    Olelo::Diff.new(commit_to_version(diff.from), commit_to_version(diff.to), diff.patch)
   end
 
+  # @override
   def short_version(version)
     version[0..4]
   end
@@ -195,17 +163,38 @@ class GitRepository < Repository
 
   private
 
+  def get_commit(version)
+    git.get_commit(version.to_s)
+  end
+
+  def get_object(path, version)
+    git.get_commit(version.to_s).tree[path]
+  end
+
   def check_path(path)
     raise :reserved_path.t if path.split('/').any? {|name| reserved_name?(name) }
   end
 
-  def current_transaction
-    @current_transaction[Thread.current.object_id] || raise('No transaction running')
+  def commit_to_version(commit)
+    commit && Olelo::Version.new(commit.id, Olelo::User.new(commit.author.name, commit.author.email),
+                                 commit.date, commit.message, commit.parents.map(&:id))
   end
 
-  def commit_to_version(commit)
-    Olelo::Version.new(commit.id, Olelo::User.new(commit.author.name, commit.author.email),
-                       commit.date, commit.message, commit.parents.map(&:id))
+  # Convert blob parents to trees
+  # to allow children
+  def expand_tree(path)
+    names = path.split('/')
+    names.pop
+    parent = git.root
+    names.each do |name|
+      object = parent[name]
+      break if !object
+      if object.type == :blob
+        parent.move(name, name + CONTENT_EXT)
+        break
+      end
+      parent = object
+    end
   end
 
   # If a tree consists only of tree/, tree.content and tree.attributes without

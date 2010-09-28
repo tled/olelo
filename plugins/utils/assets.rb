@@ -46,20 +46,16 @@ end
 
 class Olelo::Plugin
   def export_assets(*files)
-    plugin_fs.glob(*files) do |file|
+    virtual_fs.glob(*files) do |file|
       Application.assets[File.dirname(name)/file.name] = file
     end
   end
 
   def export_scripts(*files)
-    plugin_fs.glob(*files) do |file|
+    virtual_fs.glob(*files) do |file|
       raise 'Invalid script type' if file.name !~ /\.(css|js)$/
       scripts = Application.scripts[$1].to_a
       Application.scripts[$1] = [[scripts[0], file.mtime].compact.max, "#{scripts[1]}/* #{File.dirname(name)/file.name} */\n#{file.read}\n"]
     end
-  end
-
-  def plugin_fs
-    UnionFS.new(InlineFS.new(file), DirectoryFS.new(File.dirname(file)))
   end
 end

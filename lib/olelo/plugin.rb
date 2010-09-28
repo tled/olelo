@@ -13,6 +13,9 @@ module Olelo
     class<< self
       attr_accessor :dir, :logger, :disabled
 
+      # Get failed plugins
+      attr_reader :failed
+
       # Current plugin
       def current(level = 0)
         last = nil
@@ -31,17 +34,16 @@ module Olelo
         @plugins.values
       end
 
-      # Get failed plugins
-      def failed
-        @failed
-      end
-
       # Start plugins
+      # @return [void]
       def start
         @plugins.each_value {|plugin| plugin.start }
       end
 
-      # Load plugins by name and return a boolean for success
+      # Load plugins by name
+      #
+      # @param list List of plugin names to load
+      # @return [Boolean] true if every plugin was loaded
       def load(*list)
         files = list.map do |name|
           Dir[File.join(@dir, '**', "#{name.cleanpath}.rb")]
@@ -77,6 +79,10 @@ module Olelo
       end
 
       # Check if plugin is enabled
+      #
+      # @param [String] plugin name
+      # @return [Boolean] true if enabled
+      #
       def enabled?(name)
         paths = name.split(File::SEPARATOR)
         paths.inject(nil) do |path, x|
@@ -99,7 +105,15 @@ module Olelo
       @started = false
     end
 
-    # Start the plugin
+    # Virtual filesystem used to load plugin assets
+    def virtual_fs
+      VirtualFS::Union.new(VirtualFS::Embedded.new(file),
+                           VirtualFS::Native.new(File.dirname(file)))
+    end
+
+    # Start the plugin by calling the {#setup} method
+    #
+    # @return [Boolean] true for success
     def start
       return true if @started
       setup if respond_to?(:setup)
@@ -111,8 +125,10 @@ module Olelo
       false
     end
 
-    # Load specified plugins and fail if
-    # dependencies are missing.
+    # Load specified plugins and fail with LoadError if dependencies are missing
+    #
+    # @param list List of plugin names to load
+    # @return List of dependencies (plugin names)
     def dependencies(*list)
       @dependencies ||= []
       @dependencies += list

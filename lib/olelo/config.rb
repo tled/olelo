@@ -11,7 +11,7 @@ module Olelo
       update(hash) if hash
     end
 
-    def[](key)
+    def [](key)
       key = key.to_s
       i = key.index('.')
       if i

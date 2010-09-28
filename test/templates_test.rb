@@ -1,4 +1,4 @@
-require 'olelo/fs'
+require 'olelo/virtualfs'
 require 'olelo/templates'
 require 'haml'
 
@@ -12,7 +12,7 @@ class TestTemplateLoader
   end
 
   def load(path)
-    Olelo::InlineFS.new(__FILE__).read(path)
+    Olelo::VirtualFS::Embedded.new(__FILE__).read(path)
   end
 end
 

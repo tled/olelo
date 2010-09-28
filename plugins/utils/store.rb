@@ -7,30 +7,57 @@ require 'delegate'
 # Moneta can be used as a drop-in replacement.
 # It is recommended to wrap the moneta store in a Olelo::Store::Delegated
 # to only expose the Olelo::Store interface.
+#
+# @abstract
 class Olelo::Store
   extend Factory
 
-  # Exists the entry with <i>key</i>
+  # Exists the value with key
+  #
+  # @param [String] key
+  # @return [Boolean]
+  # @api public
+  # @abstract
   def key?(key)
     raise NotImplementedError
   end
 
-  # Read entry with <i>key</i>. Return nil if the key doesn't exist
+  # Read value with key. Return nil if the key doesn't exist
+  #
+  # @param [String] key
+  # @return [Object] value
+  # @api public
+  # @abstract
   def [](key)
     raise NotImplementedError
   end
 
-  # Write entry <i>value</i> with <i>key</i>.
+  # Write value with key
+  #
+  # @param [String] key
+  # @param [Object] value
+  # @return value
+  # @api public
+  # @abstract
   def []=(key, value)
     raise NotImplementedError
   end
 
-  # Delete the <i>key</i> from the store and return the current value.
+  # Delete the key from the store and return the current value
+  #
+  # @param [String] key
+  # @return [Object] current value
+  # @api public
+  # @abstract
   def delete(key)
     raise NotImplementedError
   end
 
   # Clear all keys in this store
+  #
+  # @return [void]
+  # @api public
+  # @abstract
   def clear
     raise NotImplementedError
   end
@@ -38,16 +65,28 @@ class Olelo::Store
   protected
 
   # Serialize value
+  #
+  # @param [Object] value Serializable object
+  # @return [String] serialized object
+  # @api private
   def serialize(value)
     Marshal.dump(value)
   end
 
   # Deserialize value
+  #
+  # @param [String] value Serialized object
+  # @return [Object] Deserialized object
+  # @api private
   def deserialize(value)
     value && Marshal.load(value)
   end
 
   # Create store instance
+  #
+  # @param [Config] Store configuration
+  # @return [Store]
+  # @api public
   def self.create(config)
     self[config[:type]].new(config[config[:type]])
   end
@@ -97,6 +136,7 @@ class Olelo::Store
         @server = ::Memcached.new(config[:server], :prefix_key => (config[:prefix] rescue nil))
       end
 
+      # @override
       def key?(key)
         @server.get(md5(key), false)
         true
@@ -104,16 +144,19 @@ class Olelo::Store
         false
       end
 
+      # @override
       def [](key)
         @server.get(md5(key))
       rescue ::Memcached::NotFound
       end
 
+      # @override
       def []=(key, value)
         @server.set(md5(key), value)
         value
       end
 
+      # @override
       def delete(key)
         key = md5(key)
         value = @server.get(key)
@@ -122,6 +165,7 @@ class Olelo::Store
       rescue ::Memcached::NotFound
       end
 
+      # @override
       def clear
         @server.flush
       end
@@ -136,19 +180,23 @@ class Olelo::Store
         @server = ::MemCache.new(config[:server], :namespace => (config[:prefix] rescue nil))
       end
 
+      # @override
       def key?(key)
         !@server.get(md5(key)).nil?
       end
 
+      # @override
       def [](key)
         deserialize(@server.get(md5(key)))
       end
 
+      # @override
       def []=(key, value)
         @server.set(md5(key), serialize(value))
         value
       end
 
+      # @override
       def delete(key)
         key = md5(key)
         value = deserialize(@server.get(key))
@@ -156,6 +204,7 @@ class Olelo::Store
         value
       end
 
+      # @override
       def clear
         @server.flush_all
       end
@@ -172,22 +221,27 @@ class Olelo::Store
       @store = ::PStore.new(config[:file])
     end
 
+    # @override
     def key?(key)
       @store.transaction(true) { @store.root?(key) }
     end
 
+    # @override
     def [](key)
       @store.transaction(true) { @store[key] }
     end
 
+    # @override
     def []=(key, value)
       @store.transaction { @store[key] = value }
     end
 
+    # @override
     def delete(key)
       @store.transaction { @store.delete(key) }
     end
 
+    # @override
     def clear
       @store.transaction do
         @store.roots.each do |key|
@@ -205,15 +259,18 @@ class Olelo::Store
       @root = config[:root]
     end
 
+    # @override
     def key?(key)
       ::File.exist?(store_path(key))
     end
 
+    # @override
     def [](key)
       deserialize(::File.read(store_path(key)))
     rescue Errno::ENOENT
     end
 
+    # @override
     def []=(key, value)
       temp_file = ::File.join(@root, "value-#{$$}-#{Thread.current.object_id}")
       FileUtils.mkpath(@root)
@@ -228,6 +285,7 @@ class Olelo::Store
       value
     end
 
+    # @override
     def delete(key)
       value = self[key]
       ::File.unlink(store_path(key))
@@ -235,6 +293,7 @@ class Olelo::Store
     rescue Errno::ENOENT
     end
 
+    # @override
     def clear
       temp_dir = "#{@root}-#{$$}-#{Thread.current.object_id}"
       FileUtils.mv(@root, temp_dir)

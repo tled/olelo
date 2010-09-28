@@ -113,7 +113,7 @@ end
 class Olelo::Application
   attribute_editor do
     attribute :math do
-      Hash[*MathRenderer.registry.keys.map {|m| [m, I18n.translate("math_#{m}")] }.flatten]
+      Hash[*MathRenderer.registry.keys.map {|m| [m, Locale.translate("math_#{m}")] }.flatten]
     end
   end
 

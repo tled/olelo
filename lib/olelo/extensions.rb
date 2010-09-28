@@ -1,15 +1,27 @@
 class Module
   # Generate accessor method with question mark
+  #
+  # @param [String, Symbol...] attrs Attributes to generate setter for
+  # @return [void]
+  #
   def attr_reader?(*attrs)
     attrs.each do |a|
       module_eval %{ def #{a}?; !!@#{a}; end }
     end
   end
 
-  # From facets
-  def attr_setter(*args)
+  # Generate attribute setter
+  #
+  # A setter accepts an argument to
+  # set a value. It acts as a getter without an argument.
+  #
+  # @see Ruby facets
+  # @param [String, Symbol...] attrs Attributes to generate setter for
+  # @return [void]
+  #
+  def attr_setter(*attrs)
     code, made = '', []
-    args.each do |a|
+    attrs.each do |a|
       code << "def #{a}(*a); a.size > 0 ? (@#{a}=a[0]; self) : @#{a} end\n"
       made << a.to_sym
     end
@@ -17,6 +29,15 @@ class Module
     made
   end
 
+  # Redefine a module method
+  #
+  # Replaces alias_method_chain and allows to call
+  # overwritten method via super.
+  #
+  # @param [Symbol, String] name of method
+  # @yield New method block
+  # @return [void]
+  #
   def redefine_method(name, &block)
     if instance_methods(false).any? {|x| x.to_s == name.to_s }
       method = instance_method(name)
@@ -116,16 +137,28 @@ class Hash
 end
 
 class Object
+  # Metaclass of object
+  #
+  # @return [Class]
+  #
   def metaclass
     (class << self; self; end)
   end
 
-  # Nice blank? helper from rails activesupport
+  # Returns true if object is empty or false
+  #
+  # @return [Boolean]
+  #
   def blank?
     respond_to?(:empty?) ? empty? : !self
   end
 
   # Try to call method if it exists or return nil
+  #
+  # @param [String, Symbol] name Method name
+  # @param args Method arguments
+  # @return Method result or nil
+  #
   def try(name, *args)
     respond_to?(name) ? send(name, *args) : nil
   end
@@ -133,16 +166,26 @@ end
 
 class String
   if ''.respond_to?(:encoding)
-    # Try to force encoding and revert to old encoding if this doesn't work
-    def try_encoding(new_enc)
+    # Try to force encoding
+    #
+    # Force encoding of string and revert
+    # to original encoding if string has no valid encoding
+    #
+    # @param [Encoding, String] enc New encoding
+    # @return self
+    #
+    def try_encoding(enc)
       old_enc = encoding
-      force_encoding(new_enc)
+      force_encoding(enc)
       force_encoding(old_enc) if !valid_encoding?
       self
     end
   end
 
-  # Unindent string
+  # Strips left whitespaces of every line
+  #
+  # @return [String] Unindented string
+  #
   def unindent
     result = ''
     each_line {|line| result << line.lstrip }
@@ -150,16 +193,27 @@ class String
   end
 
   # Check if string starts with s
+  #
+  # @param [String] s
+  # @return [Boolean]
+  #
   def starts_with?(s)
     index(s) == 0
   end
 
   # Check if string ends with s
+  #
+  # @param [String] s
+  # @return [Boolean]
+  #
   def ends_with?(s)
     rindex(s) == size - s.size
   end
 
-  # Clean up path
+  # Clean up path (replaces '..', '.' etc.)
+  #
+  # @return [String] cleaned path
+  #
   def cleanpath
     names = split('/').reject(&:blank?)
     i = 0
@@ -180,8 +234,14 @@ class String
     names.join('/')
   end
 
-  # Concatenate path components
-  def /(name)
-    "#{self}/#{name}".cleanpath
+  # Concatenate path components with /
+  #
+  # Calls {#cleanpath} on result.
+  #
+  # @param [String] path component
+  # @return [String] this string concatenated with path
+  #
+  def /(path)
+    "#{self}/#{path}".cleanpath
   end
 end

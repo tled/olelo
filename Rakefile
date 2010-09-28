@@ -74,9 +74,10 @@ task 'clean:all' => :clean do |t|
 end
 
 desc 'Generate documentation'
-task :doc => 'doc/api/index.html'
-file 'doc/api/index.html' => FileList['**/*.rb'] do |f|
-  sh "rdoc -o doc/api --title 'Olelo Source Documentation' --inline-source --format=html #{f.prerequisites.join(' ')}"
+namespace :doc do
+  task :gen    do; system("yard doc -o doc/api -e lib/yard/addons.rb --backtrace 'lib/**/*.rb' 'plugins/**/*.rb'"); end
+  task :server do; system('yard server --reload -e lib/yard/addons.rb --backtrace'); end
+  task :check  do; system("yardcheck 'lib/**/*.rb' 'plugins/**/*.rb'"); end
 end
 
 namespace :notes do

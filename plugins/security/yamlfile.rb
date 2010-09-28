@@ -7,6 +7,7 @@ class YamlfileService < User::Service
     @store = ::YAML::Store.new(config[:store])
   end
 
+  # @override
   def find(name)
     @store.transaction(true) do |store|
       user = store[name]
@@ -14,6 +15,7 @@ class YamlfileService < User::Service
     end
   end
 
+  # @override
   def authenticate(name, password)
     @store.transaction(true) do |store|
       user = store[name]
@@ -22,6 +24,7 @@ class YamlfileService < User::Service
     end
   end
 
+  # @override
   def create(user, password)
     @store.transaction do |store|
       raise :user_already_exists.t(:name => user.name) if store[user.name]
@@ -33,6 +36,7 @@ class YamlfileService < User::Service
     end
   end
 
+  # @override
   def update(user)
     @store.transaction do |store|
       raise NameError, "User #{user.name} not found" if !store[user.name]
@@ -41,6 +45,7 @@ class YamlfileService < User::Service
     end
   end
 
+  # @override
   def change_password(user, oldpassword, password)
     @store.transaction do |store|
       check do |errors|

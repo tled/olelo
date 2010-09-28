@@ -35,8 +35,8 @@ describe 'Olelo::Util' do
     Olelo::Util.unescape_html('&lt;').should.equal '<'
   end
 
-  it 'should have #escape_json' do
-    Olelo::Util.escape_json('a&b<c>').should.equal 'a\u0026b\u003Cc\u003E'
+  it 'should have #escape_javascript' do
+    Olelo::Util.escape_javascript('a&b<c>').should.equal 'a\u0026b\u003Cc\u003E'
   end
 
   it 'should have #md5' do
@@ -57,10 +57,10 @@ describe 'Olelo::Util' do
     Olelo::Util.truncate("\346\254\242\350\277\216\350\277\233\345\205\245", 1).should.equal "\346\254\242..."
   end
 
-  it 'should have #capitalize_words' do
-    Olelo::Util.capitalize_words(:hello_world).should.equal 'Hello World'
-    Olelo::Util.capitalize_words('hello_world').should.equal 'Hello World'
-    Olelo::Util.capitalize_words('hello world').should.equal 'Hello World'
+  it 'should have #titlecase' do
+    Olelo::Util.titlecase(:hello_world).should.equal 'Hello World'
+    Olelo::Util.titlecase('hello_world').should.equal 'Hello World'
+    Olelo::Util.titlecase('hello world').should.equal 'Hello World'
   end
 
   it 'should have #valid_xml_chars?' do
