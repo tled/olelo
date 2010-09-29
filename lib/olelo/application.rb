@@ -5,23 +5,13 @@ module Olelo
     include Routing
     include Templates
     include ApplicationHelper
-    include AttributeEditor
-
-    attribute_editor do
-      attribute :title, :string
-      attribute :no_title, :boolean
-      attribute :description, :string
-      attribute :mime,  :string
-    end
 
     patterns :path => Page::PATH_PATTERN
     attr_reader :logger, :page
     attr_setter :on_error
 
     class<< self
-      attr_accessor :theme_links
       attr_accessor :reserved_paths
-
       def reserved_path?(path)
         path = '/' + path.cleanpath
         reserved_paths.any? {|pattern| path =~ pattern }
@@ -229,7 +219,7 @@ module Olelo
     end
 
     def post_attributes
-      page.attributes = parse_attributes(params)
+      page.update_attributes(params)
       redirect absolute_path(page) if @close && !page.modified?
       check do |errors|
         errors << :version_conflict.t if !page.new? && page.version.to_s != params[:version]
@@ -254,10 +244,9 @@ module Olelo
     end
 
     post '/(:path)', :tail => true do
-      on_error :edit
-
       action, @close = params[:action].to_s.split('-')
       if respond_to? "post_#{action}"
+        on_error :edit
         Page.transaction do
           @page = Page.find(params[:path]) || Page.new(params[:path])
           raise :reserved_path.t if self.class.reserved_path?(page.path)
@@ -270,7 +259,7 @@ module Olelo
       if @close
         flash.clear
         redirect absolute_path(page)
-        else
+      else
         flash.info! :changes_saved.t
         render :edit
       end

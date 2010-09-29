@@ -1,10 +1,10 @@
 en:
   attribute_toc: 'Generate Table of Contents'
-  attribute_noeditlinks: 'Disable Section Editing'
+  attribute_no_editsection: 'Disable Section Editing'
   edit_section: 'Edit section "#{section}"'
   section_edited: 'Section "#{section}" edited'
 de:
   attribute_toc: 'Inhaltsverzeichnis erzeugen'
-  attribute_noeditlinks: 'Bearbeiten von Bereichen deaktivieren'
+  attribute_no_editsection: 'Bearbeiten von Bereichen deaktivieren'
   edit_section: 'Bearbeite Bereich "#{section}"'
   section_edited: 'Bereich "#{section}" bearbeitet'

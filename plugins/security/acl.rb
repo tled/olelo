@@ -11,6 +11,13 @@ class Olelo::AccessDenied < RuntimeError
 end
 
 class Olelo::Page
+  attributes do
+    group :acl do
+      list :read
+      list :write
+    end
+  end
+
   # New page is writable if parent is writable
   # Existing page is writable if page is writable
   def writable?
@@ -57,13 +64,6 @@ class Olelo::Page
 end
 
 class Olelo::Application
-  attribute_editor do
-    group :acl do
-      attribute :read, :stringlist
-      attribute :write, :stringlist
-    end
-  end
-
   hook :layout, 999 do |name, doc|
     if page
       doc.css('#menu .action-edit').each {|link| link.delete('href') } if !page.writable?

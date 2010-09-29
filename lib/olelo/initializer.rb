@@ -11,7 +11,6 @@ module Olelo
       init_locale
       init_templates
       init_plugins
-      init_themes
       init_routes
       init_custom
     end
@@ -49,16 +48,6 @@ module Olelo
       # Load all plugins
       Plugin.load('*')
       Plugin.start
-    end
-
-    def init_themes
-      default = File.basename(File.readlink(File.join(Config.themes_path, 'default')))
-      Application.theme_links = Dir.glob(File.join(Config.themes_path, '*', 'style.css')).map do |file|
-        name = File.basename(File.dirname(file))
-        path = Config.base_path + "static/themes/#{name}/style.css?#{File.mtime(file).to_i}"
-        %{<link rel="#{name == default ? '' : 'alternate '}stylesheet"
-          href="#{escape_html path}" type="text/css" title="#{escape_html name}"/>}.unindent if name != 'default'
-      end.compact.join("\n")
     end
 
     def init_routes

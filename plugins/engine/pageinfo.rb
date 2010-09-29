@@ -30,7 +30,7 @@ __END__
         %td.version= @page.version
     %tr
       %td= :type.t
-      %td #{@page.mime.comment} (#{@page.mime})
+      %td= @page.mime.comment.blank? ? @page.mime : "#{@page.mime.comment} (#{@page.mime})"
     - if !@page.content.empty?
       %tr
         %td= :download.t

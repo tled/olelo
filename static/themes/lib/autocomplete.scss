@@ -1,0 +1,22 @@
+.ui-autocomplete {
+        position: absolute;
+	cursor: default;
+	list-style:none;
+	padding: 2px;
+	margin: 0;
+	display:block;
+	float: left;
+	background: #FFF;
+        border: 1px solid #BBB;
+	a {
+	  text-decoration: none;
+	  display: block;
+	  padding: .2em .4em;
+	  line-height: 1.5;
+	  zoom: 1;
+          color: #333;
+	}
+        .ui-state-hover {
+          background: #DDD;
+        }
+}

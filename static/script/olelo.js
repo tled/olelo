@@ -1,6 +1,7 @@
 // Olelo bootstrap
 // Written by Daniel Mendler
-(function() {
+$(function() {
+    $('html').removeClass('no-js').addClass('js');
     $('#themes').styleswitcher();
     function pageLoaded(parent) {
         $('#upload-path', parent).each(function() {
@@ -30,4 +31,4 @@
     $('.pagination a:not(.current)').pagination('#content');
     $('#content').bind('pageLoaded', function() { pageLoaded(this); });
     pageLoaded();
-})();
+});

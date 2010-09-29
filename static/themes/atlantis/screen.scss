@@ -3,6 +3,7 @@
 @import "lib/shadow.scss";
 @import "lib/headlines.scss";
 @import "lib/patch.scss";
+@import "lib/autocomplete.scss";
 @import "constants.scss";
 @import "layout.scss";
 @import "menu.scss";
@@ -138,7 +139,7 @@ a {
   }
 }
 
-.editlink {
+.editsection {
   @include rounded;
   border: 1px solid $border_color;
   display: block;

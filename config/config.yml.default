@@ -100,6 +100,14 @@ mime:
   # text/x-maruku for Markdown/Maruku, text/x-textile for Textile, text/x-orgmode for Emacs Org Mode
   - text/x-creole
 
+mime_suggestions:
+  - text/x-creole
+  - text/x-markdown
+  - text/x-markdown.maruku
+  - text/x-markdown.kramdown
+  - text/x-textile
+  - text/x-orgmode
+
 ##################################################
 # List of disabled plugins by name.
 # You can disable whole plugin directories.

@@ -16,7 +16,7 @@ end
 
 class Olelo::Application
   hook :layout, 999 do |name, doc|
-    doc.css('#menu .actions, #info, .editlink, form[action*=signup], #tabhead-signup').remove if !User.logged_in?
+    doc.css('#menu .actions, #info, .editsection, form[action*=signup], #tabhead-signup').remove if !User.logged_in?
   end
 
   before :routing do

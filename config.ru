@@ -5,7 +5,7 @@ $: << ::File.join(path, 'lib')
 Dir[::File.join(path, 'deps', '*', 'lib')].each {|x| $: << x }
 
 # Require newest rack
-raise 'Rack 1.1.0 or newer required' if Rack.version < '1.2'
+raise 'Rack 1.2.0 or newer required' if Rack.release < '1.2'
 
 # We want to read all text data as UTF-8
 Encoding.default_external = Encoding::UTF_8 if ''.respond_to? :encoding

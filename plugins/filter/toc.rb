@@ -1,8 +1,8 @@
 description  'Auto-generated table of contents'
 dependencies 'engine/filter'
 
-Application.attribute_editor do
-  attribute :toc, :boolean
+Page.attributes do
+  boolean :toc
 end
 
 Filter.create :toc do |context, content|

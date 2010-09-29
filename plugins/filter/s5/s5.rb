@@ -2,15 +2,15 @@ description  'XSLT filter which transforms a html page to a S5 presentation'
 dependencies 'filter/xslt', 'utils/assets'
 export_assets 'ui/**/*', 'ui/default/*'
 
-Application.attribute_editor do
+Page.attributes do
   group :s5 do
-    attribute :presdate, :string
-    attribute :author, :string
-    attribute :company, :string
-    attribute :theme, :string
-    attribute :transitions, :string
-    attribute :fadeDuration, :integer
-    attribute :incrDuration, :integer
+    string :presdate
+    string :author
+    string :company
+    string :theme
+    string :transitions
+    integer :fadeDuration
+    integer :incrDuration
   end
 end
 

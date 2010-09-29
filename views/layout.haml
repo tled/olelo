@@ -4,7 +4,8 @@
     %title= Olelo::Config.title + ' - ' + title
     %link(rel='shortcut icon' href='#{absolute_path "static/images/favicon.png?1"}' type='image/png')
     != base_path
-    != self.class.theme_links
+    != theme_links
+    != include_javascript
   %body
     #header
       %h1= Olelo::Config.title
@@ -30,4 +31,3 @@
       .noprint.powered_by
         Powered by
         %a(href='http://github.com/minad/olelo') &#332;lelo
-    %script(src='#{absolute_path "static/script.js?13"}' type='text/javascript' async="async")

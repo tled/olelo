@@ -1,6 +1,14 @@
 description 'Engine subsystem'
 dependencies 'utils/cache'
 
+Olelo::Page.attributes do
+  enum :output do
+    Hash[*Engine.engines.keys.map do |name|
+           [name, Olelo::Locale.translate("engine_#{name}", :fallback => titlecase(name))]
+         end.flatten]
+  end
+end
+
 # Engine context
 # A engine context holds the request parameters and other
 # variables used by the engines.
@@ -140,14 +148,6 @@ end
 
 # Plug-in the engine subsystem
 class Olelo::Application
-  attribute_editor do
-    attribute(:output) do
-      Hash[*Engine.engines.keys.map do |name|
-             [name, Olelo::Locale.translate("engine_#{name}", :fallback => titlecase(name))]
-           end.flatten]
-    end
-  end
-
   before :show do
     begin
       params[:output] ||= 'tree' if params[:path].to_s.ends_with? '/'

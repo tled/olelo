@@ -30,10 +30,6 @@ class RitexRenderer < MathRenderer
     Ritex::Parser.new.parse(code)
   end
 
-  def description
-
-  end
-
   register 'ritex', RitexRenderer
 end
 
@@ -110,13 +106,13 @@ Tag.define :math do |context, attrs, code|
   (MathRenderer[renderer] || MathRenderer['latex']).render(code, attrs['display'] == 'block' ? 'block' : 'inline')
 end
 
-class Olelo::Application
-  attribute_editor do
-    attribute :math do
-      Hash[*MathRenderer.registry.keys.map {|m| [m, Locale.translate("math_#{m}")] }.flatten]
-    end
+Page.attributes do
+  enum :math do
+    Hash[*MathRenderer.registry.keys.map {|m| [m, Locale.translate("math_#{m}")] }.flatten]
   end
+end
 
+class Olelo::Application
   hook :layout_xml do |name, xml|
     if xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config.math_renderer) == 'mathjax'
       xml.sub!('</body>', %{<script src="#{absolute_path 'static/mathjax/MathJax.js'}" type="text/javascript" async="async"/></body>})

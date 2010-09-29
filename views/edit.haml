@@ -56,7 +56,7 @@
     - else
       %input(type='hidden' name='version' value='#{page.version}')
     != flash_messages :attributes
-    != attribute_editor(page.attributes)
+    != page.attribute_editor
     %button(type='submit' name='action' value='attributes')= :save.t
     %button(type='submit' name='action' value='attributes-close')= :save_and_close.t
     %button(type='reset')= :reset.t

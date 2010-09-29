@@ -212,6 +212,27 @@ module Olelo
       end
     end
 
+    def include_javascript
+      @@javascript ||=
+        begin
+          path = absolute_path("static/script.js?#{File.mtime(File.join(Config.app_path, 'static', 'script.js')).to_i}")
+          %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}
+        end
+    end
+
+    def theme_links
+      @@theme_links ||=
+        begin
+          default = File.basename(File.readlink(File.join(Config.themes_path, 'default')))
+          Dir.glob(File.join(Config.themes_path, '*', 'style.css')).map do |file|
+            name = File.basename(File.dirname(file))
+            path = Config.base_path + "static/themes/#{name}/style.css?#{File.mtime(file).to_i}"
+            %{<link rel="#{name == default ? '' : 'alternate '}stylesheet"
+              href="#{escape_html path}" type="text/css" title="#{escape_html name}"/>}.unindent if name != 'default'
+          end.compact.join("\n")
+        end
+    end
+
     def session
       env['rack.session'] ||= {}
     end

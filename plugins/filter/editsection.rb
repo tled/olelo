@@ -1,12 +1,12 @@
 description  'Adds links for section editing for creole-like headlines'
 dependencies 'engine/filter'
 
-Application.attribute_editor do
-  attribute :noeditlinks, :boolean
+Page.attributes do
+  boolean :no_editsection
 end
 
 AroundFilter.create :editsection do |context, content|
-  if context.page.new? || context.page.modified? || !context.page.current? || context.page.attributes['noeditlinks']
+  if context.page.new? || context.page.modified? || !context.page.current? || context.page.attributes['no_editsection']
     subfilter(context, content)
   else
     prefix = "EDIT#{object_id}X"
@@ -27,7 +27,7 @@ AroundFilter.create :editsection do |context, content|
       i = $1.to_i
       l = pos[i+1] ? pos[i+1][1] - pos[i][1] - 1 : len - pos[i][1]
       path = action_path(context.page, :edit) + "?pos=#{pos[i][1]}&len=#{l}&comment=#{:section_edited.t(:section => pos[i][3])}"
-      %{<a class="editlink" href="#{escape_html path}" title="#{escape_html :edit_section.t(:section => pos[i][3])}">#{escape_html :edit.t}}
+      %{<a class="editsection" href="#{escape_html path}" title="#{escape_html :edit_section.t(:section => pos[i][3])}">#{escape_html :edit.t}}
     end
     content
   end

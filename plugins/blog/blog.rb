@@ -2,15 +2,13 @@ description    'Blog engine'
 dependencies   'filter/tag', 'utils/assets'
 export_scripts '*.css'
 
-class Olelo::Application
-  attribute_editor do
-    attribute :tags, :stringlist
-  end
+Page.attributes do
+  list(:tags)
+end
 
-  get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
-    params[:output] = 'blog'
-    send('GET /')
-  end
+Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
+  params[:output] = 'blog'
+  send('GET /')
 end
 
 Tag.define 'menu', :description => 'Show blog menu', :dynamic => true do |context, attrs, content|

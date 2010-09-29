@@ -3,6 +3,19 @@ module Olelo
   class Page
     include Util
     include Hooks
+    include Attributes
+
+    attributes do
+      string  :title
+      boolean :no_title
+      string  :description
+      string :mime do
+        Hash[*Config.mime_suggestions.map do |mime|
+               comment = MimeMagic.new(mime).comment
+               [mime, comment.blank? ? mime : "#{comment} (#{mime})"]
+             end.flatten]
+      end
+    end
 
     # Pattern for valid paths
     # @api public
@@ -90,7 +103,6 @@ module Olelo
     end
 
     def move(destination)
-      current_transaction
       raise 'Page is new' if new?
       raise 'Page is not current' unless current?
       destination = destination.to_s.cleanpath
@@ -101,7 +113,6 @@ module Olelo
     end
 
     def delete
-      current_transaction
       raise 'Page is new' if new?
       raise 'Page is not current' unless current?
       with_hooks(:delete) { repository.delete(path) }
@@ -167,7 +178,6 @@ module Olelo
     end
 
     def save
-      current_transaction
       raise 'Page is not current' unless current?
       raise :already_exists.t(:page => path) if new? && Page.find(path)
       with_hooks(:save) do
