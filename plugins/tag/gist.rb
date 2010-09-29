@@ -1,7 +1,6 @@
 description    'Tag to embed github gist'
 dependencies   'filter/tag'
 require        'open-uri'
-require        'yajl/json_gem'
 export_scripts 'gist-embed.css'
 
 Tag.define :gist, :requires => :id do |context, attrs, content|

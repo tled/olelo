@@ -319,6 +319,9 @@ form {
     background: none;
     color: $dark_color;
     white-space: nowrap;
+    &.unsaved {
+      font-style: italic;
+    }
   }
   .fieldset label {
     min-width: 9em;

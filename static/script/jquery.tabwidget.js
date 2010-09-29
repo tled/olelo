@@ -7,6 +7,8 @@
 
         // Handle tab clicks
 	$("> a[href^='#']", this).click(function() {
+	    if (selected.data('tab') == $(this).data('tab'))
+		return false;
 	    if (!selected.data('tab').confirmUnsaved())
 		return false;
 	    selected.data('tab').hide();
@@ -27,11 +29,11 @@
 	}
 
         // Get selected tab by class
-	if (!selected || selected.get().length == 0)
+	if (!selected || selected.size() == 0)
             selected = $(this).filter('.selected').find("> a[href^='#']");
 
         // Select first tab
-        if (!selected || selected.get().length == 0)
+        if (!selected || selected.size() == 0)
             selected = $(this).filter(':first').find("> a[href^='#']");
 
         // Find all tabs and hide them

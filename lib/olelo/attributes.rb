@@ -33,7 +33,7 @@ module Olelo
 
       class String < Attribute
         def build_field(attr)
-          %{<input class="confirm" type="text" id="#{key}" name="#{key}" value="#{escape_html attr}"/>}
+          %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html attr}"/>}
         end
 
         def parse(params)
@@ -44,7 +44,7 @@ module Olelo
 
       class List < Attribute
         def build_field(attr)
-          %{<input class="confirm" type="text" id="#{key}" name="#{key}" value="#{escape_html attr.to_a.join(', ')}"/>}
+          %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html attr.to_a.join(', ')}"/>}
         end
 
         def parse(params)
@@ -55,7 +55,7 @@ module Olelo
 
       class Integer < Attribute
         def build_field(attr)
-          %{<input class="confirm" type="text" id="#{key}" name="#{key}" value="#{escape_html attr}"/>}
+          %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html attr}"/>}
         end
 
         def parse(params)
@@ -66,7 +66,7 @@ module Olelo
 
       class Boolean < Attribute
         def build_field(attr)
-          %{<input class="confirm" type="checkbox" id="#{key}" name="#{key}" value="true"#{attr ? ' checked="checked"' : ''}/>}
+          %{<input class="observe" type="checkbox" id="#{key}" name="#{key}" value="true"#{attr ? ' checked="checked"' : ''}/>}
         end
 
         def parse(params)
@@ -83,7 +83,7 @@ module Olelo
         end
 
         def build_field(attr)
-          html = %{<select class="confirm" id="#{key}" name="#{key}">
+          html = %{<select class="observe" id="#{key}" name="#{key}">
                    <option#{values.any? {|value,label| attr == value} ? '' : ' selected="selected"'}></option>}
           values.sort_by(&:last).each do |value,label|
             value_attr = value == label ? '' : %{ value="#{escape_html value}"}
@@ -112,7 +112,7 @@ module Olelo
 
       class Suggestions < Enum
         def build_field(attr)
-          %{<input class="confirm" type="text" id="#{key}" name="#{key}" value="#{escape_html(values[attr] || attr)}"/>
+          %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html(values[attr] || attr)}"/>
             <script type="text/javascript">
             $('##{key}').combobox({ source: #{escape_javascript values.values.sort.to_json} });
             </script>}

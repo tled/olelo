@@ -14,6 +14,12 @@ require 'haml'
 require 'nokogiri'
 raise 'The libxml version used by nokogiri is broken, upgrade to 2.7' if %w[2 6] === Nokogiri::LIBXML_VERSION.split('.')[0..1]
 
+begin
+  require 'yajl/json_gem'
+rescue LoadError
+  require 'json'
+end
+
 require 'olelo/compatibility'
 require 'olelo/extensions'
 require 'olelo/util'

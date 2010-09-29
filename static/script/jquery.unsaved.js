@@ -11,44 +11,52 @@
 	}
     });
 
+    function updateUnsaved() {
+	var unsaved = false;
+	switch (this.type) {
+	case 'checkbox':
+	case 'radio':
+	    unsaved = this.checked != this.defaultChecked;
+	    break;
+	case 'hidden':
+	case 'password':
+	case 'text':
+	case 'textarea':
+	case 'file':
+	    unsaved = this.value != this.defaultValue;
+	    break;
+	case 'select-one':
+	case 'select-multiple':
+	    for (var i = 0; i < this.options.length && !unsaved; ++i)
+                unsaved = this.options[i].selected != this.options[i].defaultSelected;
+	    break;
+	}
+	$('label[for=' + this.id + ']').toggleClass('unsaved', unsaved);
+	$(this).toggleClass('unsaved', unsaved);
+    }
+
+    function hasUnsavedChanges(element) {
+	$('input.observe, textarea.observe, select.observe').each(function() {
+	    updateUnsaved.call(this);
+	});
+	return $('.unsaved', element).size() != 0;
+    }
+
     $.fn.confirmUnsaved = function() {
-	return !this.unsavedChanges() || confirm($.t('confirmUnsaved'));
+	return !hasUnsavedChanges(this) || confirm($.t('confirmUnsaved'));
     };
 
-    $.fn.unsavedChanges = function() {
-	var dirty = false;
-	$('input.confirm, textarea.confirm, select.confirm', this).each(function() {
-	    switch (this.type) {
-	    case 'checkbox':
-	    case 'radio':
-		dirty = this.checked != this.defaultChecked;
-		break;
-	    case 'hidden':
-	    case 'password':
-	    case 'text':
-	    case 'textarea':
-	    case 'file':
-		dirty = this.value != this.defaultValue;
-		break;
-	    case 'select-one':
-	    case 'select-multiple':
-		for (var i = 0; i < this.options.length && !dirty; ++i)
-                    dirty = this.options[i].selected != this.options[i].defaultSelected;
-		break;
-	    }
-	    if (dirty)
-		return false;
-	});
-	return dirty;
-    };
+    $('input.observe, textarea.observe, select.observe').live('change autocompletechange', updateUnsaved);
 
     var submitForm = false;
     $('form').submit(function() {
 	submitForm = true;
+    }).bind('reset', function() {
+	$('.unsaved', this).removeClass('unsaved');
     });
 
     $(window).bind('beforeunload', function() {
-	if (!submitForm && $(document).unsavedChanges())
+	if (!submitForm && hasUnsavedChanges(document))
 	    return $.t('pageUnsaved');
     });
 })(jQuery);

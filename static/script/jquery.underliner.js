@@ -6,7 +6,7 @@
 	underlineText: function(str) {
 	    this.each(function() {
 		var elem = $(this), text, i;
-		if (elem.children().get().length == 0) {
+		if (elem.children().size() == 0) {
 		    text = elem.text();
 		    i = text.toLowerCase().indexOf(str.toLowerCase());
 		    if (i >= 0)
