@@ -163,14 +163,7 @@ class Olelo::Application
         [engine.name, engine.layout?, context.response.to_hash, result]
       end
       self.response.header.merge!(response)
-      if layout
-        if !request.xhr?
-          content = render(:show, :locals => {:content => content})
-        elsif !page.attributes['no_title']
-          content = "<h1>#{escape_html page.title}</h1>#{content}"
-        end
-      end
-      halt content
+      halt(layout ? render(:show, :locals => {:content => content}) : content)
     rescue Engine::NotAvailable => ex
       cache_control :no_cache => true
       redirect absolute_path(page) if params[:path].to_s.ends_with? '/'
@@ -180,7 +173,7 @@ class Olelo::Application
     end
   end
 
-  hook :layout do |name, doc|
+  hook :dom do |name, doc, layout|
     doc.css('#menu .action-view').each do |link|
       menu = Cache.cache("engine-menu-#{page.path}-#{page.version}-#{params[:output]}",
                          :update => request.no_cache?, :defer => true) do

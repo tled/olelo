@@ -293,7 +293,7 @@ class Olelo::Tag < AroundFilter
 end
 
 # Evaluate and replace all dynamic tags on the page
-Application.hook :layout_xml, 2000 do |name, xml|
+Application.hook :render, 2000 do |name, xml, layout|
   no_cache = false
   xml.gsub!(/DYNTAG\(([^\)]+)\)/) do
     no_cache = true

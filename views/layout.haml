@@ -1,5 +1,7 @@
 !!! 5
-%html.no-js{:lang => Olelo::Config.locale.sub('_', '-'), :class => page && !page.current? ? 'archive' : nil}
+%html.no-js{:lang => Olelo::Config.locale.sub('_', '-'),
+            :class => page && !page.current? ? 'archive' : nil,
+            :xmlns=>'http://www.w3.org/1999/xhtml'}
   %head
     %title= Olelo::Config.title + ' - ' + title
     %link(rel='shortcut icon' href='#{absolute_path "static/images/favicon.png?1"}' type='image/png')
@@ -21,7 +23,7 @@
           %div
             %label.hidden(for='pattern')= :search.t
             %input{:type=>'text',:id=>'pattern',:name=>'pattern', :value=> params[:pattern] || :search.t, :class=> !params[:pattern] && 'placeholder'}
-    #menu!= render(:menu, :layout => false)
+    #menu!= render_partial(:menu)
     #container
       #sidebar!= include_page(Olelo::Config.sidebar_page)
       #content!= yield

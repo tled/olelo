@@ -3,7 +3,6 @@ module Olelo
   class Application
     include Util
     include Routing
-    include Templates
     include ApplicationHelper
 
     patterns :path => Page::PATH_PATTERN
@@ -74,11 +73,12 @@ module Olelo
     end
 
     # Layout hook which parses xml and calls layout_doc hook
-    hook :layout_xml, 1000 do |name, xml|
-      doc = XMLDocument(xml)
-      invoke_hook :layout, name, doc
+    hook :render, 1000 do |name, xml, layout|
+      doc = layout ? XMLDocument(xml) : XMLFragment(xml)
+      invoke_hook :dom, name, doc, layout
       # FIXME: Nokogiri bug #339 - duplicate xml:lang attribute
       doc.xpath('//*[@lang]').each {|elem| elem.delete('xml:lang') }
+      doc.xpath('//*[@xmlns]').each {|elem| elem.delete('xmlns') }
       xml.replace(doc.to_xhtml)
     end
 
@@ -130,13 +130,13 @@ module Olelo
 
     get '/history(/:path)' do
       @page = Page.find!(params[:path])
-      @per_page = 30
-      @page_nr = params[:page].to_i
-      @history = page.history(@page_nr * @per_page)
-      @last_page = @page_nr + @history.length / @per_page
+      @per_page = 10
+      @page_nr = [params[:page].to_i, 1].max
+      @history = page.history((@page_nr - 1) * @per_page)
+      @page_count = @page_nr + @history.length / @per_page
       @history = @history[0...@per_page]
       cache_control :etag => page.version, :last_modified => page.version.date
-      render :history, :layout => !request.xhr?
+      render :history
     end
 
     get '/move/:path' do

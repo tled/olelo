@@ -83,7 +83,7 @@ class SpamEvaluator
 end
 
 class Olelo::Application
-  hook :layout, 1000 do |name, doc|
+  hook :dom, 1000 do |name, doc, layout|
     if flash[:show_captcha]
       doc.css('#tab-edit button[type=submit]').before(
         %{<br/><label for="recaptcha">#{:captcha.t}</label><br/><div id="recaptcha"></div><br/>})

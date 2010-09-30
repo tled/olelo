@@ -20,8 +20,8 @@ class Olelo::Application
     end
   end
 
-  hook :layout do |name, doc|
-    if name == :login
+  hook :dom do |name, doc, layout|
+    if name == :login && layout
       doc.css('#tab-login button[type=submit]').before(
         %{<input type="checkbox" name="persistent" id="persistent" value="1"/>
           <label for="persistent">#{escape_html :persistent_login.t}</label><br/>})

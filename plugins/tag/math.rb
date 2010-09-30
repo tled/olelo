@@ -113,8 +113,8 @@ Page.attributes do
 end
 
 class Olelo::Application
-  hook :layout_xml do |name, xml|
-    if xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config.math_renderer) == 'mathjax'
+  hook :render do |name, xml, layout|
+    if layout && xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config.math_renderer) == 'mathjax'
       xml.sub!('</body>', %{<script src="#{absolute_path 'static/mathjax/MathJax.js'}" type="text/javascript" async="async"/></body>})
     end
   end

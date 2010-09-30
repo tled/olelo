@@ -2,7 +2,7 @@
 %h1= title
 %div
   %p= :drag_drop_for_compare.t
-!= pagination(action_path(page, :history), @last_page, @page_nr)
+!= pagination(action_path(page, :history), @page_count, @page_nr)
 %table#history-table
   %thead
     %tr
@@ -19,4 +19,4 @@
           )
         %td= truncate(version.author.name, 30)
         %td!= date version.date
-!= pagination(action_path(page, :history), @last_page, @page_nr)
+!= pagination(action_path(page, :history), @page_count, @page_nr)

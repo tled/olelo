@@ -5,21 +5,21 @@ Engine.create(:documentbrowser, :priority => 1, :layout => true, :cacheable => t
   def count_pages
     content = @page.content
     if @page.mime == 'application/pdf'
-      last_page = -1
+      page_count = 0
       content.scan %r{/Type\s*/Pages.*?/Count\s*(\d+)}m do
-        last_page += $1.to_i
+        page_count += $1.to_i
       end
     else
       content = Shell.cmd($1 == 'gz' ? 'gunzip' : 'bunzip2').run(content) if @page.mime.to_s =~ /(gz|bz)/
-      last_page = $1.to_i - 1 if content =~ /^%%Pages:\s+(\d+)$/
+      page_count = $1.to_i if content =~ /^%%Pages:\s+(\d+)$/
     end
-    @last_page = [last_page, 0].max
+    page_count
   end
 
   def output(context)
     @page = context.page
-    @page_nr = context.params[:page].to_i
-    count_pages
+    @page_nr = [context.params[:page].to_i, 1].max
+    @page_count = count_pages
     render :browser
   end
 end
@@ -27,10 +27,10 @@ end
 __END__
 
 @@ browser.haml
-!= pagination(page_path(@page), @last_page, @page_nr, :output => 'documentbrowser')
+!= pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
 %p
   %img{:src=> page_path(@page, :output => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)}
-!= pagination(page_path(@page), @last_page, @page_nr, :output => 'documentbrowser')
+!= pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
 %h3= :information.t
 %table.zebra
   %tbody

@@ -8,16 +8,18 @@ class Olelo::Application
     attr_reader :assets, :scripts
   end
 
-  hook :layout_xml, 1 do |name, xml|
-    css = Application.scripts['css']
-    if css
-      path = absolute_path "_/assets/assets.css?#{css.first.to_i}"
-      xml.sub!('</head>', %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/></head>})
-    end
-    js = Application.scripts['js']
-    if js
-      path = absolute_path "_/assets/assets.js?#{js.first.to_i}"
-      xml.sub!('</body>', %{<script src="#{escape_html path}" type="text/javascript" async="async"/></body>})
+  hook :render, 1 do |name, xml, layout|
+    if layout
+      css = Application.scripts['css']
+      if css
+        path = absolute_path "_/assets/assets.css?#{css.first.to_i}"
+        xml.sub!('</head>', %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/></head>})
+      end
+      js = Application.scripts['js']
+      if js
+        path = absolute_path "_/assets/assets.js?#{js.first.to_i}"
+        xml.sub!('</body>', %{<script src="#{escape_html path}" type="text/javascript" async="async"/></body>})
+      end
     end
   end
 

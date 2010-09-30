@@ -7,18 +7,18 @@ Engine.create(:gallery, :priority => 3, :layout => true, :hidden => true, :cache
   def output(context)
     @per_row = 4
     per_page = @per_row * 4
-    @page_nr = context.params[:page].to_i
+    @page_nr = [context.params[:page].to_i, 1].max
     @page = context.page
     @images = @page.children.select {|page| page.mime.image? }
-    @last_page = @images.size / per_page
-    @images = @images[(@page_nr * per_page) ... ((@page_nr + 1) * per_page)].to_a
+    @page_count = @images.size / per_page + 1
+    @images = @images[((@page_nr - 1) * per_page) ... (@page_nr * per_page)].to_a
     render :gallery
   end
 end
 
 __END__
 @@ gallery.haml
-!= pagination(page_path(@page), @last_page, @page_nr, :output => 'gallery')
+!= pagination(page_path(@page), @page_count, @page_nr, :output => 'gallery')
 %table.gallery
   - @images.each_slice(@per_row) do |row|
     %tr

@@ -19,7 +19,7 @@ Tag.define 'menu', :description => 'Show blog menu', :dynamic => true do |contex
       page.children.each do |child|
         (years[child.version.date.year] ||= [])[child.version.date.month] = true
       end
-      render :menu, :locals => {:years => years, :page => page}, :layout => false
+      render :menu, :locals => {:years => years, :page => page}
     end
   end
 end
@@ -36,10 +36,10 @@ Engine.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidde
     month = context.params[:month].to_i
     articles.reject! {|article| article.version.date.month != month } if month != 0
 
-    @page_nr = context.params[:page].to_i
+    @page_nr = [context.params[:page].to_i, 1].max
     per_page = 10
-    @last_page = articles.size / per_page
-    articles = articles[(@page_nr * per_page) ... ((@page_nr + 1) * per_page)].to_a
+    @page_count = articles.size / per_page + 1
+    articles = articles[((@page_nr - 1) * per_page) ... (@page_nr * per_page)].to_a
 
     @articles = articles.map do |page|
       begin
@@ -78,7 +78,7 @@ __END__
       .content!= content
       - if !full
         %a.full{:href => absolute_path(page.path) }= :full_article.t
-!= pagination(page_path(@page), @last_page, @page_nr, :output => 'blog')
+!= pagination(page_path(@page), @page_count, @page_nr, :output => 'blog')
 @@ menu.haml
 %table.blog-menu
   - years.keys.sort.each do |year|

@@ -64,8 +64,8 @@ class Olelo::Page
 end
 
 class Olelo::Application
-  hook :layout, 999 do |name, doc|
-    if page
+  hook :dom, 999 do |name, doc, layout|
+    if page && layout
       doc.css('#menu .action-edit').each {|link| link.delete('href') } if !page.writable?
       if !page.root?
         doc.css('#menu .action-delete').each {|link| link.parent.remove } if !page.deletable?

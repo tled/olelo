@@ -4,18 +4,18 @@ dependencies 'engine/engine'
 Engine.create(:tree, :priority => 2, :layout => true, :cacheable => true) do
   def accepts?(page); !page.children.empty?; end
   def output(context)
-    @page_nr = context.params[:page].to_i
+    @page_nr = [context.params[:page].to_i, 1].max
     per_page = 20
     @page = context.page
-    @last_page = @page.children.size / per_page
-    @children = @page.children[(@page_nr * per_page) ... ((@page_nr + 1) * per_page)].to_a
+    @page_count = @page.children.size / per_page + 1
+    @children = @page.children[((@page_nr - 1) * per_page) ... (@page_nr * per_page)].to_a
     render :tree
   end
 end
 
 __END__
 @@ tree.haml
-!= pagination(page_path(@page), @last_page, @page_nr, :output => 'tree')
+!= pagination(page_path(@page), @page_count, @page_nr, :output => 'tree')
 %table#tree-table
   %thead
     %tr
@@ -42,4 +42,4 @@ __END__
           %a.action-history{:href=>action_path(child, :history), :title => :history.t}= :history.t
           %a.action-move{:href=>action_path(child, :move), :title => :move.t}= :move.t
           %a.action-delete{:href=>action_path(child, :delete), :title => :delete.t}= :delete.t
-!= pagination(page_path(@page), @last_page, @page_nr, :output => 'tree')
+!= pagination(page_path(@page), @page_count, @page_nr, :output => 'tree')

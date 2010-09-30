@@ -2,7 +2,7 @@ description  'Enhanced edit form with preview and diff'
 dependencies 'engine/engine'
 
 class Olelo::Application
-  hook :layout do |name, doc|
+  hook :dom do |name, doc, layout|
     if name == :edit
       if flash[:preview]
         doc.css('#content .tabs').before %{<div class="preview">#{flash[:preview]}</div>}

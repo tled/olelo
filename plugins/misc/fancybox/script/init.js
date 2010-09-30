@@ -1,10 +1,8 @@
 (function() {
     function initFancybox() {
         $('a.fancybox').each(function() {
-            this.href = this.href.replace(/output=\w+/g, '');
-            if (this.href.indexOf('?') < 0)
-                this.href += '?';
-            this.href += 'output=image&amp;geometry=800x800>';
+            var href = this.href.replace(/output=\w+/g, '');
+            this.href = href + (href.indexOf('?') < 0 ? '?' : '&') + 'output=image&geometry=800x800>';
         });
         $('a.fancybox').fancybox({
             'transitionIn'  : 'none',

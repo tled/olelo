@@ -8,6 +8,7 @@
 	this.live('click', function() {
             $(this).addClass('loading');
             var href = this.href;
+            href += (href.indexOf('?') < 0 ? '?' : '&') + 'no_layout=1';
             page.load(href, function() {
                 page.trigger('pageLoaded', [href]);
             });

@@ -15,7 +15,7 @@ class Olelo::Page
 end
 
 class Olelo::Application
-  hook :layout, 999 do |name, doc|
+  hook :dom, 999 do |name, doc, layout|
     doc.css('#menu .actions, #info, .editsection, form[action*=signup], #tabhead-signup').remove if !User.logged_in?
   end
 

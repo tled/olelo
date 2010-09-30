@@ -39,37 +39,38 @@ module Olelo
       page ? page.content : %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
     end
 
-    def pagination(path, last_page, page_nr, opts = {})
-      if last_page > 0
-        li = []
-        if page_nr > 0
-          li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => 0))}">&#171;</a>}
-          li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr - 1))}">&#8249;</a>}
-        end
-        min = page_nr - 3
-        max = page_nr + 3
-        if min > 0
-          min -= max - last_page if max > last_page
-        else
-          max -= min if min < 0
-        end
-        max = [max, last_page].min
-        min = [min, 0].max
-        li << '&#8230;' if min != 0
-        (min..max).each do |i|
-          if i == page_nr
-            li << %{<a class="current" href="#">#{i + 1}</a>}
-          else
-            li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => i))}">#{i + 1}</a>}
-          end
-        end
-        li << '&#8230;' if max != last_page
-        if page_nr < last_page
-          li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr + 1))}">&#8250;</a>}
-          li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => last_page))}">&#187;</a>}
-        end
-        '<ul class="pagination">' + li.map {|x| "<li>#{x}</li>"}.join + '</ul>'
+    def pagination(path, page_count, page_nr, opts = {})
+      return if page_count <= 1
+      li = []
+      if page_nr > 1
+        li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr - 1))}">&#9666;</a>}
       end
+      min = page_nr - 3
+      max = page_nr + 3
+      if min > 1
+        min -= max - page_count if max > page_count
+      else
+        max -= min if min < 1
+      end
+      max = max + 2 < page_count ? max : page_count
+      min = min > 3 ? min : 1
+      if min != 1
+        li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => 1))}">1</a>} << '&#8230;'
+      end
+      (min..max).each do |i|
+        if i == page_nr
+          li << %{<a class="current" href="#">#{i}</a>}
+        else
+          li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => i))}">#{i}</a>}
+        end
+      end
+      if max != page_count
+        li << '&#8230;' << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_count))}">#{page_count}</a>}
+      end
+      if page_nr < page_count
+        li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr + 1))}">&#9656;</a>}
+      end
+      '<ul class="pagination">' + li.map {|x| "<li>#{x}</li>"}.join + '</ul>'
     end
 
     def date(t)
@@ -158,9 +159,6 @@ module Olelo
         opts[:etag] = "#{User.current.name}-#{opts[:etag]}" if opts[:etag]
       end
 
-      # Spcial etag for ajax request
-      opts[:etag] = "xhr-#{opts[:etag]}" if request.xhr?
-
       if opts[:etag]
         value = '"%s"' % opts.delete(:etag)
         response['ETag'] = value.to_s
@@ -197,6 +195,7 @@ module Olelo
     include FlashHelper
     include PageHelper
     include HttpHelper
+    include Templates
 
     def tabs(*actions)
       '<ul class="tabs">' + actions.map do |action|
@@ -245,13 +244,13 @@ module Olelo
       end
     end
 
-    def render(name, opts = {})
-      layout = opts.delete(:layout)
-      output = super(name, opts)
-      if layout != false
-        output = super(:layout, opts) { output }
-        invoke_hook :layout_xml, name, output
-      end
+    alias render_partial render
+
+    def render(name, options = {})
+      layout = options.delete(:layout) != false && !params[:no_layout]
+      output = render_partial(name, options)
+      output = render_partial(:layout, options) { output } if layout
+      invoke_hook :render, name, output, layout
       output
     end
   end

@@ -3,8 +3,9 @@ description 'Forbid anonymous access, redirect to login'
 class Olelo::Application
   PUBLIC_ACCESS = %w(/login)
 
-  hook :layout, 999 do |name, doc|
-    doc.css('#menu .actions, #info, #search, #sidebar *, script[src*=assets], link[href*=assets], form[action*=signup], #tabhead-signup').remove if !User.logged_in?
+  hook :dom, 999 do |name, doc, layout|
+    doc.css('#menu .actions, #info, #search, #sidebar *, script[src*=assets], ' +
+            'link[href*=assets], form[action*=signup], #tabhead-signup').remove if !User.logged_in?
   end
 
   before :routing do
