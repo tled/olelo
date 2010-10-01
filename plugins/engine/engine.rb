@@ -149,8 +149,12 @@ end
 
 # Plug-in the engine subsystem
 class Olelo::Application
-  before :show do
+  get '/version/:version(/:path)|/(:path)', :tail => true do
     begin
+      @page = Page.find!(params[:path], params[:version])
+      cache_control :etag => page.version, :last_modified => page.version.date
+      @menu_versions = true
+
       params[:output] ||= 'tree' if params[:path].to_s.ends_with? '/'
       @engine_name, layout, response, content =
         Cache.cache("engine-#{page.path}-#{page.version}-#{build_query(original_params)}",
@@ -171,6 +175,9 @@ class Olelo::Application
       raise if params[:output]
       flash.error ex.message
       redirect action_path(page, :edit)
+    rescue NotFound
+      redirect absolute_path('new'/params[:path].to_s) if params[:version].blank?
+      raise
     end
   end
 

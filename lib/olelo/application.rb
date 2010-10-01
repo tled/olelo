@@ -11,7 +11,7 @@ module Olelo
     attr_reader :logger, :page
     attr_setter :on_error
 
-    has_around_hooks :request, :routing, :action, :show
+    has_around_hooks :request, :routing, :action
     has_hooks :auto_login, :render, :dom
 
     class<< self
@@ -239,9 +239,7 @@ module Olelo
         @page = Page.find!(params[:path], params[:version])
         cache_control :etag => page.version, :last_modified => page.version.date
         @menu_versions = true
-        with_hooks :show do
-          halt render(:show, :locals => {:content => page.try(:content)})
-        end
+        halt render(:show, :locals => {:content => page.try(:content)})
       rescue NotFound
         redirect absolute_path('new'/params[:path].to_s) if params[:version].blank?
         raise
