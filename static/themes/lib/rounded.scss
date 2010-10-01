@@ -21,23 +21,23 @@ $rounded_default_radius: 4px !default;
 }
 
 @mixin rounded-top($radius: $rounded_default_radius) {
-  -moz-border-radius-top: $radius;
-  -webkit-border-radius-top: $radius;
-}
-
-@mixin rounded-left($radius: $rounded_default_radius) {
-  -moz-border-radius-left: $radius;
-  -webkit-border-radius-left: $radius;
+  @include rounded-tl($radius);
+  @include rounded-tr($radius);
 }
 
 @mixin rounded-bottom($radius: $rounded_default_radius) {
-  -moz-border-radius-bottom: $radius;
-  -webkit-border-radius-bottom: $radius;
+  @include rounded-bl($radius);
+  @include rounded-br($radius);
+}
+
+@mixin rounded-left($radius: $rounded_default_radius) {
+  @include rounded-tl($radius);
+  @include rounded-bl($radius);
 }
 
 @mixin rounded-right($radius: $rounded_default_radius) {
-  -moz-border-radius-right: $radius;
-  -webkit-border-radius-right: $radius;
+  @include rounded-tr($radius);
+  @include rounded-br($radius);
 }
 
 @mixin rounded($radius: $rounded_default_radius) {

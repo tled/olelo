@@ -70,22 +70,31 @@ ul.button-bar, ul.pagination {
   li {
     float: left;
     padding: 0;
-    margin: 0 0.5em 0.5em 0;
-    a {
+    margin: 0;
+    a, span {
       display: block;
       background: url(images/bg/button.png) repeat-x left bottom transparent;
       border: 1px solid $border_color;
+      border-left: 0px none;
       color: $dark_color;
       padding: 0em 0.5em;
       line-height: 1.5em;
-      @include rounded;
       &:active, &.current, &.loading {
         background: url(images/bg/button.png) repeat-x left bottom $light_bg1;
-        border-style: inset;
       }
       &.loading {
         background: $light_bg1 url(images/loading.gif) repeat;
       }
+      &.ellipsis:before {
+        content: '\22EF';
+      }
+    }
+    &:first-child a, &:first-child span {
+      border-left: 1px solid $border_color;
+      @include rounded-left;
+    }
+    &:last-child a, &:last-child span {
+      @include rounded-right;
     }
   }
 }
