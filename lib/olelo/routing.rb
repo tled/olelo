@@ -2,7 +2,6 @@ module Olelo
   module Routing
     def self.included(base)
       base.extend(ClassMethods)
-      base.class_eval { include Hooks }
     end
 
     attr_reader :params, :original_params, :response, :request, :env
@@ -81,10 +80,10 @@ module Olelo
 
     private
 
-    def error!(ex)
-      response.status = Rack::Utils.status_code(ex.try(:status) || :internal_server_error)
-      response.body   = [ex.message]
-      invoke_exception_hook(ex).join
+    def error!(error)
+      response.status = Rack::Utils.status_code(error.try(:status) || :internal_server_error)
+      response.body   = [error.message]
+      handle_error(error).join
     end
 
     def perform!
@@ -128,8 +127,8 @@ module Olelo
         end
       end if self.class.router[method]
       raise NotFound, path
-    rescue ::Exception => ex
-      halt error!(ex)
+    rescue ::Exception => error
+      halt error!(error)
     end
 
     class Router

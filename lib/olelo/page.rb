@@ -5,6 +5,8 @@ module Olelo
     include Hooks
     include Attributes
 
+    has_around_hooks :move, :delete, :save
+
     attributes do
       string  :title
       boolean :no_title

@@ -74,7 +74,7 @@ class Olelo::Application
     end
   end
 
-  hook AccessDenied do |ex|
+  error AccessDenied do |ex|
     if !on_error
       if request.xhr?
         response['Content-Type'] = 'application/json; charset=utf-8'

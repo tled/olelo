@@ -4,6 +4,8 @@ module Olelo
     include Util
     include Hooks
 
+    has_around_hooks :load
+
     @plugins = {}
     @failed = []
     @disabled = []

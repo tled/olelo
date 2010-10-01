@@ -2,12 +2,17 @@ module Olelo
   # Main class of the application
   class Application
     include Util
+    include Hooks
+    include ErrorHandler
     include Routing
     include ApplicationHelper
 
     patterns :path => Page::PATH_PATTERN
     attr_reader :logger, :page
     attr_setter :on_error
+
+    has_around_hooks :request, :routing, :action, :show
+    has_hooks :auto_login, :render, :dom
 
     class<< self
       attr_accessor :reserved_paths
@@ -51,13 +56,13 @@ module Olelo
     end
 
     # Handle 404s
-    hook NotFound do |error|
+    error NotFound do |error|
       logger.debug(error)
       cache_control :no_cache => true
       halt render(:not_found, :locals => {:error => error})
     end
 
-    hook StandardError do |error|
+    error StandardError do |error|
       if on_error
         logger.error error
         (error.try(:messages) || [error.message]).each {|msg| flash.error!(msg) }
@@ -66,7 +71,7 @@ module Olelo
     end
 
     # Show wiki error page
-    hook Exception do |error|
+    error Exception do |error|
       logger.error(error)
       cache_control :no_cache => true
       render :error, :locals => {:error => error}
@@ -130,7 +135,7 @@ module Olelo
 
     get '/history(/:path)' do
       @page = Page.find!(params[:path])
-      @per_page = 10
+      @per_page = 30
       @page_nr = [params[:page].to_i, 1].max
       @history = page.history((@page_nr - 1) * @per_page)
       @page_count = @page_nr + @history.length / @per_page

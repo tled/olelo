@@ -1,4 +1,34 @@
 module Olelo
+  module ErrorHandler
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
+
+    def handle_error(error)
+      result = []
+      type = error.class
+      while type
+	result.push(*self.class.error_handler[type].to_a.sort_by(&:first).map {|x| send(x.last, error) })
+        break if type == Exception
+        type = type.superclass
+      end
+      result
+    end
+
+    module ClassMethods
+      def error_handler
+        @error_handler ||= {}
+      end
+
+      def error(error, priority = 99, &block)
+        handler = (error_handler[error] ||= [])
+        method = "ERROR #{error} #{handler.size}"
+        define_method(method, &block)
+        handler << [priority, method]
+      end
+    end
+  end
+
   # Include this module to add hook support to your class.
   # The class will be extended with {ClassMethods} which
   # provides the methods to register hooks.
@@ -35,27 +65,10 @@ module Olelo
     # @return [Array] [Hook results]
     # @api public
     #
-    def invoke_hook(type, *args)
-      self.class.hooks[type].to_a.sort_by(&:first).map {|priority, name| send(name, *args) }
-    end
-
-    # Invoke exception hooks registered for this class
-    #
-    # The exception handlers were registered by {ClassMethods#hook}.
-    #
-    # @param [Exception] exception to handle
-    # @return [Array] [Handler results]
-    # @api public
-    #
-    def invoke_exception_hook(exception)
-      result = []
-      type = exception.class
-      while type
-        result.push(*invoke_hook(type, exception))
-        break if type == Exception
-        type = type.superclass
-      end
-      result
+    def invoke_hook(name, *args)
+      hooks = self.class.hooks[name.to_sym]
+      raise "#{self.class} has no hook '#{name}'" if !hooks
+      hooks.sort_by(&:first).map {|x| send(x.last, *args) }
     end
 
     # Extends class with hook functionality
@@ -67,28 +80,42 @@ module Olelo
         @hooks ||= {}
       end
 
+      def has_around_hooks(*names)
+        names.each do |name|
+          has_hooks "BEFORE #{name}", "AFTER #{name}"
+        end
+      end
+
+      def has_hooks(*names)
+        names.map(&:to_sym).each do |name|
+          raise "#{self} already has hook '#{name}'" if hooks.include?(name)
+          hooks[name] = []
+        end
+      end
+
       # Register hook for class
       #
       # The hook will be invoked by {#invoke_hook}. Hooks with lower priority are called first.
       #
-      # @param [Symbol] name of hook
+      # @param [Symbol, String] name of hook
       # @param [Integer] priority
       # @yield Hook block with arguments matching the hook invocation
       # @return [void]
       # @api public
       #
       def hook(name, priority = 99, &block)
-        hooks[name] ||= []
-        method = "HOOK #{name} #{hooks[name].size}"
+        list = hooks[name.to_sym]
+        raise "#{self} has no hook '#{name}'" if !list
+        method = "HOOK #{name} #{list.size}"
         define_method(method, &block)
-        hooks[name] << [priority, method]
+        list << [priority, method]
       end
 
       # Register before hook
       #
       # The hook will be invoked by {#with_hooks}.
       #
-      # @param [Symbol] name of hook
+      # @param [Symbol, String] name of hook
       # @param [Integer] priority
       # @yield Hook block with arguments matching the hook invocation
       # @return [void]
@@ -102,7 +129,7 @@ module Olelo
       #
       # The hook will be invoked by {#with_hooks}.
       #
-      # @param [Symbol] name of hook
+      # @param [Symbol, String] name of hook
       # @param [Integer] priority
       # @yield Hook block with arguments matching the hook invocation
       # @return [void]

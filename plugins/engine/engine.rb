@@ -16,6 +16,7 @@ end
 # purpose you create a subcontext which inherits the variables.
 class Olelo::Context
   include Hooks
+  has_hooks :initialized
 
   attr_reader :page, :parent, :private, :params, :request, :response
 
