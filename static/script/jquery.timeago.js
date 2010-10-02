@@ -1,4 +1,4 @@
-// Toggle between date and relative time by click
+// Replace timestamps with relative time
 // Written by Daniel Mendler
 (function($) {
     $.translations({
@@ -30,31 +30,27 @@
          }
     });
 
-    $.fn.dateToggler = function() {
-	function timeAgo(from) {
-	    var n = Math.floor((new Date().getTime()  - new Date(from * 1000)) / 60000)
-	    if (n <= 0)      return $.t('less_than_a_minute_ago');
-	    if (n == 1)      return $.t('a_minute_ago');
-	    if (n < 45)      return $.t('n_minutes_ago', {n: n});
-	    if (n < 90)      return $.t('one_hour_ago');
-	    if (n < 1440)    return $.t('n_hours_ago', {n: Math.round(n / 60)});
-	    if (n < 2880)    return $.t('one_day_ago');
-	    if (n < 43200)   return $.t('n_days_ago', {n: Math.round(n / 1440)});
-	    if (n < 86400)   return $.t('one_month_ago');
-	    if (n < 525960)  return $.t('n_months_ago', {n: Math.round(n / 43200)});
-	    if (n < 1051920) return $.t('one_year_ago');
-	    return $.t('over_n_years_ago', {n: Math.round(n / 525960)});
-	}
+    function timeAgo(from) {
+	var n = Math.floor((new Date().getTime()  - new Date(from * 1000)) / 60000)
+	if (n <= 0)      return $.t('less_than_a_minute_ago');
+	if (n == 1)      return $.t('a_minute_ago');
+	if (n < 45)      return $.t('n_minutes_ago', {n: n});
+	if (n < 90)      return $.t('one_hour_ago');
+	if (n < 1440)    return $.t('n_hours_ago', {n: Math.round(n / 60)});
+	if (n < 2880)    return $.t('one_day_ago');
+	if (n < 43200)   return $.t('n_days_ago', {n: Math.round(n / 1440)});
+	if (n < 86400)   return $.t('one_month_ago');
+	if (n < 525960)  return $.t('n_months_ago', {n: Math.round(n / 43200)});
+	if (n < 1051920) return $.t('one_year_ago');
+	return $.t('over_n_years_ago', {n: Math.round(n / 525960)});
+    }
 
+    $.fn.timeAgo = function() {
 	this.each(function() {
 	    var elem = $(this);
-	    var text = elem.text();
-	    var match = elem.attr('class').match(/epoch-(\d+)/);
-	    if (match) {
-	        elem.click(function() {
-		    elem.html(elem.text() == text ? timeAgo(match[1]) : text);
-		}).click();
-	    }
+            var match = elem.attr('class').match(/epoch-(\d+)/);
+	    if (match)
+		elem.attr('title', elem.text()).html(timeAgo(match[1]));
 	});
     };
 })(jQuery);

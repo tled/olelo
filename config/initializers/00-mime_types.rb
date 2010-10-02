@@ -16,7 +16,7 @@ MimeMagic.add('text/x-markdown',
 MimeMagic.add('text/x-markdown.maruku',
               :extensions => %w(maruku),
               :parents => 'text/x-markdown',
-              :comment => 'Markdown Text File, (Maruku Variant)')
+              :comment => 'Markdown Text File (Maruku Variant)')
 
 MimeMagic.add('text/x-markdown.kramdown',
               :extensions => %w(kramdown),

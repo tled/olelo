@@ -6,8 +6,10 @@
 		delay: 0,
 		minLength: 0,
 		source: this.options.source
+	    }).click(function() {
+		input.autocomplete('search', this.value);
 	    });
-	    $('<button>&#9662;</button>')
+	    $('<button class="ui-combo-button"/>')
 		.attr('tabIndex', -1)
 		.insertAfter(input)
 		.click(function(event) {

@@ -1,0 +1,11 @@
+production: false
+disqus_name: olelo
+disabled_plugins:
+  #- treeview
+  - security/readonly_wiki
+  - security/private_wiki
+#rack:
+#  esi: false
+recaptcha:
+  public:  6Ld3agoAAAAAAESVJHssGVWst8oka2hoSs4_WNeT
+  private: 6Ld3agoAAAAAAMNrbrpADLl2_3j8J9tY-rgHy6o6

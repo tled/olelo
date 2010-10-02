@@ -20,3 +20,17 @@
           background: #DDD;
         }
 }
+
+.ui-autocomplete-input {
+  margin-right: 0;
+}
+
+.ui-combo-button {
+  @include rounded-left(0);
+  border-left: 0px none;
+  &:before {
+    content: '\25BE';
+  }
+  margin-left: 0;
+  padding: 0;
+}

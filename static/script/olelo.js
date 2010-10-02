@@ -17,10 +17,10 @@ $(function() {
                 });
             }
         });
-        $('label, #menu, .tabhead, .pagination', parent).disableSelection();
+        $('label, #menu, .tabhead, .pagination, .button-bar', parent).disableSelection();
         $('#history-table', parent).historyTable();
         $('.zebra, #history-table, #tree-table', parent).zebra();
-	$('.date', parent).dateToggler();
+	$('.date', parent).timeAgo();
         $('.tabs', parent).each(function() {
 	    $('> li', this).tabWidget();
 	});
