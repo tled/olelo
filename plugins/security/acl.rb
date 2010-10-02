@@ -15,21 +15,23 @@ class Olelo::Page
     group :acl do
       list :read
       list :write
+      list :create
+      list :delete
     end
   end
 
-  # New page is writable if parent is writable
+  # New page is writable if parent allows page creation
   # Existing page is writable if page is writable
   def writable?
-    new? ? (root? || parent.writable?) : access?(:write)
+    new? ? (root? || parent.access?(:create)) : access?(:write)
   end
 
   # Page is deletable if parent is writable
   def deletable?
-    parent.writable?
+    parent.access?(:delete)
   end
 
-  # Page is movable if parent is writable and destination is writable
+  # Page is movable if page is deletable and destination is writable
   def movable?(destination = nil)
     deletable? && (!destination || (Page.find(destination) || Page.new(destination)).writable?)
   end
