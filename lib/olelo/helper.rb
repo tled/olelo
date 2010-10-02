@@ -237,9 +237,9 @@ module Olelo
     end
 
     def base_path
-      if page && page.root? && !page.current?
+      if page && page.root?
         url = request.url_without_path
-        url << 'version'/page.version << '/' if !page.current?
+        url << 'version'/page.tree_version << '/' if !page.current?
         %{<base href="#{escape_html url}"/>}
       end
     end

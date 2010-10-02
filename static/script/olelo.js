@@ -28,7 +28,7 @@ $(function() {
         $('*[accesskey]', parent).underlineAccessKey();
     }
 
-    $('.pagination a:not(.current)').pagination('#content');
+    $('.pagination a').pagination('#content');
     $('#content').bind('pageLoaded', function() { pageLoaded(this); });
     pageLoaded();
 });
