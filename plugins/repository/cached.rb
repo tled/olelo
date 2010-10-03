@@ -32,7 +32,7 @@ class CachedRepository < DelegateClass(Repository)
     if @transaction[Thread.current.object_id]
       super
     else
-      @cache["v-#{path}-#{tree_version}"] ||= super
+      @cache["v-#{path}-#{version}"] ||= super
     end
   end
 end

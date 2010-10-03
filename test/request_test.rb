@@ -45,6 +45,7 @@ describe 'requests' do
                 'content',
                 'text/x-creole',
                ],
+      :mime_suggestions => [],
       :disabled_plugins => [
                             'security/readonly_wiki',
 			    'security/private_wiki',

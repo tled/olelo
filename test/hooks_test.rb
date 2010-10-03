@@ -5,11 +5,26 @@ describe 'Olelo::Hooks' do
   before do
     @hooks_test = Class.new do
       include Olelo::Hooks
+      has_hooks :ping
+      has_around_hooks :action
     end
   end
 
   after do
     @hooks_test = nil
+  end
+
+  it 'should check for hook existence' do
+    lambda { @hooks_test.hook(:action) {} }.should.raise RuntimeError
+    lambda { @hooks_test.before(:ping) {} }.should.raise RuntimeError
+    lambda { @hooks_test.after(:ping) {} }.should.raise RuntimeError
+    lambda { @hooks_test.new.invoke_hook(:action) {} }.should.raise RuntimeError
+    lambda { @hooks_test.new.with_hooks(:ping) {} }.should.raise RuntimeError
+    @hooks_test.hook(:ping) {}
+    @hooks_test.before(:action) {}
+    @hooks_test.after(:action) {}
+    @hooks_test.new.invoke_hook(:ping)
+    @hooks_test.new.with_hooks(:action) {}
   end
 
   it 'should provide #hook' do
@@ -53,9 +68,6 @@ describe 'Olelo::Hooks' do
     end
     @hooks_test.after(:action) do |a, b|
       :action_after
-    end
-    @hooks_test.hook(:action) do |a, b|
-      :not_called
     end
     result = @hooks_test.new.with_hooks(:action, 1, 2) do
       :action
