@@ -22,6 +22,7 @@ module Olelo
     # Pattern for valid paths
     # @api public
     PATH_PATTERN = '[^\s](?:.*[^\s]+)?'
+    PATH_REGEXP = /^#{PATH_PATTERN}$/
 
     # Mime type for empty page
     # @api public
@@ -40,7 +41,7 @@ module Olelo
       @path = path.to_s.cleanpath.freeze
       @tree_version = tree_version
       @current = current
-      Page.check_path(path)
+      Page.check_path(@path)
     end
 
     def self.transaction(&block)
@@ -225,7 +226,7 @@ module Olelo
     end
 
     def self.check_path(path)
-      raise :invalid_path.t if !valid_xml_chars?(path) || !(path.blank? || path =~ /^#{PATH_PATTERN}$/)
+      raise :invalid_path.t if !(path.blank? || path =~ PATH_REGEXP) || !valid_xml_chars?(path)
     end
 
     def detect_mime

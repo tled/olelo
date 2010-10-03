@@ -6,7 +6,7 @@ class Module
   #
   def attr_reader?(*attrs)
     attrs.each do |a|
-      module_eval %{ def #{a}?; !!@#{a}; end }
+      module_eval "def #{a}?; !!@#{a}; end"
     end
   end
 
@@ -63,16 +63,17 @@ class Hash
       end
     end
 
+    alias_method :regular_include, :include?
+    alias_method :regular_writer, :[]=
+    alias_method :regular_update, :update
+
     def default(key = nil)
-      if Symbol === key && include?(key = key.to_s)
+      if Symbol === key && regular_include(key = key.to_s)
         self[key]
       else
         super
       end
     end
-
-    alias_method :regular_writer, :[]=
-    alias_method :regular_update, :update
 
     def []=(key, value)
       regular_writer(convert_key(key), value)
@@ -164,7 +165,14 @@ class Object
   end
 end
 
+class NilClass;   def blank?; true;  end; end
+class FalseClass; def blank?; true;  end; end
+class TrueClass;  def blank?; false; end; end
+
 class String
+  # Faster blank?
+  alias blank? empty?
+
   if ''.respond_to?(:encoding)
     # Try to force encoding
     #
@@ -176,8 +184,10 @@ class String
     #
     def try_encoding(enc)
       old_enc = encoding
-      force_encoding(enc)
-      force_encoding(old_enc) if !valid_encoding?
+      if old_enc != enc
+        force_encoding(enc)
+        force_encoding(old_enc) if !valid_encoding?
+      end
       self
     end
   end
@@ -215,20 +225,15 @@ class String
   # @return [String] cleaned path
   #
   def cleanpath
-    names = split('/').reject(&:blank?)
-    i = 0
-    while i < names.length
-      case names[i]
+    names = []
+    split('/').each do |name|
+      case name
       when '..'
-        names.delete_at(i)
-        if i > 0
-          names.delete_at(i-1)
-          i -= 1
-        end
+        names.pop
       when '.'
-        names.delete_at(i)
+      when ''
       else
-        i += 1
+        names.push name
       end
     end
     names.join('/')

@@ -1,6 +1,10 @@
+# coding: binary
+# Coding is required for StringIO
 module Olelo
   module Middleware
     class Blacklist
+      NULL_IO = StringIO.new('')
+
       def initialize(app, options)
         @app = app
         @list = options[:blacklist]
@@ -11,7 +15,7 @@ module Olelo
           env.delete('rack.request.form_vars')
           env.delete('rack.request.form_hash')
           env.delete('rack.request.form_input')
-          env['rack.input'] = ::File.open('/dev/null', 'rb')
+          env['rack.input'] = NULL_IO
           env['REQUEST_METHOD'] = 'GET'
         end
         @app.call(env)

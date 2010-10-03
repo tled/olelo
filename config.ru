@@ -44,14 +44,6 @@ use_lint if !Olelo::Config.production?
 use Rack::Runtime
 use Rack::ShowExceptions if !Olelo::Config.production?
 
-if !Olelo::Config.rack.blacklist.empty?
-  require 'olelo/middleware/blacklist'
-  use Olelo::Middleware::Blacklist, :blacklist => Olelo::Config.rack.blacklist
-end
-
-use Olelo::Middleware::DegradeMimeType
-use Rack::RelativeRedirect
-
 if Olelo::Config.rack.deflater?
   logger.info 'Use rack deflater'
   use Rack::Deflater
@@ -59,7 +51,7 @@ end
 
 use Rack::StaticCache, :urls => ['/static'], :root => path
 use Rack::Session::Cookie, :key => 'olelo.session', :secret => Olelo::Config.rack.session_secret
-use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
+use Olelo::Middleware::DegradeMimeType
 
 class LoggerOutput
   def initialize(logger); @logger = logger; end
@@ -69,10 +61,18 @@ end
 use Rack::MethodOverride
 use Rack::CommonLogger, LoggerOutput.new(logger)
 
+if !Olelo::Config.rack.blacklist.empty?
+  require 'olelo/middleware/blacklist'
+  use Olelo::Middleware::Blacklist, :blacklist => Olelo::Config.rack.blacklist
+end
+
 if ''.respond_to? :encoding
   require 'olelo/middleware/force_encoding'
   use Olelo::Middleware::ForceEncoding
 end
+
+use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
+use Rack::RelativeRedirect
 
 run Olelo::Application.new(nil, :logger => logger)
 

@@ -19,6 +19,15 @@ class CachedRepository < DelegateClass(Repository)
   end
 
   # @override
+  def get_version(version)
+    if @transaction[Thread.current.object_id]
+      super
+    else
+      @cache["v-#{version}"] ||= super
+    end
+  end
+
+  # @override
   def path_exists?(path, version)
     if @transaction[Thread.current.object_id]
       super
@@ -32,7 +41,7 @@ class CachedRepository < DelegateClass(Repository)
     if @transaction[Thread.current.object_id]
       super
     else
-      @cache["v-#{path}-#{version}"] ||= super
+      @cache["pv-#{path}-#{version}"] ||= super
     end
   end
 end
