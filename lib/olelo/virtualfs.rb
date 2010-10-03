@@ -21,7 +21,7 @@ module Olelo
     end
 
     def mime(name)
-      MimeMagic.by_extension(File.extname(name)) || MimeMagic.new('application/octet-stream')
+      MimeMagic.by_path(name) || MimeMagic.new('application/octet-stream')
     end
 
     class VirtualFile
