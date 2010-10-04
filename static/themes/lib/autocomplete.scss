@@ -1,24 +1,23 @@
 .ui-autocomplete {
-        position: absolute;
-	cursor: default;
-	list-style:none;
-	padding: 2px;
-	margin: 0;
-	display:block;
-	float: left;
-	background: #FFF;
-        border: 1px solid #BBB;
-	a {
-	  text-decoration: none;
-	  display: block;
-	  padding: .2em .4em;
-	  line-height: 1.5;
-	  zoom: 1;
-          color: #333;
-	}
-        .ui-state-hover {
-          background: #DDD;
-        }
+  position: absolute;
+  cursor: default;
+  list-style:none;
+  padding: 2px;
+  margin: 0;
+  display:block;
+  float: left;
+  background: #FFF;
+  border: 1px solid #BBB;
+  a {
+    text-decoration: none;
+    display: block;
+    padding: .2em .4em;
+    line-height: 1.2em;
+    color: #333;
+  }
+  .ui-state-hover {
+    background: #DDD;
+  }
 }
 
 .ui-autocomplete-input {
@@ -28,9 +27,9 @@
 .ui-combo-button {
   @include rounded-left(0);
   border-left: 0px none;
+  margin-left: 0;
+  padding: 0;
   &:before {
     content: '\25BE';
   }
-  margin-left: 0;
-  padding: 0;
 }

@@ -7,7 +7,10 @@
 		minLength: 0,
 		source: this.options.source
 	    }).click(function() {
-		input.autocomplete('search', this.value);
+		if (input.autocomplete('widget').is(':visible'))
+		    input.autocomplete('close');
+		else
+		    input.autocomplete('search', this.value);
 	    });
 	    $('<button class="ui-combo-button"/>')
 		.attr('tabIndex', -1)
@@ -17,11 +20,11 @@
 		    // close if already visible
 		    if (input.autocomplete('widget').is(':visible')) {
 			input.autocomplete('close');
-			return;
+		    } else {
+			// pass empty string as value to search for, displaying all results
+			input.autocomplete('search', '');
+			input.focus();
 		    }
-		    // pass empty string as value to search for, displaying all results
-		    input.autocomplete('search', '');
-		    input.focus();
 		});
 	}
     });

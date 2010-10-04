@@ -11,7 +11,8 @@
       %label(for='login-password')= :password.t
       %input#login-password(type='password' name='password')
       %br
-      %button(type='submit')= :login.t
+      .indent
+        %button(type='submit')= :login.t
       %br
   %form(action='#{absolute_path :signup}' method='post')
     #tab-signup.tab.fieldset
@@ -29,5 +30,6 @@
       %label(for='signup-email')= :email.t
       %input#signup-email(type='text' name='email')
       %br
-      %button(type='submit')= :signup.t
+      .indent
+        %button(type='submit')= :signup.t
       %br

@@ -22,17 +22,18 @@ module Olelo
         @label ||= Locale.translate(key, :fallback => titlecase(name))
       end
 
-      def build_form(attr)
+      def label_tag
         type = self.class.name.split('::').last.downcase
         title = Locale.translate("type_#{type}", :fallback => titlecase(type))
-        %{<label for="#{key}" title="#{escape_html title}">#{escape_html label}</label>
-          #{build_field(attr)}
-          <br/>
-          }.unindent
+        %{<label for="#{key}" title="#{escape_html title}">#{escape_html label}</label>}
+      end
+
+      def build_form(attr)
+        "#{label_tag}#{field_tag(attr)}<br/>"
       end
 
       class String < Attribute
-        def build_field(attr)
+        def field_tag(attr)
           %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html attr}"/>}
         end
 
@@ -43,7 +44,7 @@ module Olelo
       end
 
       class List < Attribute
-        def build_field(attr)
+        def field_tag(attr)
           %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html attr.to_a.join(', ')}"/>}
         end
 
@@ -54,7 +55,7 @@ module Olelo
       end
 
       class Integer < Attribute
-        def build_field(attr)
+        def field_tag(attr)
           %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html attr}"/>}
         end
 
@@ -65,8 +66,12 @@ module Olelo
       end
 
       class Boolean < Attribute
-        def build_field(attr)
+        def field_tag(attr)
           %{<input class="observe" type="checkbox" id="#{key}" name="#{key}" value="true"#{attr ? ' checked="checked"' : ''}/>}
+        end
+
+        def build_form(attr)
+          "<div class=\"indent\">#{field_tag(attr)}#{label_tag}</div><br/>\n"
         end
 
         def parse(params)
@@ -82,7 +87,7 @@ module Olelo
           @values = values
         end
 
-        def build_field(attr)
+        def field_tag(attr)
           html = %{<select class="observe" id="#{key}" name="#{key}">
                    <option#{values.any? {|value,label| attr == value} ? '' : ' selected="selected"'}></option>}
           values.sort_by(&:last).each do |value,label|
@@ -111,7 +116,7 @@ module Olelo
       end
 
       class Suggestions < Enum
-        def build_field(attr)
+        def field_tag(attr)
           %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html(values[attr] || attr)}"/>
             <script type="text/javascript">
             $('##{key}').combobox({ source: #{escape_javascript values.values.sort.to_json} });

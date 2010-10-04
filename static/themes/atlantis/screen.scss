@@ -290,7 +290,7 @@ table.full, #history-table, #tree-table {
 
 form {
   display: inline;
-  select, textarea, pre, input {
+  select, textarea, input {
     float: left;
     margin: 0.3em 0.5em 0.3em 0;
     padding: 2px;
@@ -310,37 +310,32 @@ form {
     border: 1px solid $border_color;
     color: $dark_color;
   }
-  &.inline * {
-    float: none;
-    display: inline;
-    margin: 0;
-    padding: 0;
-  }
-  &.inline button {
-    border: none;
-    background: none;
-  }
-  label, strong {
+  label {
     float: left;
     margin: 0;
     padding: 0.4em 0.5em 0.4em 0;
     border: none;
     background: none;
     color: $dark_color;
-    white-space: nowrap;
     &.unsaved {
       font-style: italic;
     }
   }
   .fieldset label {
-    min-width: 9em;
-    &.inline {
+    width: 12em;
+    text-align: right;
+  }
+  .indent {
+    margin-left: 12.5em;
+    label {
       width: auto;
     }
   }
   input[type=text], input[type=password] {
     font-family: $monospace_font;
-    font-size: 100%;
+    width: 20em;
+  }
+  select {
     width: 20em;
   }
   textarea {

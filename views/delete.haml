@@ -1,9 +1,9 @@
 - title :delete_page.t(:page => page.title)
 %h1= title
 %form(action='#{absolute_path page}' method='post')
-  .fieldset
+  .box
     != flash_messages
     %input(type='hidden' name='_method' value='delete')
-    %label.inline(for='submit')= :really_delete.t
-    %button#submit.inline(name='submit' type='submit' accesskey='d')= :delete.t
-    %button.inline(type='button' accesskey='c' onclick='history.back()')= :cancel.t
+    %label(for='submit')= :really_delete.t
+    %button#submit(name='submit' type='submit' accesskey='d')= :delete.t
+    %button(type='button' accesskey='c' onclick='history.back()')= :cancel.t
