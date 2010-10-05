@@ -42,9 +42,11 @@ module Olelo
     def pagination(path, page_count, page_nr, opts = {})
       return if page_count <= 1
       li = []
-      if page_nr > 1
-        li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr - 1))}">&#9666;</a>}
-      end
+      li << if page_nr > 1
+              %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr - 1))}">&#9666;</a>}
+            else
+              %{<span class="disabled">&#9666;</span>}
+            end
       min = page_nr - 3
       max = page_nr + 3
       if min > 1
@@ -58,18 +60,20 @@ module Olelo
         li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => 1))}">1</a>} << %{<span class="ellipsis"/>}
       end
       (min..max).each do |i|
-        if i == page_nr
-          li << %{<span class="current">#{i}</span>}
-        else
-          li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => i))}">#{i}</a>}
-        end
+        li << if i == page_nr
+                %{<span class="current">#{i}</span>}
+              else
+                %{<a href="#{escape_html absolute_path(path, opts.merge(:page => i))}">#{i}</a>}
+              end
       end
       if max != page_count
         li << %{<span class="ellipsis"/>} << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_count))}">#{page_count}</a>}
       end
-      if page_nr < page_count
-        li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr + 1))}">&#9656;</a>}
-      end
+      li << if page_nr < page_count
+              %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr + 1))}">&#9656;</a>}
+            else
+              %{<span class="disabled">&#9656;</span>}
+            end
       '<ul class="pagination">' + li.map {|x| "<li>#{x}</li>"}.join + '</ul>'
     end
 

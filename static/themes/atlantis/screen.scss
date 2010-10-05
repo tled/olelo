@@ -88,6 +88,9 @@ ul.button-bar, ul.pagination {
       &.ellipsis:before {
         content: '\22EF';
       }
+      &.disabled {
+        color: $border_color;
+      }
     }
     &:first-child a, &:first-child span {
       border-left: 1px solid $border_color;
@@ -398,8 +401,8 @@ table input {
     position: relative;
     > li {
       @include rounded-tl;
-        @include rounded-tr;
-      background: $light_bg1;
+      @include rounded-tr;
+      background: url(images/bg/button.png) repeat-x left bottom $light_bg1;
       float: left;
       padding: 0;
       margin: 0 4px 0 0;
@@ -418,7 +421,7 @@ table input {
         white-space: nowrap;
         padding: 0 0.8em;
         color: $dark_color;
-        &:hover, &:active, &:focus {
+        &:hover, &:active {
           text-shadow: #333333 1px 1px 2px;
         }
       }
