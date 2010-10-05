@@ -156,7 +156,7 @@ class Olelo::Application
       @menu_versions = true
 
       params[:output] ||= 'subpages' if params[:path].to_s.ends_with? '/'
-      @engine_name, layout, response, content =
+      @selected_engine, layout, response, content =
         Cache.cache("engine-#{page.path}-#{page.version}-#{build_query(original_params)}",
                     :update => request.no_cache?, :defer => true) do |cache|
         engine = Engine.find!(page, :name => params[:output])
@@ -183,17 +183,18 @@ class Olelo::Application
 
   hook :dom do |name, doc, layout|
     doc.css('#menu .action-view').each do |link|
-      menu = Cache.cache("engine-menu-#{page.path}-#{page.version}-#{params[:output]}",
+      menu = Cache.cache("engine-menu-#{page.path}-#{page.version}-#{@selected_engine}",
                          :update => request.no_cache?, :defer => true) do
-        engines = Olelo::Engine.find_all(page).select {|e| !e.hidden? || e.name == @engine_name }.map do |e|
+        engines = Olelo::Engine.find_all(page).select {|e| !e.hidden? || e.name == @selected_engine }.map do |e|
           [Olelo::Locale.translate("engine_#{e.name}", :fallback => titlecase(e.name)), e]
         end.sort_by(&:first)
-        li = engines.select {|name, e| e.layout? }.map do |name, e|
-          %{<li#{e.name == @engine_name ? ' class="selected"': ''}>
-          <a href="#{escape_html page_path(page, :output => e.name)}">#{escape_html name}</a></li>}.unindent
-        end +
-        engines.reject {|name, e| e.layout? }.map do |name, e|
-          %{<li class="download"><a href="#{escape_html page_path(page, :output => e.name)}">#{escape_html name}</a></li>}
+        li = []
+        engines.select {|name, e| e.layout? }.each do |name, e|
+          li << %{<li#{e.name == @selected_engine ? ' class="selected"': ''}>
+                  <a href="#{escape_html page_path(page, :output => e.name)}">#{escape_html name}</a></li>}.unindent
+        end
+        engines.reject {|name, e| e.layout? }.each do |name, e|
+          li << %{<li class="download"><a href="#{escape_html page_path(page, :output => e.name)}">#{escape_html name}</a></li>}
         end
         "<ul>#{li.join}</ul>"
       end
