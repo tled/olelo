@@ -23,7 +23,13 @@
           %div
             %label.hidden(for='pattern')= :search.t
             %input{:type=>'text',:id=>'pattern',:name=>'pattern', :value=> params[:pattern] || :search.t, :class=> !params[:pattern] && 'placeholder'}
-    #menu!= render_partial(:menu)
+    #menu
+      %ul
+        != breadcrumbs(page)
+        - if page && !page.current?
+          %li.noborder
+            != date page.version.date
+      != render_partial(:menu)
     #container
       #sidebar!= include_page(Olelo::Config.sidebar_page)
       #content!= yield
