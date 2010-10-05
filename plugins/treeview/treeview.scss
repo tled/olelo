@@ -103,11 +103,11 @@
     .page {
       background: url(../../static/themes/default/images/page.png) no-repeat center center;
     }
-    .expanded .tree {
-      background: url(../../static/themes/default/images/tree_open.png) no-repeat center center;
+    .expanded .folder {
+      background: url(../../static/themes/default/images/folder_open.png) no-repeat center center;
     }
-    .collapsed .tree {
-      background: url(../../static/themes/default/images/tree.png) no-repeat center center;
+    .collapsed .folder {
+      background: url(../../static/themes/default/images/folder.png) no-repeat center center;
     }
   }
 }

@@ -67,12 +67,6 @@
         height: 1.6em;
         color: $dark_color;
         cursor: pointer;
-        &.action-older:before {
-          content: "\00ab\00a0";
-	}
-        &.action-newer:after {
-          content: "\00a0\00bb";
-	}
         @include menu-action("new");
         @include menu-action("edit");
         @include menu-action("history");

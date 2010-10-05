@@ -10,7 +10,7 @@ end
 
 __END__
 @@ info.haml
-%table.zebra
+%table
   %tbody
     %tr
       %td= :name.t

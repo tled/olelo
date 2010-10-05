@@ -34,7 +34,7 @@ __END__
       %a(href="#tab-tags") Tags
 #tab-runtime.tab
   %h2 Runtime
-  %table.zebra
+  %table
     %tr
       %td Ruby version:
       %td= RUBY_VERSION
@@ -47,7 +47,7 @@ __END__
         %td= Olelo::Worker.jobs
 #tab-configuration.tab
   %h2 Configuration
-  %table.zebra
+  %table
     %tr
       %td Production mode:
       %td= Olelo::Config.production?
@@ -76,7 +76,7 @@ __END__
 #tab-plugins.tab
   %h2 Plugins
   %p These plugins are currently available on your installation.
-  %table.zebra.full
+  %table.full
     %thead
       %tr
         %th Name
@@ -106,7 +106,7 @@ __END__
       \where engines with lower priority are preferred. An alternative output engine
       \can be selected using the view menu or manually using the "output" query parameter.
     .scrollable
-      %table.zebra.full
+      %table.full
         %thead
           %tr
             %th Name
@@ -134,7 +134,7 @@ __END__
   #tab-filters.tab
     %h2 Filters used by filter engines
     %p Filters can be chained to build filter engines.
-    %table.zebra.full
+    %table.full
       %thead
         %tr
           %th Name
@@ -149,7 +149,7 @@ __END__
             %td!= check_mark filter.respond_to?(:subfilter)
             %td= filter.plugin.try(:name)
     %h2 Filter engine definitions
-    %table.zebra.full
+    %table.full
       %thead
         %tr
           %th Name
@@ -165,7 +165,7 @@ __END__
     %p
       Tags can be included in the wikitext like normal html tags. These tags are provided by plugins as wikitext extensions.
       The namespace prefixes are optional and can be used in case of ambiguities.
-    %table.zebra.full
+    %table.full
       %thead
         %tr
           %th Name

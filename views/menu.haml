@@ -2,19 +2,9 @@
   != breadcrumbs(page)
   - if page && !page.current?
     %li.noborder
-      != date page.tree_version.date
+      != date page.version.date
 %ul.actions
   - if page && !page.new?
-    - if @menu_versions
-      - if page.previous_version
-        %li
-          %a.action-older{:href=>absolute_path(page, original_params.merge(:version => page.previous_version)), :accesskey=>'o'}= :older.t
-      - if !page.current? && (Olelo::Page.find(page.path) rescue nil)
-        %li
-          %a.action-current{:href=> absolute_path(page, original_params.dup), :accesskey=>'c'}= :current.t
-      - if page.next_version
-        %li
-          %a.action-newer{:href=>absolute_path(page, original_params.merge(:version => page.next_version)), :accesskey=>'n'}= :newer.t
     %li
       %a.action-view{:href=> absolute_path(page), :accesskey=>'v'}= :view.t
     %li
@@ -29,3 +19,16 @@
             %a.action-delete{:href=> action_path(page, :delete) }= :delete.t
     %li
       %a.action-history{:href=>action_path(page, :history), :accesskey=>'h'}= :history.t
+      - if @menu_versions
+        - current = !page.current? && (Olelo::Page.find(page.path) rescue nil)
+        - if page.previous_version || current || page.next_version
+          %ul
+            - if page.previous_version
+              %li
+                %a.action-older{:href=>absolute_path(page, original_params.merge(:version => page.previous_version)), :accesskey=>'o'}= :older.t
+            - if current
+              %li
+                %a.action-current{:href=> absolute_path(page, original_params.dup), :accesskey=>'c'}= :current.t
+            - if page.next_version
+              %li
+                %a.action-newer{:href=>absolute_path(page, original_params.merge(:version => page.next_version)), :accesskey=>'n'}= :newer.t

@@ -8,11 +8,11 @@ Engine.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|im
     geometry = context.params[:geometry]
     trim = context.params[:trim]
     if page.mime == 'application/pdf' || ps?(page)
-      page_nr = context.params[:page].to_i
+      page_nr = [context.params[:page].to_i, 1].max
       cmd = ImageMagick.new
       if ps?(page)
         cmd.cmd($1 == 'gz' ? 'gunzip' : 'bunzip2') if page.mime.to_s =~ /(bz|gz)/
-        cmd.psselect "-p#{page_nr + 1}"
+        cmd.psselect "-p#{page_nr}"
         cmd.gs('-sDEVICE=jpeg', '-sOutputFile=-', '-r144', '-dBATCH', '-dNOPAUSE', '-q', '-')
       end
       cmd.convert('-depth', 8, '-quality', 50) do |args|
@@ -21,7 +21,7 @@ Engine.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|im
         if ps?(page)
           args << '-'
         else
-          args << '-density' << 144 << "-[#{page_nr}]"
+          args << '-density' << 144 << "-[#{page_nr - 1}]"
         end
         args << 'JPEG:-'
       end

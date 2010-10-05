@@ -4,11 +4,9 @@ dependencies 'engine/engine', 'utils/shell'
 Engine.create(:documentbrowser, :priority => 1, :layout => true, :cacheable => true, :accepts => 'application/pdf|postscript') do
   def count_pages
     content = @page.content
+    page_count = 0
     if @page.mime == 'application/pdf'
-      page_count = 0
-      content.scan %r{/Type\s*/Pages.*?/Count\s*(\d+)}m do
-        page_count += $1.to_i
-      end
+      page_count = $1.to_i if Shell.pdfinfo('-').run(content) =~ /Pages:\s+(\d+)/
     else
       content = Shell.cmd($1 == 'gz' ? 'gunzip' : 'bunzip2').run(content) if @page.mime.to_s =~ /(gz|bz)/
       page_count = $1.to_i if content =~ /^%%Pages:\s+(\d+)$/
@@ -32,7 +30,7 @@ __END__
   %img{:src=> page_path(@page, :output => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)}
 != pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
 %h3= :information.t
-%table.zebra
+%table
   %tbody
     %tr
       %td= :name.t
@@ -52,7 +50,7 @@ __END__
         %td.version= @page.version
     %tr
       %td= :type.t
-      %td #{@page.mime.comment} (#{@page.mime})
+      %td= @page.mime.comment.blank? ? @page.mime : "#{@page.mime.comment} (#{@page.mime})"
     %tr
       %td= :download.t
       %td

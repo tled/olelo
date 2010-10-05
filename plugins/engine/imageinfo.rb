@@ -21,7 +21,7 @@ __END__
   %a{:href => page_path(@page, :output => 'image') }
     %img{:src=> page_path(@page, :output => 'image', :geometry => '640x480>'), :alt => @page.title}
 %h3= :information.t
-%table.zebra
+%table
   %tbody
     %tr
       %td= :name.t
@@ -47,7 +47,7 @@ __END__
         %td.version= @page.version
 - if @exif
   %h3= :exif.t
-  %table.zebra
+  %table
     %thead
       %tr
         %th= :entry.t

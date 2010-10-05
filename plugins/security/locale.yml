@@ -3,8 +3,8 @@ en:
   access_denied_long:   'Access denied. Please login or switch user.'
   attribute_acl_read:   'Read access'
   attribute_acl_write:  'Write access'
-  attribute_acl_create: 'Create sub-pages'
-  attribute_acl_delete: 'Delete sub-pages'
+  attribute_acl_create: 'Create subpages'
+  attribute_acl_delete: 'Delete subpages'
   group_acl:            'Access control lists'
   persistent_login:     'Persistent login'
 de:

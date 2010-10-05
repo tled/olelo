@@ -1,7 +1,7 @@
-description  'Tree engine'
+description  'Subpages engine'
 dependencies 'engine/engine'
 
-Engine.create(:tree, :priority => 2, :layout => true, :cacheable => true) do
+Engine.create(:subpages, :priority => 2, :layout => true, :cacheable => true) do
   def accepts?(page); !page.children.empty?; end
   def output(context)
     @page_nr = [context.params[:page].to_i, 1].max
@@ -9,14 +9,14 @@ Engine.create(:tree, :priority => 2, :layout => true, :cacheable => true) do
     @page = context.page
     @page_count = @page.children.size / per_page + 1
     @children = @page.children[((@page_nr - 1) * per_page) ... (@page_nr * per_page)].to_a
-    render :tree
+    render :subpages
   end
 end
 
 __END__
-@@ tree.haml
-!= pagination(page_path(@page), @page_count, @page_nr, :output => 'tree')
-%table#tree-table
+@@ subpages.haml
+!= pagination(page_path(@page), @page_count, @page_nr, :output => 'subpages')
+%table#subpages-table
   %thead
     %tr
       %th= :name.t
@@ -27,7 +27,7 @@ __END__
       %th= :actions.t
   %tbody
     - @children.each do |child|
-      - classes = child.children.empty? ? 'page' : 'tree'
+      - classes = child.children.empty? ? 'page' : 'folder'
       - if !child.extension.empty?
         - classes << " file-type-#{child.extension}"
       %tr
@@ -42,4 +42,4 @@ __END__
           %a.action-history{:href=>action_path(child, :history), :title => :history.t}= :history.t
           %a.action-move{:href=>action_path(child, :move), :title => :move.t}= :move.t
           %a.action-delete{:href=>action_path(child, :delete), :title => :delete.t}= :delete.t
-!= pagination(page_path(@page), @page_count, @page_nr, :output => 'tree')
+!= pagination(page_path(@page), @page_count, @page_nr, :output => 'subpages')

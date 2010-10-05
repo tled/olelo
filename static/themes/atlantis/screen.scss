@@ -121,9 +121,6 @@ table {
   }
   tr {
     background: $main_bg;
-    &.even {
-      background: $light_bg1;
-    }
   }
 }
 
@@ -198,7 +195,7 @@ pre {
   display: block;
 }
 
-table.full, #history-table, #tree-table {
+table.full, #history-table, #subpages-table {
   width: 100%;
   td, th {
     white-space: nowrap;
@@ -226,7 +223,7 @@ table.full, #history-table, #tree-table {
   }
 }
 
-#tree-table {
+#subpages-table {
   .actions {
     width: 80px;
     padding: 0px;
@@ -238,8 +235,8 @@ table.full, #history-table, #tree-table {
   .page:before {
     content: url(images/page.png) "\00a0";
   }
-  .tree:before {
-    content: url(images/tree.png) "\00a0";
+  .folder:before {
+    content: url(images/folder.png) "\00a0";
   }
   @include file-type("7z");
   @include file-type("bz2");

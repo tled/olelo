@@ -8,7 +8,7 @@ Engine.create('treeview.json', :hidden => true, :cacheable => true, :mime => 'ap
     # Format [[has-children, classes, path, name], ...]
     # Example: [[0, 'file-type-pdf', '/a/b.pdf', 'b.pdf'], ...]
     context.page.children.map do |child|
-      classes = child.children.empty? ? 'page' : 'tree'
+      classes = child.children.empty? ? 'page' : 'folder'
       classes << " file-type-#{child.extension.downcase}" if !child.extension.empty?
       [child.children.empty? ? 0 : 1, classes, page_path(child), child.name]
     end.to_json

@@ -155,7 +155,7 @@ class Olelo::Application
       cache_control :etag => page.version, :last_modified => page.version.date
       @menu_versions = true
 
-      params[:output] ||= 'tree' if params[:path].to_s.ends_with? '/'
+      params[:output] ||= 'subpages' if params[:path].to_s.ends_with? '/'
       @engine_name, layout, response, content =
         Cache.cache("engine-#{page.path}-#{page.version}-#{build_query(original_params)}",
                     :update => request.no_cache?, :defer => true) do |cache|
