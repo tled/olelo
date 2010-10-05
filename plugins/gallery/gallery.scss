@@ -6,12 +6,14 @@
   @include reset-table;
   @include reset-box-model;
   width: 100%;
+  background: transparent;
   td {
+    border: 0px none;
     vertical-align: top;
     text-align: center;
   }
   img {
-    @include box-shadow(3px, 3px, 10px, #333333);
+    @include box-shadow(2px, 2px, 8px, #BBB);
     margin: 5px;
     &:hover {
       @include no-box-shadow;

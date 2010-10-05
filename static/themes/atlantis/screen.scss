@@ -100,15 +100,13 @@ ul.button-bar, ul.pagination {
 }
 
 table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  border: $border;
+  border-collapse: separate;
+  border-spacing: 0px;
+  background: $border_color;
+  padding: 1px;
   margin: 0 0 2em 0;
-  th, thead tr {
-    background: url(images/bg/button.png) repeat-x left bottom $light_bg1;
-    border-bottom: $border;
-  }
   td, th {
+    border-top: 1px solid #E5E5E5;
     padding: 0.2em 0.5em;
     &.link {
       padding: 0;
@@ -116,11 +114,21 @@ table {
         margin: 0;
         padding: 0.2em 0.5em;
         display: block;
-        }
+      }
     }
   }
   tr {
     background: $main_bg;
+    &:first-child td {
+      border-top: 0px none;
+    }
+  }
+  thead tr {
+    background: url(images/bg/button.png) repeat-x left bottom $light_bg1;
+    th {
+      border-bottom: $border;
+      border-top: 0px none;
+    }
   }
 }
 
@@ -147,7 +155,7 @@ a {
 
 .editsection {
   @include rounded;
-  border: 1px solid $border_color;
+  border: $border;
   display: block;
   background: url(images/bg/button.png) repeat-x left bottom #FFF;
   font-family: $normal_font;
