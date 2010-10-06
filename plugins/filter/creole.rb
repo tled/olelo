@@ -8,20 +8,17 @@ class OleloCreoleParser < Creole
 
   def make_image(path, title)
     args = title.to_s.split('|')
-    if path =~ %r{^(\w+)://}
-      image_path = page_path = path
-    else
+    image_path = path.dup
+    if path !~ %r{^(\w+)://}
       geometry = args.grep(/(\d+x)|(x\d+)|(\d+%)/).first
-      opts = {:output => 'image'}
+      image_path += (path.include?('?') ? '&' : '?') + 'output=image'
       if geometry
         args.delete(geometry)
-        opts[:geometry] = geometry
+        image_path += "&geometry=#{geometry}"
       end
-      image_path = absolute_path(path, opts)
-      page_path = absolute_path(path)
     end
     image_path = escape_html(image_path)
-    page_path = escape_html(page_path)
+    path = escape_html(path)
     nolink = args.delete('nolink')
     box = args.delete('box')
     alt = escape_html(args[0] ? args[0] : path)
@@ -29,9 +26,9 @@ class OleloCreoleParser < Creole
       %{<img src="#{image_path}" alt="#{alt}"/>}
     elsif box
       caption = args[0] ? %{<span class="caption">#{escape_html args[0]}</span>} : ''
-      %{<span class="img"><a href="#{page_path}"><img src="#{image_path}" alt="#{alt}"/>#{caption}</a></span>}
+      %{<span class="img"><a href="#{path}"><img src="#{image_path}" alt="#{alt}"/>#{caption}</a></span>}
     else
-      %{<a href="#{page_path}" class="img"><img src="#{image_path}" alt="#{alt}"/></a>}
+      %{<a href="#{path}" class="img"><img src="#{image_path}" alt="#{alt}"/></a>}
     end
   end
 end
