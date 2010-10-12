@@ -1,7 +1,7 @@
 description  'Footnote support'
 dependencies 'filter/tag'
 
-Tag.define :ref, :description => 'Create footnote' do |context, attrs, content|
+Tag.define :ref, :optional => :name, :description => 'Create footnote' do |context, attrs, content|
   footnotes = context.private[:footnotes] ||= []
   hash = context.private[:footnotes_hash] ||= {}
   name = attrs['name']
@@ -20,7 +20,7 @@ Tag.define :ref, :description => 'Create footnote' do |context, attrs, content|
   %{<a class="ref" id="ref#{ref_id}" href="#note#{note_id}">[#{note_id}]</a>}
 end
 
-Tag.define :references, :description => 'Print all footnotes' do |context, attrs, content|
+Tag.define :references, :description => 'Print all footnotes' do |context, attrs|
   footnotes = context.private[:footnotes]
   render :footnotes, :locals => {:footnotes => footnotes} if footnotes
 end

@@ -172,7 +172,9 @@ __END__
           %th Description
           %th Immediate
           %th Dynamic
+          %th Autoclose
           %th Provided by plugin
+          %th Optional attributes
           %th Required attributes
       %tbody
         - Olelo::Tag.tags.values.uniq.sort_by(&:full_name).each do |tag|
@@ -181,5 +183,7 @@ __END__
             %td= tag.description
             %td!= check_mark tag.immediate
             %td!= check_mark tag.dynamic
+            %td!= check_mark tag.autoclose
             %td= tag.plugin.name
-            %td= tag.requires.join(', ')
+            %td= tag.optional.to_a.join(', ')
+            %td= tag.requires.to_a.join(', ')

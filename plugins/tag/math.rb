@@ -100,7 +100,7 @@ class LaTeXRenderer < MathRenderer
   register 'mathjax', LaTeXRenderer
 end
 
-Tag.define :math do |context, attrs, code|
+Tag.define :math, :optional => :display do |context, attrs, code|
   raise('Limits exceeded') if code.size > 10240
   renderer = context.page.attributes['math'] || Config.math_renderer
   (MathRenderer[renderer] || MathRenderer['latex']).render(code, attrs['display'] == 'block' ? 'block' : 'inline')
@@ -108,7 +108,7 @@ end
 
 Page.attributes do
   enum :math do
-    Hash[*MathRenderer.registry.keys.map {|m| [m, Locale.translate("math_#{m}")] }.flatten]
+    MathRenderer.registry.keys.map {|m| [m, Locale.translate("math_#{m}")] }.to_hash
   end
 end
 

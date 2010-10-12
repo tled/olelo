@@ -13,9 +13,10 @@ class TagSoupParser
   BOOL_ATTR       = /(#{NAME})/
   ATTRIBUTE       = /\A\s*(#{QUOTED_ATTR}|#{UNQUOTED_ATTR}|#{BOOL_ATTR})/
 
-  # enabled_tags must be a list of tag names
+  # enabled_tags must be a hash of tag names
   # that will be recognized by the parser.
-  # other tags are ignored
+  # Hash values must be true for autoclosing tags and false otherwise.
+  # Other tags are ignored.
   def initialize(enabled_tags, content)
     @enabled_tags = enabled_tags
     @content = content
@@ -75,15 +76,10 @@ class TagSoupParser
     parse_attributes
 
     case @content
-    when /\A\s*\/>/
-      # empty tag
+    when /\A\s*(\/?)>/
       @content = $'
       @parsed << $&
-      @output << yield(@name, @attrs, '')
-    when /\A\s*>/
-      @content = $'
-      @parsed << $&
-      @output << yield(@name, @attrs, get_content)
+      @output << yield(@name, @attrs, !$1.blank? || @enabled_tags[@name] ? '' : get_content)
     else
       # Tag which begins with <name but has no >.
       # Ignore this and continue parsing after it.
@@ -140,6 +136,9 @@ class Olelo::Tag < AroundFilter
   # Define a tag which is executed by the tag filter
   #
   # Supported options:
+  #   * :limit       - Limit tag count
+  #   * :optional    - List of optional attributes (* to allow arbitrary)
+  #   * :requires    - List of required attributes
   #   * :dynamic     - Dynamic tags are uncached, the content is generated
   #                    on the fly everytime the page is rendered.
   #                    Warning: Dynamic tags introduce a large overhead!
@@ -156,10 +155,15 @@ class Olelo::Tag < AroundFilter
   # Dynamic tags are an exception. They are executed later from the layout hook.
   def self.define(name, options = {}, &block)
     raise 'Dynamic tag cannot be immediate' if options[:dynamic] && options[:immediate]
+    raise 'Tag must take two or three arguments' if block.arity != 2 && block.arity != 3
     # Find the plugin which provided this tag.
     plugin = Plugin.current(1) || Plugin.current
-    options.merge!(:name => name.to_s, :plugin => plugin)
-    tag = TagInfo.new({ :description => plugin.description, :namespace => plugin.name.split('/').last }.merge(options))
+    options.merge!(:name => name.to_s, :plugin => plugin, :autoclose => block.arity == 2,
+                   :optional => Set.new([*options[:optional]].compact.flatten.map(&:to_s)),
+                   :requires => Set.new([*options[:requires]].compact.flatten.map(&:to_s)))
+    options[:description] ||= plugin.description
+    options[:namespace] ||= plugin.name.split('/').last
+    tag = TagInfo.new(options)
     @@tags[tag.full_name] = @@tags[tag.name] = tag
     if tag.dynamic
       klass = Class.new
@@ -168,7 +172,7 @@ class Olelo::Tag < AroundFilter
         include Templates
         define_method(:call, &block)
       end
-      tag.dynamic = klass.new
+      tag.dynamic = klass
     else
       define_method("TAG #{tag.full_name}", &block)
     end
@@ -184,8 +188,9 @@ class Olelo::Tag < AroundFilter
   #   :enable => %w(html:* include) Enables all tags in the html namespace and the include tag.
   def configure(options)
     super
-    @enabled_tags = @options[:enable] ? tag_list(*@options[:enable]) : @@tags.keys
-    @enabled_tags -= tag_list(*@options[:disable]) if @options[:disable]
+    list = @options[:enable] ? tag_list(*@options[:enable]) : @@tags.keys
+    list -= tag_list(*@options[:disable]) if @options[:disable]
+    @enabled_tags = list.map {|name| [name, @@tags[name].autoclose] }.to_hash
     @static = options[:static]
   end
 
@@ -221,7 +226,7 @@ class Olelo::Tag < AroundFilter
       list.include?(tag.name) ||
       list.include?(tag.full_name) ||
       list.include?("#{tag.namespace}:*")
-    end.map(&:first)
+    end.map(&:last)
   end
 
   MAX_RECURSION = 100
@@ -229,8 +234,8 @@ class Olelo::Tag < AroundFilter
   BLOCK_ELEMENT_REGEX = /<(#{BLOCK_ELEMENTS.join('|')})/
 
   class TagInfo
-    attr_accessor :name, :namespace, :limit, :requires,
-                  :immediate, :dynamic, :description, :plugin
+    attr_accessor :name, :namespace, :limit, :optional, :requires,
+                  :autoclose, :immediate, :dynamic, :description, :plugin
 
     def full_name
       "#{namespace}:#{name}"
@@ -238,7 +243,6 @@ class Olelo::Tag < AroundFilter
 
     def initialize(options)
       options.each_pair {|k,v| send("#{k}=", v) }
-      @requires = [*@requires].compact
     end
   end
 
@@ -251,18 +255,28 @@ class Olelo::Tag < AroundFilter
     tag_counter[name] += 1
 
     raise 'Tag limit exceeded' if tag.limit && tag_counter[name] > tag.limit
-    attr = tag.requires.find {|a| !attrs.include?(a) }
-    raise %{Attribute "#{attr}" is required} if attr
+
+    required = tag.requires.find {|a| !attrs.include?(a) }
+    raise %{Attribute "#{required}" is required} if required
+
+    if !tag.optional.include?('*')
+      invalid = attrs.keys.find {|a| !tag.requires.include?(a) && !tag.optional.include?(a) }
+      raise %{Attribute "#{invalid}" is invalid} if invalid
+    end
+
+    args = [context, attrs, content]
+    args.pop if tag.autoclose
 
     content =
       if tag.dynamic
         if @static
-          tag.dynamic.call(context, attrs, content).to_s
+          tag.dynamic.new.call(*args).to_s
         else
-          %{DYNTAG(#{encode64 Marshal.dump([name, attrs, content])})}
+          args[0] = name
+          %{DYNTAG(#{encode64 Marshal.dump(args)})}
         end
       else
-        send("TAG #{name}", context, attrs, content).to_s
+        send("TAG #{name}", *args).to_s
       end
 
     if tag.immediate
@@ -304,10 +318,15 @@ Application.hook :render, 2000 do |name, xml, layout|
     no_cache = true
     begin
       name, attrs, content = Marshal.load(decode64($1))
-      raise 'Invalid dynamic tag' unless Hash === attrs && String === content && Tag.tags[name] && Tag.tags[name].dynamic
+      raise 'Invalid dynamic tag' unless Hash === attrs && Tag.tags[name] && Tag.tags[name].dynamic
       begin
         context = Context.new(:page => page, :params => params, :request => request, :response => response)
-        Tag.tags[name].dynamic.call(context, attrs, content).to_s
+        if content
+          raise 'Invalid dynamic tag' unless String === content
+          Tag.tags[name].dynamic.new.call(context, attrs, content).to_s
+        else
+          Tag.tags[name].dynamic.new.call(context, attrs).to_s
+        end
       rescue Exception => ex
         Plugin.current.logger.error ex
         "#{name} - #{escape_html ex.message}"
@@ -331,7 +350,7 @@ Tag.define :notags, :description => 'Disable tag processing', :immediate => true
 end
 
 # Dynamic test tag
-Tag.define :fortune, :description => 'Show fortune message', :dynamic => true do |context, attrs, content|
+Tag.define :fortune, :description => 'Show fortune message', :dynamic => true do |context, attrs|
   text = `fortune`
   escape_html(text) if valid_xml_chars?(text)
 end

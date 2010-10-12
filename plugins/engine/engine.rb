@@ -3,9 +3,9 @@ dependencies 'utils/cache'
 
 Olelo::Page.attributes do
   enum :output do
-    Hash[*Engine.engines.keys.map do |name|
-           [name, Olelo::Locale.translate("engine_#{name}", :fallback => titlecase(name))]
-         end.flatten]
+    Engine.engines.keys.map do |name|
+      [name, Olelo::Locale.translate("engine_#{name}", :fallback => titlecase(name))]
+    end.to_hash
   end
 end
 
