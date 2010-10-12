@@ -119,6 +119,11 @@ class TagSoupParser
       when /\A</
         text << '<'
         @content = $'
+      # No closing tag
+      else
+        @content.clear
+        text << @content
+        break
       end
     end
     text
