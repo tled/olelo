@@ -17,7 +17,7 @@ Filter.create :link_classifier do |context, content|
       end
       classes << 'internal'
       if !Application.reserved_path?(path)
-        classes << (Page.find(path) ? 'present' : 'absent') rescue nil
+        classes << (Page.find(path, context.page.tree_version) ? 'present' : 'absent') rescue nil
       end
     end
     link['class'] = classes.join(' ') if !classes.empty?

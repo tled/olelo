@@ -6,42 +6,35 @@ class CachedRepository < DelegateClass(Repository)
   def initialize(config)
     super(Repository[config[:backend]].new(Config.repository[config[:backend]]))
     @cache = Store.create(config[:store])
-    @transaction = {}
   end
 
-  # @override
-  def transaction(&block)
-    @transaction[Thread.current.object_id] = true
-    super
-  ensure
-    @cache.clear
-    @transaction.delete(Thread.current.object_id)
-  end
+  alias uncached_get_version get_version
 
   # @override
   def get_version(version)
-    if @transaction[Thread.current.object_id]
-      super
-    else
-      @cache["v-#{version}"] ||= super
-    end
+    validate_cache
+    @cache["v-#{version}"] ||= super
   end
 
   # @override
   def path_exists?(path, version)
-    if @transaction[Thread.current.object_id]
-      super
-    else
-      @cache["p-#{path}-#{version}"] ||= super
-    end
+    validate_cache
+    @cache["p-#{path}-#{version}"] ||= super
   end
 
   # @override
   def get_path_version(path, version)
-    if @transaction[Thread.current.object_id]
-      super
-    else
-      @cache["pv-#{path}-#{version}"] ||= super
+    validate_cache
+    @cache["pv-#{path}-#{version}"] ||= super
+  end
+
+  private
+
+  def validate_cache
+    head = uncached_get_version(nil).try(:id)
+    if @cache['head'] != head
+      @cache.clear
+      @cache['head'] = head
     end
   end
 end

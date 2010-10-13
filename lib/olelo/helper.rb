@@ -107,8 +107,8 @@ module Olelo
       # Append version string
       version = options.delete(:version)
       # Use version of page
-      version = version.current? ? nil : version.tree_version if Page === version
-      path = 'version'/version/path if !version.blank?
+      version = version.tree_version if Page === version
+      path = 'version'/version/path if version && (options.delete(:force_version) || !version.head?)
 
       # Append query parameters
       path += '?' + build_query(options) if !options.empty?
@@ -154,6 +154,11 @@ module Olelo
       modified_since = env['HTTP_IF_MODIFIED_SINCE']
       last_modified = last_modified.try(:to_time) || last_modified
       last_modified = last_modified.try(:httpdate) || last_modified
+
+      if options[:version]
+        options[:etag] = options[:version].cache_id
+        options[:last_modified] = options[:version].date
+      end
 
       if User.logged_in?
         # Always private mode if user is logged in
@@ -243,7 +248,7 @@ module Olelo
     def base_path
       if page && page.root?
         url = request.url_without_path
-        url << 'version'/page.tree_version << '/' if !page.current?
+        url << 'version'/page.tree_version << '/' if !page.head?
         %{<base href="#{escape_html url}"/>}
       end
     end

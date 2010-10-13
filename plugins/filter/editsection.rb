@@ -6,7 +6,7 @@ Page.attributes do
 end
 
 AroundFilter.create :editsection do |context, content|
-  if context.page.new? || context.page.modified? || !context.page.current? || context.page.attributes['no_editsection']
+  if context.page.new? || context.page.modified? || !context.page.head? || context.page.attributes['no_editsection']
     subfilter(context, content)
   else
     prefix = "EDIT#{object_id}X"

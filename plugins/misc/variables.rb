@@ -12,7 +12,6 @@ def variables(page)
     'page_next_version'     => page.next_version.to_s,
     'page_previous_version' => page.previous_version.to_s,
     'page_mime'             => page.mime.to_s,
-    'page_current'          => page.current?,
     'default_mime'          => Page.default_mime
   }
 end

@@ -4,7 +4,7 @@ dependencies 'filter/tag'
 Tag.define :include, :optional => '*', :requires => :page, :limit => 10, :description => 'Include page' do |context, attrs|
   path = attrs['page']
   path = context.page.path/'..'/path if !path.starts_with? '/'
-  if page = Page.find(path, context.page.tree_version, context.page.current?)
+  if page = Page.find(path, context.page.tree_version)
     Engine.find!(page, :name => attrs['output'], :layout => true).
       output(context.subcontext(:params => attrs.merge(:included => true), :page => page))
   else

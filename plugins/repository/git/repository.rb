@@ -177,7 +177,7 @@ class GitRepository < Repository
 
   def commit_to_version(commit)
     commit && Olelo::Version.new(commit.id, Olelo::User.new(commit.author.name, commit.author.email),
-                                 commit.date, commit.message, commit.parents.map(&:id))
+                                 commit.date, commit.message, commit.parents.map(&:id), commit == git.head)
   end
 
   # Convert blob parents to trees

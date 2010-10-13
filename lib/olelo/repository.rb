@@ -2,9 +2,10 @@ module Olelo
   # Version object
   class Version
     attr_reader :id, :author, :date, :comment, :parents
+    attr_reader? :head
 
-    def initialize(id, author, date, comment, parents)
-      @id, @author, @date, @comment, @parents = id, author, date, comment, parents
+    def initialize(id, author, date, comment, parents, head)
+      @id, @author, @date, @comment, @parents, @head = id, author, date, comment, parents, head
     end
 
     # Returns shortened unique version id
@@ -39,6 +40,10 @@ module Olelo
     # @api public
     def ==(other)
       other.to_s == id
+    end
+
+    def cache_id
+      "#{@id}-#{@head}"
     end
   end
 

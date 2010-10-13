@@ -134,7 +134,7 @@ module Olelo::PageHelper
   def include_page(path)
     page = Page.find(path) rescue nil
     if page
-      Cache.cache("include-#{page.path}-#{page.version}", :update => request.no_cache?, :defer => true) do |context|
+      Cache.cache("include-#{page.path}-#{page.version.cache_id}", :update => request.no_cache?, :defer => true) do |context|
         begin
           Engine.find!(page, :layout => true).output(Context.new(:page => page, :params => {:included => true}))
         rescue Engine::NotAvailable => ex
@@ -152,12 +152,12 @@ class Olelo::Application
   get '/version/:version(/:path)|/(:path)', :tail => true do
     begin
       @page = Page.find!(params[:path], params[:version])
-      cache_control :etag => page.version, :last_modified => page.version.date
+      cache_control :version => page.version
       @menu_versions = true
 
       params[:output] ||= 'subpages' if params[:path].to_s.ends_with? '/'
       @selected_engine, layout, response, content =
-        Cache.cache("engine-#{page.path}-#{page.version}-#{build_query(original_params)}",
+        Cache.cache("engine-#{page.path}-#{page.version.cache_id}-#{build_query(original_params)}",
                     :update => request.no_cache?, :defer => true) do |cache|
         engine = Engine.find!(page, :name => params[:output])
         cache.disable! if !engine.cacheable?
@@ -183,7 +183,7 @@ class Olelo::Application
 
   hook :dom do |name, doc, layout|
     doc.css('#menu .action-view').each do |link|
-      menu = Cache.cache("engine-menu-#{page.path}-#{page.version}-#{@selected_engine}",
+      menu = Cache.cache("engine-menu-#{page.path}-#{page.version.cache_id}-#{@selected_engine}",
                          :update => request.no_cache?, :defer => true) do
         engines = Olelo::Engine.find_all(page).select {|e| !e.hidden? || e.name == @selected_engine }.map do |e|
           [Olelo::Locale.translate("engine_#{e.name}", :fallback => titlecase(e.name)), e]

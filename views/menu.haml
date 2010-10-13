@@ -15,15 +15,15 @@
     %li
       %a.action-history{:href=>action_path(page, :history), :accesskey=>'h'}= :history.t
       - if @menu_versions
-        - current = !page.current? && (Olelo::Page.find(page.path) rescue nil)
-        - if page.previous_version || current || page.next_version
+        - head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
+        - if page.previous_version || head || page.next_version
           %ul
             - if page.previous_version
               %li
                 %a.action-older{:href=>absolute_path(page, original_params.merge(:version => page.previous_version)), :accesskey=>'o'}= :older.t
-            - if current
+            - if head
               %li
-                %a.action-current{:href=> absolute_path(page, original_params.dup), :accesskey=>'c'}= :current.t
+                %a.action-head{:href=> absolute_path(page, original_params.dup), :accesskey=>'c'}= :head.t
             - if page.next_version
               %li
                 %a.action-newer{:href=>absolute_path(page, original_params.merge(:version => page.next_version)), :accesskey=>'n'}= :newer.t

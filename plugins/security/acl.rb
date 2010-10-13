@@ -44,23 +44,23 @@ class Olelo::Page
     User.current.groups.any? {|group| names.include?('@'+group) }
   end
 
-  before(:save, 999) do
+  before :save, 999 do
     raise(AccessDenied) if !writable?
   end
 
-  before(:delete, 999) do
+  before :delete, 999 do
     raise(AccessDenied) if !deletable?
   end
 
-  before(:move, 999) do |destination|
+  before :move, 999 do |destination|
     raise(AccessDenied) if !movable?(destination)
   end
 
   metaclass.redefine_method :find do |*args|
-    path, tree_version, current = *args
+    path, tree_version = *args
     page = super(path, tree_version)
     raise(AccessDenied) if page && !page.access?(:read)
-    find(path/'..', tree_version, current) if !path.blank?
+    find(path/'..', tree_version) if !path.blank?
     page
   end
 end

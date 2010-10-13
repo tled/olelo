@@ -129,7 +129,7 @@ module Olelo
       @page = Page.find!(params[:path])
       @diff = page.diff(nil, params[:version])
       @version = @diff.to
-      cache_control :etag => @version, :last_modified => @version.date
+      cache_control :version => @version
       render :changes
     end
 
@@ -140,7 +140,7 @@ module Olelo
       @history = page.history((@page_nr - 1) * @per_page)
       @page_count = @page_nr + @history.length / @per_page
       @history = @history[0...@per_page]
-      cache_control :etag => page.version, :last_modified => page.version.date
+      cache_control :version => page.version
       render :history
     end
 
@@ -237,7 +237,7 @@ module Olelo
     get '/version/:version(/:path)|/(:path)', :tail => true do
       begin
         @page = Page.find!(params[:path], params[:version])
-        cache_control :etag => page.version, :last_modified => page.version.date
+        cache_control :version => page.version
         @menu_versions = true
         halt render(:show, :locals => {:content => page.try(:content)})
       rescue NotFound

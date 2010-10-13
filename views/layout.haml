@@ -1,6 +1,6 @@
 !!! 5
 %html.no-js{:lang => Olelo::Config.locale.sub('_', '-'),
-            :class => page && !page.current? ? 'archive' : nil,
+            :class => page && !page.head? ? 'archive' : nil,
             :xmlns=>'http://www.w3.org/1999/xhtml'}
   %head
     %title= Olelo::Config.title + ' - ' + title
@@ -26,7 +26,7 @@
     #menu
       %ul
         != breadcrumbs(page)
-        - if page && !page.current?
+        - if page && !page.head?
           %li.noborder
             != date page.version.date
       != render_partial(:menu)

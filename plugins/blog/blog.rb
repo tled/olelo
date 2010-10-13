@@ -14,7 +14,7 @@ end
 Tag.define 'menu', :optional => :path, :description => 'Show blog menu', :dynamic => true do |context, attrs, content|
   page = Page.find(attrs[:path]) rescue nil
   if page
-    Cache.cache("blog-#{page.path}-#{page.version}", :update => context.request.no_cache?, :defer => true) do
+    Cache.cache("blog-#{page.path}-#{page.version.cache_id}", :update => context.request.no_cache?, :defer => true) do
       years = {}
       page.children.each do |child|
         (years[child.version.date.year] ||= [])[child.version.date.month] = true
