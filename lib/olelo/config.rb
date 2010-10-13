@@ -7,7 +7,7 @@ module Olelo
 
     def initialize(hash = nil, base = nil)
       @hash = {}
-      @base = base
+      @base = base.freeze
       update(hash) if hash
     end
 
@@ -32,7 +32,7 @@ module Olelo
         _child(key).update(value)
       else
         _create_accessor(key)
-        hash[key] = value
+        hash[key] = value.freeze
       end
     end
 
@@ -67,11 +67,16 @@ module Olelo
     end
 
     def to_hash
-      hash = Hash.with_indifferent_access
-      each do |k, v|
-        hash[k] = Config === v ? v.to_hash : v
+      h = Hash.with_indifferent_access
+      hash.each_pair do |k, v|
+        h[k] = Config === v ? v.to_hash : v
       end
-      hash
+      h
+    end
+
+    def freeze
+      hash.freeze
+      super
     end
 
     private

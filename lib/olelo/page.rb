@@ -21,7 +21,7 @@ module Olelo
 
     # Pattern for valid paths
     # @api public
-    PATH_PATTERN = '[^\s](?:.*[^\s]+)?'
+    PATH_PATTERN = '[^\s](?:.*[^\s]+)?'.freeze
     PATH_REGEXP = /^#{PATH_PATTERN}$/
 
     # Mime type for empty page
@@ -38,9 +38,7 @@ module Olelo
     @current_transaction = {}
 
     def initialize(path, tree_version = nil, current = true)
-      @path = path.to_s.cleanpath.freeze
-      @tree_version = tree_version
-      @current = current
+      @path, @tree_version, @current = path.to_s.cleanpath.freeze, tree_version, current
       Page.check_path(@path)
     end
 

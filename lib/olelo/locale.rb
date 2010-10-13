@@ -21,6 +21,7 @@ module Olelo
           locale = YAML.load_file(file)
           @translations.update(locale[$1] || {}) if @locale =~ /^(\w+)(_|-)/
           @translations.update(locale[@locale] || {})
+          @translations.each_value(&:freeze)
           @loaded << file
         end
       end

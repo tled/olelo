@@ -18,8 +18,7 @@ class TagSoupParser
   # Hash values must be true for autoclosing tags and false otherwise.
   # Other tags are ignored.
   def initialize(enabled_tags, content)
-    @enabled_tags = enabled_tags
-    @content = content
+    @enabled_tags, @content = enabled_tags, content
     @output = ''
     @parsed = nil
   end

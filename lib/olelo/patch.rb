@@ -187,8 +187,8 @@ module Olelo
   class PatchSummary < PatchParser::Handler
     attr_reader :html
 
-    def initialize(opts = {})
-      @opts = opts
+    def initialize(options = {})
+      @options = options
     end
 
     def initialize!
@@ -235,15 +235,15 @@ module Olelo
     end
 
     def link(text)
-      @opts[:links] ? %{<a href="#patch-#{@file}">#{text}</a>} : text
+      @options[:links] ? %{<a href="#patch-#{@file}">#{text}</a>} : text
     end
   end
 
   class PatchFormatter < PatchParser::ChangeHandler
     attr_reader :html
 
-    def initialize(opts = {})
-      @opts = opts
+    def initialize(options = {})
+      @options = options
     end
 
     def initialize!
@@ -254,8 +254,8 @@ module Olelo
     def begin!(src, dst)
       super
       @html << '<table class="patch"'
-      @html << %{ id="patch-#{@file}"} if @opts[:links]
-      if @opts[:header]
+      @html << %{ id="patch-#{@file}"} if @options[:links]
+      if @options[:header]
         @html << '><thead><tr class="'
         if src && dst
           if src == dst

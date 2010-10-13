@@ -34,6 +34,7 @@ Olelo::Config['rack.session_secret'] = SecureRandom.hex
 
 Olelo::Config.load!(::File.join(path, 'config', 'config.yml.default'))
 Olelo::Config.load(ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG'] || ::File.join(path, 'config', 'config.yml'))
+Olelo::Config.instance.freeze
 
 FileUtils.mkpath ::File.dirname(Olelo::Config.log.file)
 logger = ::Logger.new(Olelo::Config.log.file, 25, 1024000)

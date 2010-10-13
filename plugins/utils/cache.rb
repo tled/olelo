@@ -16,14 +16,14 @@ class Olelo::Cache
   # * :disable Disable caching
   # * :update  Force cache update
   # * :defer   Deferred cache update
-  def cache(key, opts = {}, &block)
-    if opts[:disable] || !Config.production?
+  def cache(key, options = {}, &block)
+    if options[:disable] || !Config.production?
       yield(self)
-    elsif @store.key?(key) && (!opts[:update] || opts[:defer])
-      Worker.defer { update(key, opts, &block) } if opts[:update]
+    elsif @store.key?(key) && (!options[:update] || options[:defer])
+      Worker.defer { update(key, options, &block) } if options[:update]
       @store[key]
     else
-      update(key, opts, &block)
+      update(key, options, &block)
     end
   end
 
@@ -33,7 +33,7 @@ class Olelo::Cache
 
   private
 
-  def update(key, opts = {}, &block)
+  def update(key, options = {}, &block)
     content = block.call(self)
     @store[key] = content if !@disabled
     content

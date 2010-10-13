@@ -8,9 +8,7 @@ module Olelo
     attr_accessor :email
 
     def initialize(name, email, groups = nil)
-      @name = name
-      @email = email
-      @groups = Set.new(groups.to_a)
+      @name, @email, @groups = name, email, Set.new(groups.to_a)
     end
 
     def change_password(oldpassword, password, confirm)

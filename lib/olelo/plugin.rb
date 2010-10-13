@@ -101,9 +101,7 @@ module Olelo
     attr_setter :description, :logger
 
     def initialize(name, file, logger)
-      @name = name
-      @file = file
-      @logger = logger
+      @name, @file, @logger = name, file, logger
       @started = false
     end
 

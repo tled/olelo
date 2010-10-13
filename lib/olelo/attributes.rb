@@ -171,7 +171,7 @@ module Olelo
       #
       def parse(params)
         attr = {}
-        children.each do |name, child|
+        children.each_pair do |name, child|
           value = child.parse(params)
           attr[name] = value if value
         end

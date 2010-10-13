@@ -22,9 +22,9 @@ module Olelo
       end
     end
 
-    def initialize(app = nil, opts = {})
+    def initialize(app = nil, options = {})
       @app = app
-      @logger = opts[:logger] || Logger.new(nil)
+      @logger = options[:logger] || Logger.new(nil)
       Initializer.init(@logger)
     end
 

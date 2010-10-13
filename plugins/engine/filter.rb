@@ -90,8 +90,7 @@ class FilterDSL
   # Build filter class
   class FilterBuilder
     def initialize(name, filter = nil)
-      @name = name
-      @filter = filter
+      @name, @filter = name, filter
     end
 
     # Add optional filter

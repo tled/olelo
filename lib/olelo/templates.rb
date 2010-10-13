@@ -1,6 +1,6 @@
 module Olelo
   module Templates
-    HAML_OPTIONS = { :format => :xhtml, :attr_wrapper  => '"', :ugly => true, :escape_html => true }
+    HAML_OPTIONS = { :format => :xhtml, :attr_wrapper  => '"', :ugly => true, :escape_html => true }.freeze
 
     class << self
       attr_reader :cache
@@ -18,14 +18,14 @@ module Olelo
       end
     end
 
-    def render(name, opts = {}, &block)
-      locals = opts.delete(:locals) || {}
+    def render(name, options = {}, &block)
+      locals = options.delete(:locals) || {}
       name = "#{name}.haml"
       path = Templates.loader.context.to_s/name
-      haml_opts = HAML_OPTIONS.merge(opts).merge(:filename => path)
-      id = [path, haml_opts.map {|x| x}].flatten.join('-')
+      haml_options = HAML_OPTIONS.merge(options).merge(:filename => path)
+      id = [path, haml_options.map {|x| x}].flatten.join('-')
       engine = Templates.with_caching(id) do
-        Haml::Engine.new(Templates.loader.load(name), haml_opts)
+        Haml::Engine.new(Templates.loader.load(name), haml_options)
       end
       engine.render(self, locals, &block)
     end

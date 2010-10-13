@@ -20,21 +20,21 @@ class Olelo::Context
 
   attr_reader :page, :parent, :private, :params, :request, :response
 
-  def initialize(attrs = {})
-    @page     = attrs[:page]
-    @parent   = attrs[:parent]
-    @private  = attrs[:private]  || Hash.with_indifferent_access
-    @params   = Hash.with_indifferent_access.merge(attrs[:params] || {})
-    @request  = attrs[:request]
-    @response = attrs[:response] || Hash.with_indifferent_access
+  def initialize(options = {})
+    @page     = options[:page]
+    @parent   = options[:parent]
+    @private  = options[:private]  || Hash.with_indifferent_access
+    @params   = Hash.with_indifferent_access.merge(options[:params] || {})
+    @request  = options[:request]
+    @response = options[:response] || Hash.with_indifferent_access
     invoke_hook(:initialized)
   end
 
-  def subcontext(attrs = {})
-    Context.new(:page     => attrs[:page] || @page,
+  def subcontext(options = {})
+    Context.new(:page     => options[:page] || @page,
                 :parent   => self,
-                :private  => @private.merge(attrs[:private] || {}),
-                :params   => @params.merge(attrs[:params] || {}),
+                :private  => @private.merge(options[:private] || {}),
+                :params   => @params.merge(options[:params] || {}),
                 :request  => @request,
                 :response => @response)
   end

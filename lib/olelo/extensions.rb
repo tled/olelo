@@ -81,7 +81,7 @@ class Hash
     end
 
     def update(other)
-      other.each_pair { |key, value| regular_writer(convert_key(key), value) }
+      other.each_pair {|key, value| regular_writer(convert_key(key), value) }
       self
     end
 

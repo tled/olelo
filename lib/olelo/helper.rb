@@ -39,11 +39,11 @@ module Olelo
       page ? page.content : %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
     end
 
-    def pagination(path, page_count, page_nr, opts = {})
+    def pagination(path, page_count, page_nr, options = {})
       return if page_count <= 1
       li = []
       li << if page_nr > 1
-              %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr - 1))}">&#9666;</a>}
+              %{<a href="#{escape_html absolute_path(path, options.merge(:page => page_nr - 1))}">&#9666;</a>}
             else
               %{<span class="disabled">&#9666;</span>}
             end
@@ -57,20 +57,20 @@ module Olelo
       max = max + 2 < page_count ? max : page_count
       min = min > 3 ? min : 1
       if min != 1
-        li << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => 1))}">1</a>} << %{<span class="ellipsis"/>}
+        li << %{<a href="#{escape_html absolute_path(path, options.merge(:page => 1))}">1</a>} << %{<span class="ellipsis"/>}
       end
       (min..max).each do |i|
         li << if i == page_nr
                 %{<span class="current">#{i}</span>}
               else
-                %{<a href="#{escape_html absolute_path(path, opts.merge(:page => i))}">#{i}</a>}
+                %{<a href="#{escape_html absolute_path(path, options.merge(:page => i))}">#{i}</a>}
               end
       end
       if max != page_count
-        li << %{<span class="ellipsis"/>} << %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_count))}">#{page_count}</a>}
+        li << %{<span class="ellipsis"/>} << %{<a href="#{escape_html absolute_path(path, options.merge(:page => page_count))}">#{page_count}</a>}
       end
       li << if page_nr < page_count
-              %{<a href="#{escape_html absolute_path(path, opts.merge(:page => page_nr + 1))}">&#9656;</a>}
+              %{<a href="#{escape_html absolute_path(path, options.merge(:page => page_nr + 1))}">&#9656;</a>}
             else
               %{<span class="disabled">&#9656;</span>}
             end
@@ -101,24 +101,24 @@ module Olelo
       li.join('<li class="breadcrumb">/</li>')
     end
 
-    def absolute_path(path, opts = {})
+    def absolute_path(path, options = {})
       path = Config.base_path / (path.try(:path) || path).to_s
 
       # Append version string
-      version = opts.delete(:version)
+      version = options.delete(:version)
       # Use version of page
       version = version.current? ? nil : version.tree_version if Page === version
       path = 'version'/version/path if !version.blank?
 
       # Append query parameters
-      path += '?' + build_query(opts) if !opts.empty?
+      path += '?' + build_query(options) if !options.empty?
 
       '/' + path
     end
 
-    def page_path(page, opts = {})
-      opts[:version] ||= page
-      absolute_path(page, opts)
+    def page_path(page, options = {})
+      options[:version] ||= page
+      absolute_path(page, options)
     end
 
     def action_path(path, action)
@@ -140,31 +140,31 @@ module Olelo
     include Util
 
     # Cache control for page
-    def cache_control(opts)
+    def cache_control(options)
       return if !Config.production?
 
-      if opts[:no_cache]
+      if options[:no_cache]
         response.headers.delete('ETag')
         response.headers.delete('Last-Modified')
         response.headers.delete('Cache-Control')
         return
       end
 
-      last_modified = opts.delete(:last_modified)
+      last_modified = options.delete(:last_modified)
       modified_since = env['HTTP_IF_MODIFIED_SINCE']
       last_modified = last_modified.try(:to_time) || last_modified
       last_modified = last_modified.try(:httpdate) || last_modified
 
       if User.logged_in?
         # Always private mode if user is logged in
-        opts[:private] = true
+        options[:private] = true
 
         # Special etag for authenticated user
-        opts[:etag] = "#{User.current.name}-#{opts[:etag]}" if opts[:etag]
+        options[:etag] = "#{User.current.name}-#{options[:etag]}" if options[:etag]
       end
 
-      if opts[:etag]
-        value = '"%s"' % opts.delete(:etag)
+      if options[:etag]
+        value = '"%s"' % options.delete(:etag)
         response['ETag'] = value.to_s
         response['Last-Modified'] = last_modified if last_modified
         if etags = env['HTTP_IF_NONE_MATCH']
@@ -179,11 +179,11 @@ module Olelo
         halt :not_modified if last_modified == modified_since
       end
 
-      opts[:public] = !opts[:private]
-      opts[:max_age] ||= 0
-      opts[:must_revalidate] ||= true if !opts.include?(:must_revalidate)
+      options[:public] = !options[:private]
+      options[:max_age] ||= 0
+      options[:must_revalidate] ||= true if !options.include?(:must_revalidate)
 
-      response['Cache-Control'] = opts.map do |k, v|
+      response['Cache-Control'] = options.map do |k, v|
         if v == true
           k.to_s.tr('_', '-')
         elsif v

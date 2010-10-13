@@ -136,7 +136,7 @@ module Olelo
         '\(' => '(?:', '\)' => ')?',
         '\{' => '(?:', '\}' => ')',
         '\|' => '|'
-      }
+      }.freeze
 
       include Enumerable
       attr_reader :head, :tail
@@ -156,19 +156,20 @@ module Olelo
       end
 
       def each(&block)
-        (@head + @tail).each(&block)
+        (@routes ||= @head + @tail).each(&block)
       end
 
       def add(path, patterns = {})
         tail = patterns.delete(:tail)
         pattern = Regexp.escape(path)
-        SYNTAX.each {|k,v| pattern.gsub!(k, v) }
+        SYNTAX.each_pair {|k,v| pattern.gsub!(k, v) }
         keys = []
         pattern.gsub!(/:(\w+)/) do
           keys << $1
           patterns.key?($1) ? "(#{patterns[$1]})" : "([^/?&#\.]+)"
         end
         (tail ? @tail : @head) << [path, /^#{pattern}$/, keys]
+        @routes = nil
       end
     end
 
