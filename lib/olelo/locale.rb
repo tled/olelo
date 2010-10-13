@@ -40,9 +40,7 @@ module Olelo
         if !key.to_s.ends_with?('_plural') && args[:count] && args.delete(:count) != 1
           translate("#{key}_plural", args)
         elsif @translations[key]
-          s = @translations[key]
-          args.each {|k,v| s.gsub!("#\{#{k}\}", v.to_s) }
-          s
+          args.inject(@translations[key]) {|s,(k,v)| s.gsub("#\{#{k}\}", v.to_s) }
         else
           args[:fallback] || "##{key}"
         end
