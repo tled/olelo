@@ -1,6 +1,0 @@
-- title error.message
-.error_page
-  %h1= title
-  %p= :error_occurred.t
-  - if !Olelo::Config.production?
-    %pre= error.backtrace.to_a.join("\n")

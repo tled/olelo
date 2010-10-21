@@ -1,0 +1,22 @@
+- title :history_of.t(:page => page.title)
+h1= title
+div
+  p= :drag_drop_for_compare.t
+= pagination(action_path(page, :history), @page_count, @page_nr)
+table#history-table
+  thead
+    tr
+      th= :comment.t
+      th= :author.t
+      th= :date.t
+  tbody
+    - @history.each do |version|
+      tr id="version-#{version}"
+        td
+          a href={absolute_path(page, :version => version)} = truncate(version.comment, 50)
+          | (
+          a href={action_path(page, 'changes'/version)} = :changes.t
+          | )
+        td= truncate(version.author.name, 30)
+        td= date version.date
+= pagination(action_path(page, :history), @page_count, @page_nr)

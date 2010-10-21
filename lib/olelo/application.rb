@@ -84,7 +84,10 @@ module Olelo
       # FIXME: Nokogiri bug #339 - duplicate xml:lang attribute
       doc.xpath('//*[@lang]').each {|elem| elem.delete('xml:lang') }
       doc.xpath('//*[@xmlns]').each {|elem| elem.delete('xmlns') }
-      xml.replace(doc.to_xhtml)
+      options = Nokogiri::XML::Node::SaveOptions::AS_XHTML |
+        Nokogiri::XML::Node::SaveOptions::NO_EMPTY_TAGS |
+        Nokogiri::XML::Node::SaveOptions::NO_DECLARATION
+      xml.replace(doc.serialize(:save_with => options))
     end
 
     get '/login' do

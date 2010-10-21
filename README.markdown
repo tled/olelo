@@ -32,7 +32,7 @@ First, you have to install the [Gem][] dependencies via `gem`:
     gem install creole
     gem install gitrb
     gem install mimemagic
-    gem install haml
+    gem install slim
     gem install rack
     gem install nokogiri
     gem install unicorn
@@ -71,7 +71,7 @@ Dependencies
 ------------
 
 - [nokogiri][]
-- [HAML][]
+- [SLIM][]
 - [gitrb][]
 - [rack][]
 - [mimemagic][]
@@ -99,7 +99,7 @@ At least one of these renderers should be installed:
 [rack]:http://rack.rubyforge.org/
 [org-ruby]:http://orgmode.org/worg/org-tutorials/org-ruby.php
 [GraphViz]:http://www.graphviz.org
-[HAML]:http://haml.hamptoncatlin.com
+[SLIM]:http://github.com/stonean/slim
 [nokogiri]:http://nokogiri.org/
 [LaTeX]:www.latex-project.org
 [pygments]:http://pygments.org/

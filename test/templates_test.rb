@@ -1,6 +1,6 @@
 require 'olelo/virtualfs'
 require 'olelo/templates'
-require 'haml'
+require 'slim'
 
 class Bacon::Context
   include Olelo::Templates
@@ -27,18 +27,13 @@ describe 'Olelo::Templates' do
   end
 
   it 'should have #render' do
-    render(:test, :locals => {:text => 'Hello, World!'}).should.equal "<h1>Hello, World!</h1>\n"
+    render(:test, :locals => {:text => 'Hello, World!'}).should.equal "<h1>Hello, World!</h1>"
     Olelo::Templates.cache.size.should.equal 1
-  end
-
-  it 'should support haml options' do
-    render(:test, :escape_html => false, :locals => {:text => '< bad characters >'}).should.equal "<h1>< bad characters ></h1>\n"
-    render(:test, :locals => {:text => '< bad characters >'}).should.equal "<h1>&lt; bad characters &gt;</h1>\n"
   end
 end
 
 __END__
 
-@@ test.haml  
-%h1= text
+@@ test.slim  
+h1= text
 

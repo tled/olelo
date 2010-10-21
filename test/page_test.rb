@@ -108,22 +108,22 @@ describe 'Olelo::Page' do
     create_page('page3')
 
     tree = Olelo::Page.find!('/')
-    tree.should.be.current
+    tree.tree_version.should.be.head
 
     tree.tree_version.should.equal tree.children[0].tree_version
     tree.tree_version.should.equal tree.children[1].tree_version
     tree.tree_version.should.equal tree.children[2].tree_version
-    tree.children[0].should.be.current
-    tree.children[1].should.be.current
-    tree.children[2].should.be.current
+    tree.children[0].tree_version.should.be.head
+    tree.children[1].tree_version.should.be.head
+    tree.children[2].tree_version.should.be.head
 
     old_tree = Olelo::Page.find('/', tree.previous_version)
-    old_tree.should.not.be.current
+    old_tree.tree_version.should.not.be.head
     tree.previous_version.should.equal old_tree.tree_version
     old_tree.tree_version.should.equal old_tree.children[0].tree_version
     old_tree.tree_version.should.equal old_tree.children[1].tree_version
     old_tree.tree_version.should.equal old_tree.children[2].tree_version
-    old_tree.children[0].should.not.be.current
+    old_tree.children[0].tree_version.should.not.be.head
   end
 
   it 'has working children' do

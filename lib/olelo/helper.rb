@@ -5,8 +5,9 @@ module Olelo
     end
 
     def define_block(name, content = nil, &block)
-      if block || content
-        blocks[name] = block ? capture_haml(&block) : content
+      if block_given? || content
+        blocks[name] = block_given? ? yield : content
+        ''
       else
         blocks[name]
       end
@@ -26,7 +27,7 @@ module Olelo
     def flash_messages(action = nil)
       if !action || action?(action)
         li = [:error, :warn, :info].map {|level| flash[level].to_a.map {|msg| %{<li class="flash #{level}">#{escape_html msg}</li>} } }.flatten
-        "<ul>#{li.join}</ul>"
+        "<ul>#{li.join}</ul>".html_safe if !li.empty?
       end
     end
   end
@@ -74,18 +75,18 @@ module Olelo
             else
               %{<span class="disabled">&#9656;</span>}
             end
-      '<ul class="pagination">' + li.map {|x| "<li>#{x}</li>"}.join + '</ul>'
+      ('<ul class="pagination">' + li.map {|x| "<li>#{x}</li>"}.join + '</ul>').html_safe
     end
 
     def date(t)
-      %{<span class="date epoch-#{t.to_i}">#{t.strftime('%d %h %Y %H:%M')}</span>}
+      %{<span class="date epoch-#{t.to_i}">#{t.strftime('%d %h %Y %H:%M')}</span>}.html_safe
     end
 
     def format_diff(diff)
       summary   = PatchSummary.new(:links => true)
       formatter = PatchFormatter.new(:links => true, :header => true)
       PatchParser.parse(diff.patch, summary, formatter)
-      summary.html + formatter.html
+      (summary.html + formatter.html).html_safe
     end
 
     def breadcrumbs(page)
@@ -98,7 +99,7 @@ module Olelo
                 <a href="#{escape_html absolute_path('/' + current, :version => page)}">#{escape_html elem}</a></li>}.unindent
         current
       end
-      li.join('<li class="breadcrumb">/</li>')
+      li.join('<li class="breadcrumb">/</li>').html_safe
     end
 
     def absolute_path(path, options = {})
@@ -207,9 +208,10 @@ module Olelo
     include Templates
 
     def tabs(*actions)
-      '<ul class="tabs">' + actions.map do |action|
+      tabs = actions.map do |action|
         %{<li id="tabhead-#{action}"#{action?(action) ? ' class="selected"' : ''}><a href="#tab-#{action}">#{escape_html action.t}</a></li>}
-      end.join + '</ul>'
+      end
+      %{<ul class="tabs">#{tabs.join}</ul>}.html_safe
     end
 
     def action?(action)
@@ -224,7 +226,7 @@ module Olelo
       @@javascript ||=
         begin
           path = absolute_path("static/script.js?#{File.mtime(File.join(Config.app_path, 'static', 'script.js')).to_i}")
-          %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}
+          %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}.html_safe
         end
     end
 
@@ -237,7 +239,7 @@ module Olelo
             path = Config.base_path + "static/themes/#{name}/style.css?#{File.mtime(file).to_i}"
             %{<link rel="#{name == default ? '' : 'alternate '}stylesheet"
               href="#{escape_html path}" type="text/css" title="#{escape_html name}"/>}.unindent if name != 'default'
-          end.compact.join("\n")
+          end.compact.join("\n").html_safe
         end
     end
 
@@ -249,7 +251,7 @@ module Olelo
       if page && page.root?
         url = request.url_without_path
         url << 'version'/page.tree_version << '/' if !page.head?
-        %{<base href="#{escape_html url}"/>}
+        %{<base href="#{escape_html url}"/>}.html_safe
       end
     end
 

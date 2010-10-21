@@ -6,7 +6,7 @@ require 'open3'
 require 'set'
 require 'yaml'
 require 'mimemagic'
-require 'haml'
+require 'slim'
 
 # Nokogiri uses dump_html instead of serialize for broken libxml versions
 # Unfortunately this breaks some things here.

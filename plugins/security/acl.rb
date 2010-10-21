@@ -92,7 +92,7 @@ class Olelo::Application
 end
 
 __END__
-@@ access_denied.haml
+@@ access_denied.slim
 - title :access_denied.t
 .access_denied_page
   %h1= :access_denied.t

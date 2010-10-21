@@ -16,44 +16,44 @@ Engine.create(:imageinfo, :priority => 1, :layout => true, :cacheable => true, :
 end
 
 __END__
-@@ info.haml
-%p
-  %a{:href => page_path(@page, :output => 'image') }
-    %img{:src=> page_path(@page, :output => 'image', :geometry => '640x480>'), :alt => @page.title}
-%h3= :information.t
-%table
-  %tbody
-    %tr
-      %td= :name.t
-      %td= @page.name
-    %tr
-      %td= :title.t
-      %td= @page.title
-    %tr
-      %td= :description.t
-      %td= @page.attributes['description']
-    %tr
-      %td= :type.t
-      %td= @type
-    %tr
-      %td= :geometry.t
-      %td= @geometry
+@@ info.slim
+p
+  a{:href => page_path(@page, :output => 'image') }
+    img{:src=> page_path(@page, :output => 'image', :geometry => '640x480>'), :alt => @page.title}
+h3= :information.t
+table
+  tbody
+    tr
+      td= :name.t
+      td= @page.name
+    tr
+      td= :title.t
+      td= @page.title
+    tr
+      td= :description.t
+      td= @page.attributes['description']
+    tr
+      td= :type.t
+      td= @type
+    tr
+      td= :geometry.t
+      td= @geometry
     - if @page.version
-      %tr
-        %td= :last_modified.t
-        %td!= date @page.version.date
-      %tr
-        %td= :version.t
-        %td.version= @page.version
+      tr
+        td= :last_modified.t
+        td= date @page.version.date
+      tr
+        td= :version.t
+        td.version= @page.version
 - if @exif
-  %h3= :exif.t
-  %table
-    %thead
-      %tr
-        %th= :entry.t
-        %th= :value.t
-    %tbody
+  h3= :exif.t
+  table
+    thead
+      tr
+        th= :entry.t
+        th= :value.t
+    tbody
       - @exif.each do |key, value|
-        %tr
-          %td= key
-          %td= value
+        tr
+          td= key
+          td= value

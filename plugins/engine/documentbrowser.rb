@@ -24,34 +24,34 @@ end
 
 __END__
 
-@@ browser.haml
-!= pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
-%p
-  %img{:src=> page_path(@page, :output => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)}
-!= pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
-%h3= :information.t
-%table
-  %tbody
-    %tr
-      %td= :name.t
-      %td= @page.name
-    %tr
-      %td= :title.t
-      %td= @page.title
-    %tr
-      %td= :description.t
-      %td= @page.attributes['description']
+@@ browser.slim
+= pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
+p
+  img src={page_path(@page, :output => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)}
+= pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
+h3= :information.t
+table
+  tbody
+    tr
+      td= :name.t
+      td= @page.name
+    tr
+      td= :title.t
+      td= @page.title
+    tr
+      td= :description.t
+      td= @page.attributes['description']
     - if @page.version
-      %tr
-        %td= :last_modified.t
-        %td!= date @page.version.date
-      %tr
-        %td= :version.t
-        %td.version= @page.version
-    %tr
-      %td= :type.t
-      %td= @page.mime.comment.blank? ? @page.mime : "#{@page.mime.comment} (#{@page.mime})"
-    %tr
-      %td= :download.t
-      %td
-        %a{:href=> page_path(@page, :output => 'download')}= :download.t
+      tr
+        td= :last_modified.t
+        td= date @page.version.date
+      tr
+        td= :version.t
+        td.version= @page.version
+    tr
+      td= :type.t
+      td= @page.mime.comment.blank? ? @page.mime : "#{@page.mime.comment} (#{@page.mime})"
+    tr
+      td= :download.t
+      td
+        a href={page_path(@page, :output => 'download')} = :download.t

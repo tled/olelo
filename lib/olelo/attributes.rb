@@ -279,7 +279,7 @@ module Olelo
     # @api public
     #
     def attribute_editor
-      self.class.attribute_group.build_form(attributes)
+      self.class.attribute_group.build_form(attributes).html_safe
     end
   end
 end

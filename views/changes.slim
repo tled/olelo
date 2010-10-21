@@ -1,0 +1,22 @@
+- title :changes_of.t(:page => page.title)
+h1= title
+table
+  tbody
+    tr
+      td= :version.t
+      td.version= @version
+    tr
+      td= :comment.t
+      td= @version.comment
+    tr
+      td= :author.t
+      td= @version.author.name
+    tr
+      td= :date.t
+      td= date @version.date
+    tr
+      td= :parents.t
+      td.version
+        - @version.parents.each do |parent|
+          a href={absolute_path('changes'/parent)} = Olelo::Version.short(parent)
+= format_diff(@diff)

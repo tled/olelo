@@ -17,19 +17,18 @@ Engine.create(:gallery, :priority => 3, :layout => true, :hidden => true, :cache
 end
 
 __END__
-@@ gallery.haml
-!= pagination(page_path(@page), @page_count, @page_nr, :output => 'gallery')
-%table.gallery
+@@ gallery.slim
+= pagination(page_path(@page), @page_count, @page_nr, :output => 'gallery')
+table.gallery
   - @images.each_slice(@per_row) do |row|
-    %tr
+    tr
       - row.each do |image|
-        :ruby
+        ruby:
           thumb_path = page_path(image, :output => 'image', :geometry => '150x150>')
           info_path  = page_path(image)
-          description = image.attributes['description'] ||
-                        image.attributes['title'] ||
-                        image.name.gsub(/([^\s])[_\-]/, '\1 ')
-        %td
-          %a.fancybox(href=info_path rel="gallery" title="#{description}")
-            %img(src=thumb_path alt='')
-          %a.title(href=info_path)= description
+          description = image.attributes['description'] || image.attributes['title'] || \
+            image.name.gsub(/([^\s])[_\-]/, '\1 ')
+        td
+          a.fancybox href=info_path rel="gallery" title=description
+            img src=thumb_path alt=''
+          a.title href=info_path = description

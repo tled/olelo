@@ -27,7 +27,7 @@ end
 
 __END__
 
-@@ footnotes.haml
+@@ footnotes.slim
 %ol
   - footnotes.each do |id, note, refs|
     %li(id="note#{id}")

@@ -1,6 +1,10 @@
 module Olelo
   module Templates
-    HAML_OPTIONS = { :format => :xhtml, :attr_wrapper  => '"', :ugly => true, :escape_html => true }.freeze
+    SLIM_OPTIONS = { :format => :xhtml, :use_html_safe => true }.freeze
+
+    include Slim::Helpers
+    # FIXME CompileSite is deprecated, remove if new tilt is released
+    include Tilt::CompileSite
 
     class << self
       attr_reader :cache
@@ -20,14 +24,14 @@ module Olelo
 
     def render(name, options = {}, &block)
       locals = options.delete(:locals) || {}
-      name = "#{name}.haml"
+      name = "#{name}.slim"
       path = Templates.loader.context.to_s/name
-      haml_options = HAML_OPTIONS.merge(options).merge(:filename => path)
-      id = [path, haml_options.map {|x| x}].flatten.join('-')
-      engine = Templates.with_caching(id) do
-        Haml::Engine.new(Templates.loader.load(name), haml_options)
+      slim_options = SLIM_OPTIONS.merge(options).merge(:filename => path)
+      id = [path, slim_options.map {|x| x}].flatten.join('-')
+      template = Templates.with_caching(id) do
+        Slim::Template.new(slim_options) { Templates.loader.load(name) }
       end
-      engine.render(self, locals, &block)
+      template.evaluate(self, locals, &block).html_safe
     end
   end
 end
