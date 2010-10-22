@@ -1,6 +1,6 @@
 - title :move_page.t(:page => page.title)
 h1= title
-form action={action_path(page, :move)} method='post'
+form action=action_path(page, :move) method='post'
   .box
     = flash_messages
     label for='destination' = :destination.t

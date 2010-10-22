@@ -95,5 +95,5 @@ __END__
 @@ access_denied.slim
 - title :access_denied.t
 .access_denied_page
-  %h1= :access_denied.t
+  h1= :access_denied.t
   = :access_denied_long.t

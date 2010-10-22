@@ -27,7 +27,7 @@ __END__
 @@ browser.slim
 = pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
 p
-  img src={page_path(@page, :output => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)}
+  img src=page_path(@page, :output => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)
 = pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
 h3= :information.t
 table
@@ -54,4 +54,4 @@ table
     tr
       td= :download.t
       td
-        a href={page_path(@page, :output => 'download')} = :download.t
+        a href=page_path(@page, :output => 'download') = :download.t

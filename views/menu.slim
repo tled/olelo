@@ -1,29 +1,29 @@
 ul.actions
   - if page && !page.new?
     li
-      a.action-view href={absolute_path(page)} accesskey='v' = :view.t
+      a.action-view href=absolute_path(page) accesskey='v' = :view.t
     li
-      a.action-edit href={action_path(page, :edit)} accesskey='e' = :edit.t
+      a.action-edit href=action_path(page, :edit) accesskey='e' = :edit.t
       ul
         li
-          a.action-new href={action_path(page, :new)} accesskey='n' = :new_page.t
+          a.action-new href=action_path(page, :new) accesskey='n' = :new_page.t
         - if !page.root?
           li
-            a.action-move href={action_path(page, :move)} = :move.t
+            a.action-move href=action_path(page, :move) = :move.t
           li
-            a.action-delete href={action_path(page, :delete)} = :delete.t
+            a.action-delete href=action_path(page, :delete) = :delete.t
     li
-      a.action-history href={action_path(page, :history)} accesskey='h' = :history.t
+      a.action-history href=action_path(page, :history) accesskey='h' = :history.t
       - if @menu_versions
         - head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
         - if page.previous_version || head || page.next_version
           ul
             - if page.previous_version
               li
-                a.action-older href={absolute_path(page, original_params.merge(:version => page.previous_version))} accesskey='o' = :older.t
+                a.action-older href=absolute_path(page, original_params.merge(:version => page.previous_version)) accesskey='o' = :older.t
             - if head
               li
-                a.action-head href={absolute_path(page, original_params.dup)} accesskey=>'c' = :head.t
+                a.action-head href=absolute_path(page, original_params.dup) accesskey='c' = :head.t
             - if page.next_version
               li
-                a.action-newer href={absolute_path(page, original_params.merge(:version => page.next_version))} accesskey='n' = :newer.t
+                a.action-newer href=absolute_path(page, original_params.merge(:version => page.next_version)) accesskey='n' = :newer.t

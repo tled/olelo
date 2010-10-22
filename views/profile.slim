@@ -1,6 +1,6 @@
 - title :profile_title.t(:user => Olelo::User.current.name)
 h1= title
-form action={absolute_path :profile} method='post'
+form action=absolute_path(:profile) method='post'
   .fieldset
     = flash_messages
     h2= :change_password.t
@@ -15,7 +15,7 @@ form action={absolute_path :profile} method='post'
     br
     h2= :settings.t
     label for='email' = :email.t
-    input type='email' name='email' id='email' value={Olelo::User.current.email}
+    input type='email' name='email' id='email' value=Olelo::User.current.email
     br
     h2= :groups.t
     ul== list_of(Olelo::User.current.groups) do |x|

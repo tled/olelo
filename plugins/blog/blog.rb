@@ -67,7 +67,7 @@ __END__
   - @articles.each do |page, content|
     .article
       h2
-        a.name href={absolute_path(page)} = page.name
+        a.name href=absolute_path(page) = page.name
       .date= date page.version.date
       .author= :written_by.t(:author => page.version.author.name)
       - tags = page.attributes['tags'].to_a
@@ -77,15 +77,15 @@ __END__
             = tag
       .content== content
       - if !full
-        a.full href={absolute_path(page.path)} = :full_article.t
+        a.full href=absolute_path(page.path) = :full_article.t
 = pagination(page_path(@page), @page_count, @page_nr, :output => 'blog')
 @@ menu.slim
 table.blog-menu
   - years.keys.sort.each do |year|
     tr
       td
-        a href={absolute_path(page.path/year)} = year
+        a href=absolute_path(page.path/year) = year
       td
         - (1..12).select {|m| years[year][m] }.each do |month|
           - m = '%02d' % month
-          a href={absolute_path(page.path/year/m)}= m
+          a href=absolute_path(page.path/year/m) = m

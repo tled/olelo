@@ -32,14 +32,14 @@ table#subpages-table
         - classes << " file-type-#{child.extension}"
       tr
         td.link
-          a href="#{page_path(child)}" class="#{classes}" = child.name
+          a href=page_path(child) class=classes = child.name
         td= truncate(child.attributes['description'], 30)
         td= date(child.version.date)
         td= truncate(child.version.author.name, 30)
         td= truncate(child.version.comment, 30)
         td.actions
-          a.action-edit href={action_path(child, :edit)} title={:edit.t} = :edit.t
-          a.action-history href={action_path(child, :history)} title={:history.t} = :history.t
-          a.action-move href={action_path(child, :move)} title={:move.t} = :move.t
-          a.action-delete href={action_path(child, :delete)} title={:delete.t} = :delete.t
+          a.action-edit href=action_path(child, :edit) title=:edit.t = :edit.t
+          a.action-history href=action_path(child, :history) title=:history.t = :history.t
+          a.action-move href=action_path(child, :move) title=:move.t = :move.t
+          a.action-delete href=action_path(child, :delete) title=:delete.t = :delete.t
 = pagination(page_path(@page), @page_count, @page_nr, :output => 'subpages')

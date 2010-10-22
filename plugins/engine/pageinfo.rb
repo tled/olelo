@@ -35,4 +35,4 @@ table
       tr
         td= :download.t
         td
-          a href={page_path(@page, :output => 'download')}= :download.t
+          a href=page_path(@page, :output => 'download') = :download.t
