@@ -18,8 +18,8 @@ end
 __END__
 @@ info.slim
 p
-  a{:href => page_path(@page, :output => 'image') }
-    img{:src=> page_path(@page, :output => 'image', :geometry => '640x480>'), :alt => @page.title}
+  a href=page_path(@page, :output => 'image')
+    img src=page_path(@page, :output => 'image', :geometry => '640x480>') alt=@page.title
 h3= :information.t
 table
   tbody

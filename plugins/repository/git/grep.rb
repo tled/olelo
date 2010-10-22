@@ -54,18 +54,18 @@ class Olelo::Application
   private
 
   def emphasize(s)
-    escape_html(truncate(s, 500)).gsub(/(#{params[:pattern]})/i, '<b>\1</b>')
+    escape_html(truncate(s, 500)).gsub(/(#{params[:pattern]})/i, '<b>\1</b>').html_safe
   end
 end
 
 __END__
 @@ grep.slim
 - title :search_results.t(:pattern => params[:pattern])
-%h1= title
-%p= :match.t(:count => @matches.length)
+h1= title
+p= :match.t(:count => @matches.length)
 .search
   - @matches.each do |path, content|
     .match
-      %h2
-        %a.name{:href => absolute_path(path)}!= emphasize(path)
-      .content!= emphasize(content)
+      h2
+        a.name href=absolute_path(path)= emphasize(path)
+      .content= emphasize(content)
