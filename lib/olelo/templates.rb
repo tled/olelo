@@ -26,10 +26,10 @@ module Olelo
       locals = options.delete(:locals) || {}
       name = "#{name}.slim"
       path = Templates.loader.context.to_s/name
-      slim_options = SLIM_OPTIONS.merge(options).merge(:filename => path)
+      slim_options = SLIM_OPTIONS.merge(options)
       id = [path, slim_options.map {|x| x}].flatten.join('-')
       template = Templates.with_caching(id) do
-        Slim::Template.new(slim_options) { Templates.loader.load(name) }
+        Slim::Template.new(path, slim_options) { Templates.loader.load(name) }
       end
       template.evaluate(self, locals, &block).html_safe
     end
