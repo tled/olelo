@@ -18,7 +18,7 @@ form action=absolute_path(:profile) method='post'
     input type='email' name='email' id='email' value=Olelo::User.current.email
     br
     h2= :groups.t
-    ul== list_of(Olelo::User.current.groups) do |x|
+    ul= list_of(Olelo::User.current.groups) do |x|
       = x
     br
     button type='submit' = :save.t

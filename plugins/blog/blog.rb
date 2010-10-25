@@ -73,7 +73,7 @@ __END__
       - tags = page.attributes['tags'].to_a
       - if !tags.empty?
         ul.tags
-          == list_of(tags) do |tag|
+          = list_of(tags) do |tag|
             = tag
       .content== content
       - if !full
