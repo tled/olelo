@@ -2,7 +2,6 @@ module Olelo
   module Templates
     SLIM_OPTIONS = { :format => :xhtml, :use_html_safe => true }.freeze
 
-    include Slim::Helpers
     # FIXME CompileSite is deprecated, remove if new tilt is released
     include Tilt::CompileSite
 

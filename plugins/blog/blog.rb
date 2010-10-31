@@ -73,8 +73,8 @@ __END__
       - tags = page.attributes['tags'].to_a
       - if !tags.empty?
         ul.tags
-          = list_of(tags) do |tag|
-            = tag
+          - tags.each do |tag|
+            li= tag
       .content== content
       - if !full
         a.full href=absolute_path(page.path) = :full_article.t
