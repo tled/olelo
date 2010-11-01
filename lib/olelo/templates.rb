@@ -30,7 +30,7 @@ module Olelo
       template = Templates.with_caching(id) do
         Slim::Template.new(path, slim_options) { Templates.loader.load(name) }
       end
-      template.evaluate(self, locals, &block).html_safe
+      template.render(self, locals, &block).html_safe
     end
   end
 end
