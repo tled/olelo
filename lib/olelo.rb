@@ -1,3 +1,4 @@
+
 require 'logger'
 require 'cgi'
 require 'digest/md5'
@@ -6,7 +7,6 @@ require 'open3'
 require 'set'
 require 'yaml'
 require 'mimemagic'
-require 'slim'
 
 # Nokogiri uses dump_html instead of serialize for broken libxml versions
 # Unfortunately this breaks some things here.
@@ -19,6 +19,9 @@ begin
 rescue LoadError
   require 'json'
 end
+
+require 'olelo/html_safe'
+require 'slim'
 
 require 'olelo/compatibility'
 require 'olelo/extensions'
