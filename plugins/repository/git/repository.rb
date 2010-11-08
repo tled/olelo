@@ -1,7 +1,7 @@
 description 'Git repository backend'
 require     'gitrb'
 
-raise 'Newest gitrb version 0.2.7 is required. Please upgrade!' if !Gitrb.const_defined?('VERSION') || Gitrb::VERSION != '0.2.7'
+raise 'Newest gitrb version 0.2.8 is required. Please upgrade!' if !Gitrb.const_defined?('VERSION') || Gitrb::VERSION != '0.2.8'
 
 class GitRepository < Repository
   CONTENT_EXT   = '.content'
