@@ -38,7 +38,7 @@ module Olelo
       # @return [String] translated string
       #
       def translate(key, args = {})
-        if !key.to_s.ends_with?('_plural') && args[:count] && args.delete(:count) != 1
+        if !key.to_s.ends_with?('_plural') && args[:count] && args[:count] != 1
           translate("#{key}_plural", args)
         elsif @translations[key]
           args.inject(@translations[key]) {|s,(k,v)| s.gsub("#\{#{k}\}", v.to_s) }
