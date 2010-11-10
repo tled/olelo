@@ -28,9 +28,9 @@ end
 __END__
 
 @@ footnotes.slim
-%ol
+ol
   - footnotes.each do |id, note, refs|
-    %li(id="note#{id}")
+    li id="note#{id}"
       - refs.each do |ref|
-        %a.backref(href="#ref#{ref}") ↑
-      != note
+        a.backref ref="#ref#{ref}" ↑
+      == note
