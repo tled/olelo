@@ -8,17 +8,11 @@
   > h2 {
     margin: 0;
   }
-  > .author, > .date, > .tags {
+  > .author, > .date {
     float: left;
     font-size: 90%;
     color: #555555;
     margin: 0.2em 0.4em 1em 0;
-  }
-  > .tags {
-    @include list-bar;
-    li {
-      margin: 0.2em 0.4em 1em 0;
-    }
   }
   > .content {
     clear: both;

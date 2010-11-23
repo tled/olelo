@@ -1,8 +1,6 @@
 en:
   full_article:   'Full Article'
   written_by:     'written by #{author}'
-  attribute_tags: 'Tags'
 de:
   full_article:   'Ganzer Artikel'
   written_by:     'verfasst von #{author}'
-  attribute_tags: 'Tags'

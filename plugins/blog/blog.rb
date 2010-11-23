@@ -2,10 +2,6 @@ description    'Blog engine'
 dependencies   'filter/tag', 'utils/assets'
 export_scripts '*.css'
 
-Page.attributes do
-  list(:tags)
-end
-
 Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
   params[:output] = 'blog'
   send('GET /')
@@ -70,11 +66,6 @@ __END__
         a.name href=absolute_path(page) = page.name
       .date= date page.version.date
       .author= :written_by.t(:author => page.version.author.name)
-      - tags = page.attributes['tags'].to_a
-      - if !tags.empty?
-        ul.tags
-          - tags.each do |tag|
-            li= tag
       .content== content
       - if !full
         a.full href=absolute_path(page.path) = :full_article.t
