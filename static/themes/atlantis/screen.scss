@@ -275,20 +275,16 @@ table.full, #history-table, #subpages-table {
   @include file-type("zip");
 }
 
-.flash {
-  margin: 0.5em 0;
-}
-
 .info {
-  color: #009900;
+  color: #090;
 }
 
 .warn {
-  color: #aa5500;
+  color: #a50;
 }
 
 .error {
-  color: #aa0000;
+  color: #a00;
 }
 
 .ref {
@@ -360,6 +356,13 @@ form {
     &[type=hidden] {
       display: none;
     }
+  }
+  .flash {
+    margin: 0.5em 0;
+    border: 1px solid #d33;
+    list-style-type: none;
+    padding: 0.5em;
+    background: #fdd;
   }
   br {
     clear: left;

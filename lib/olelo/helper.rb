@@ -26,8 +26,8 @@ module Olelo
 
     def flash_messages(action = nil)
       if !action || action?(action)
-        li = [:error, :warn, :info].map {|level| flash[level].to_a.map {|msg| %{<li class="flash #{level}">#{escape_html msg}</li>} } }.flatten
-        "<ul>#{li.join}</ul>".html_safe if !li.empty?
+        li = [:error, :warn, :info].map {|level| flash[level].to_a.map {|msg| %{<li class="#{level}">#{escape_html msg}</li>} } }.flatten
+        %{<ul class="flash">#{li.join}</ul>}.html_safe if !li.empty?
       end
     end
   end
