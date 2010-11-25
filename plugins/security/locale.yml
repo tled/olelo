@@ -1,7 +1,5 @@
 en:
   access_denied:        'Access denied'
-  access_denied_long:   'Access denied. Please login or switch user.'
-  attribute_acl_read:   'Read access'
   attribute_acl_write:  'Write access'
   attribute_acl_create: 'Create subpages'
   attribute_acl_delete: 'Delete subpages'
@@ -9,8 +7,6 @@ en:
   persistent_login:     'Persistent login'
 de:
   access_denied:        'Zugriff verweigert'
-  access_denied_long:   'Der Zugriff wurde verweigert. Melden Sie sich an oder wechseln Sie den Benutzer.'
-  attribute_acl_read:   'Lesezugriff'
   attribute_acl_write:  'Schreibzugriff'
   attribute_acl_create: 'Unterseiten anlegen'
   attribute_acl_delete: 'Unterseiten löschen'

@@ -13,7 +13,6 @@ end
 class Olelo::Page
   attributes do
     group :acl do
-      list :read
       list :write
       list :create
       list :delete
@@ -55,14 +54,6 @@ class Olelo::Page
   before :move, 999 do |destination|
     raise(AccessDenied) if !movable?(destination)
   end
-
-  metaclass.redefine_method :find do |*args|
-    path, tree_version = *args
-    page = super(path, tree_version)
-    raise(AccessDenied) if page && !page.access?(:read)
-    find(path/'..', tree_version) if !path.blank?
-    page
-  end
 end
 
 class Olelo::Application
@@ -75,25 +66,5 @@ class Olelo::Application
       end
     end
   end
-
-  error AccessDenied do |ex|
-    if !on_error
-      if request.xhr?
-        response['Content-Type'] = 'application/json; charset=utf-8'
-        halt '"Access denied"'
-      else
-        cache_control :no_cache => true
-        @page = nil
-        session[:olelo_goto] = request.path_info if request.path_info !~ %r{^/_/}
-        halt render(:access_denied)
-      end
-    end
-  end
 end
 
-__END__
-@@ access_denied.slim
-- title :access_denied.t
-.access_denied_page
-  h1= :access_denied.t
-  = :access_denied_long.t

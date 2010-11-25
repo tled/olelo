@@ -489,10 +489,4 @@ a.absent {
   background: url(images/not_found.png) top left no-repeat;
 }
 
-.access_denied_page {
-  padding-left: 120px;
-  min-height: 400px;
-  background: url(images/lock.png) top left no-repeat;
-}
-
 @import "iehacks.scss";
