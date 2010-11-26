@@ -7,7 +7,7 @@ $(function() {
             var elem = this;
             var old = elem.value;
             var base = elem.value;
-            if (base.length == 0 || base.match(/\/$/)) {
+            if (base.length === 0 || base.match(/\/$/)) {
                 $('#upload-file').change(function() {
                     if (elem.value == old) {
                         elem.value = base + this.value;

@@ -7,10 +7,11 @@
 		minLength: 0,
 		source: this.options.source
 	    }).click(function() {
-		if (input.autocomplete('widget').is(':visible'))
+		if (input.autocomplete('widget').is(':visible')) {
 		    input.autocomplete('close');
-		else
+		} else {
 		    input.autocomplete('search', this.value);
+		}
 	    });
 	    $('<button class="ui-combo-button"/>')
 		.attr('tabIndex', -1)

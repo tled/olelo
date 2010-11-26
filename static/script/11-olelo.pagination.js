@@ -4,7 +4,7 @@
 // Written by Daniel Mendler
 (function($) {
     $.fn.pagination = function(page) {
-        var page = $(page);
+        page = $(page);
 	this.live('click', function() {
             $(this).addClass('loading');
             var href = this.href;

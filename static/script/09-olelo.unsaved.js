@@ -27,8 +27,9 @@
 	    break;
 	case 'select-one':
 	case 'select-multiple':
-	    for (var i = 0; i < this.options.length && !unsaved; ++i)
+	    for (var i = 0; i < this.options.length && !unsaved; ++i) {
                 unsaved = this.options[i].selected != this.options[i].defaultSelected;
+	    }
 	    break;
 	}
 	$('label[for=' + this.id + ']').toggleClass('unsaved', unsaved);
@@ -39,7 +40,7 @@
 	$('input.observe, textarea.observe, select.observe').each(function() {
 	    updateUnsaved.call(this);
 	});
-	return $('.unsaved', element).size() != 0;
+	return $('.unsaved', element).size() !== 0;
     }
 
     $.fn.confirmUnsaved = function() {
@@ -56,7 +57,8 @@
     });
 
     $(window).bind('beforeunload', function() {
-	if (!submitForm && hasUnsavedChanges(document))
+	if (!submitForm && hasUnsavedChanges(document)) {
 	    return $.t('pageUnsaved');
+	}
     });
 })(jQuery);

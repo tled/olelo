@@ -7,15 +7,16 @@ jQuery.fn.historyTable = function() {
     rows.mousedown(function(event) {
 	var from = $(this),
             offset = from.offset(),
-            to = null;
+            to = null,
 	    fromText = $('td:first-child a:first-child', from).text(),
 	    fromDate = $('td:nth-child(3)', from).text(),
 	    draggable = null;
 
         // Stop dragging -> Remove draggable, unbind events
 	function stop() {
-	    if (draggable)
+	    if (draggable) {
                 draggable.remove();
+	    }
 	    $(document).unbind('mouseup.historyTable keypress.historyTable');
 	    rows.unbind('mouseover.historyTable mousemove.historyTable');
 	}
@@ -26,8 +27,9 @@ jQuery.fn.historyTable = function() {
 	    if (to) {
 	        var toVersion = to.attr('id').substr(8),
                     fromVersion = from.attr('id').substr(8);
-	        if (toVersion != fromVersion)
+	        if (toVersion != fromVersion) {
 	            location.href = location.pathname.replace('/history', '/compare/' + fromVersion + '...' + toVersion);
+		}
             }
             return true;
         });
