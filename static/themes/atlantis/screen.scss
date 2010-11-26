@@ -460,19 +460,6 @@ a.absent {
   color: #A55;
 }
 
-#themes {
-  float: left;
-  .styleswitcher {
-    @include reset-box-model;
-    @include no-bullet;
-    display: inline;
-    li {
-      margin-right: 0.5em;
-      display: inline;
-    }
-  }
-}
-
 .archive #header {
   background: $header_bg2;
   h1 {

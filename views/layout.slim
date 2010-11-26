@@ -4,7 +4,7 @@ html.no-js lang=Olelo::Config.locale.sub('_', '-') class={page && !page.head? ? 
     title= Olelo::Config.title + ' - ' + title
     link rel='shortcut icon' href=absolute_path('static/images/favicon.png?1') type='image/png'
     = base_path
-    = theme_links
+    = theme_link
     = include_javascript
   body
     #header
@@ -32,7 +32,6 @@ html.no-js lang=Olelo::Config.locale.sub('_', '-') class={page && !page.head? ? 
       #sidebar == include_page(Olelo::Config.sidebar_page)
       #content == yield
     #footer
-      #themes.noprint
       == footer
       .noprint.powered_by
         ' Powered by

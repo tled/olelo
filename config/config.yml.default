@@ -50,6 +50,9 @@ math_renderer: mathjax
 # Uncomment this!
 #blahtex_directory: '/home/user/wiki/blahtex'
 
+# Selected theme
+theme: atlantis
+
 ##################################################
 # Authentication backend configuration
 

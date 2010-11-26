@@ -230,16 +230,12 @@ module Olelo
         end
     end
 
-    def theme_links
-      @@theme_links ||=
+    def theme_link
+      @@theme_link ||=
         begin
-          default = File.basename(File.readlink(File.join(Config.themes_path, 'default')))
-          Dir.glob(File.join(Config.themes_path, '*', 'style.css')).map do |file|
-            name = File.basename(File.dirname(file))
-            path = Config.base_path + "static/themes/#{name}/style.css?#{File.mtime(file).to_i}"
-            %{<link rel="#{name == default ? '' : 'alternate '}stylesheet"
-              href="#{escape_html path}" type="text/css" title="#{escape_html name}"/>}.unindent if name != 'default'
-          end.compact.join("\n").html_safe
+          file = File.join(Config.themes_path, Config.theme, 'style.css')
+          path = Config.base_path + "static/themes/#{Config.theme}/style.css?#{File.mtime(file).to_i}"
+          %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}.html_safe
         end
     end
 

@@ -2,7 +2,6 @@
 // Written by Daniel Mendler
 $(function() {
     $('html').removeClass('no-js').addClass('js');
-    $('#themes').styleswitcher();
     function pageLoaded(parent) {
         $('#upload-path', parent).each(function() {
             var elem = this;

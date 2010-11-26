@@ -18,7 +18,7 @@
 
 @mixin file-type($type) {
   .file-type-#{$type} {
-    background: url(../../static/themes/default/images/filetypes/#{$type}.png) no-repeat center center !important;
+    background: url(../../static/themes/atlantis/images/filetypes/#{$type}.png) no-repeat center center !important;
   }
 }
 
@@ -101,13 +101,13 @@
       background: url(treeview/images/expanded.png) no-repeat center center;
     }
     .page {
-      background: url(../../static/themes/default/images/page.png) no-repeat center center;
+      background: url(../../static/themes/atlantis/images/page.png) no-repeat center center;
     }
     .expanded .folder {
-      background: url(../../static/themes/default/images/folder_open.png) no-repeat center center;
+      background: url(../../static/themes/atlantis/images/folder_open.png) no-repeat center center;
     }
     .collapsed .folder {
-      background: url(../../static/themes/default/images/folder.png) no-repeat center center;
+      background: url(../../static/themes/atlantis/images/folder.png) no-repeat center center;
     }
   }
 }
