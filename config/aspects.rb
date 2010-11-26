@@ -1,4 +1,4 @@
-# Filter engine configuration engines.rb
+# Filter aspect configuration aspects.rb
 
 ################################################################################
 #
@@ -19,18 +19,18 @@ regexp :textile_nowiki,  /<pre>.*?<\/pre>/m,    '<notags>\0</notags>'
 
 ################################################################################
 #
-# Define filter output engines which process pages by sending them
+# Define filter aspects which process pages by sending them
 # through multiple filters. DSL methods can be chained.
 # Available filters are listed on the /system page.
 #
 # Example DSL usage:
 #
-# engine :engine_name do          # Create engine with name "engine_name"
-#  is_cacheable                   # Engine supports caching (renders static content)
-#  needs_layout                   # Engine needs a html layout around the generated content
-#  has_priority 1                 # Engine has priority 1, lower priorities are preferred
+# aspect :aspect_name do          # Create aspect with name "aspect_name"
+#  is_cacheable                   # Aspect supports caching (renders static content)
+#  needs_layout                   # Aspect needs a html layout around the generated content
+#  has_priority 1                 # Aspect has priority 1, lower priorities are preferred
 #  accepts 'text/x-creole'        # Accepted mime types. This is a regular expression
-#  mime    'text/html'            # Generated mime type. Only interesting for engines which don't need a layout.
+#  mime    'text/html'            # Generated mime type. Only interesting for aspects which don't need a layout.
 #  filter do                      # Define filter chain
 #    remove_comments              # First filter removes html comments <!--...-->. This filter is defined above.
 #    tag_shortcuts                # Replace tag shortcuts with tags (e.g $$...$$ -> <math>...</math>, <<page>> -> <include page="page"/>)
@@ -54,10 +54,10 @@ regexp :textile_nowiki,  /<pre>.*?<\/pre>/m,    '<notags>\0</notags>'
 interwiki_map = YAML.load_file(File.join(Config.config_path, 'interwiki.yml'))
 
 ################################################################################
-# Creole engines configuration
+# Creole aspects configuration
 ################################################################################
 
-engine :page do
+aspect :page do
   is_cacheable.needs_layout.has_priority(1)
   accepts 'text/x-creole'
   filter do
@@ -69,7 +69,7 @@ engine :page do
   end
 end
 
-engine :s5 do
+aspect :s5 do
   is_cacheable
   accepts 'text/x-creole'
   mime 'application/xhtml+xml; charset=utf-8'
@@ -81,7 +81,7 @@ engine :s5 do
   end
 end
 
-engine :latex do
+aspect :latex do
   is_cacheable
   accepts 'text/x-creole'
   mime 'text/plain; charset=utf-8'
@@ -94,10 +94,10 @@ engine :latex do
 end
 
 ################################################################################
-# Textile engines configuration
+# Textile aspects configuration
 ################################################################################
 
-engine :page do
+aspect :page do
   is_cacheable.needs_layout.has_priority(1)
   accepts 'text/x-textile'
   filter do
@@ -108,7 +108,7 @@ engine :page do
   end
 end
 
-engine :s5 do
+aspect :s5 do
   is_cacheable
   accepts 'text/x-textile'
   mime 'application/xhtml+xml; charset=utf-8'
@@ -121,7 +121,7 @@ engine :s5 do
   end
 end
 
-engine :latex do
+aspect :latex do
   is_cacheable
   accepts 'text/x-textile'
   mime 'text/plain; charset=utf-8'
@@ -134,10 +134,10 @@ engine :latex do
 end
 
 ################################################################################
-# Markdown engines configuration
+# Markdown aspects configuration
 ################################################################################
 
-engine :page do
+aspect :page do
   is_cacheable.needs_layout.has_priority(1)
   accepts 'text/x-markdown'
   filter do
@@ -148,7 +148,7 @@ engine :page do
   end
 end
 
-engine :s5 do
+aspect :s5 do
   is_cacheable
   accepts 'text/x-markdown'
   mime 'application/xhtml+xml; charset=utf-8'
@@ -161,7 +161,7 @@ engine :s5 do
   end
 end
 
-engine :latex do
+aspect :latex do
   is_cacheable
   accepts 'text/x-markdown'
   mime 'text/plain; charset=utf-8'
@@ -174,10 +174,10 @@ engine :latex do
 end
 
 ################################################################################
-# Kramdown engines configuration
+# Kramdown aspects configuration
 ################################################################################
 
-engine :page do
+aspect :page do
   is_cacheable.needs_layout.has_priority(2)
   accepts 'text/x-markdown(.kramdown)?'
   filter do
@@ -188,7 +188,7 @@ engine :page do
   end
 end
 
-engine :s5 do
+aspect :s5 do
   is_cacheable
   accepts 'text/x-markdown(.kramdown)?'
   mime 'application/xhtml+xml; charset=utf-8'
@@ -201,7 +201,7 @@ engine :s5 do
   end
 end
 
-engine :latex do
+aspect :latex do
   is_cacheable
   accepts 'text/x-markdown(.kramdown)?'
   mime 'text/plain; charset=utf-8'
@@ -212,10 +212,10 @@ engine :latex do
 end
 
 ################################################################################
-# Maruku engines configuration
+# Maruku aspects configuration
 ################################################################################
 
-engine :page do
+aspect :page do
   is_cacheable.needs_layout.has_priority(3)
   accepts 'text/x-markdown(.maruku)?'
   filter do
@@ -226,7 +226,7 @@ engine :page do
   end
 end
 
-engine :s5 do
+aspect :s5 do
   is_cacheable
   accepts 'text/x-markdown(.maruku)?'
   mime 'application/xhtml+xml; charset=utf-8'
@@ -239,7 +239,7 @@ engine :s5 do
   end
 end
 
-engine :latex do
+aspect :latex do
   is_cacheable
   accepts 'text/x-markdown(.maruku)?'
   mime 'text/plain; charset=utf-8'
@@ -252,10 +252,10 @@ engine :latex do
 end
 
 ################################################################################
-# Orgmode engines configuration
+# Orgmode aspects configuration
 ################################################################################
 
-engine :page do
+aspect :page do
   is_cacheable.needs_layout.has_priority(1)
   accepts 'text/x-orgmode'
   filter do
@@ -266,7 +266,7 @@ engine :page do
   end
 end
 
-engine :s5 do
+aspect :s5 do
   is_cacheable
   accepts 'text/x-orgmode'
   mime 'application/xhtml+xml; charset=utf-8'
@@ -279,7 +279,7 @@ engine :s5 do
   end
 end
 
-engine :latex do
+aspect :latex do
   is_cacheable
   accepts 'text/x-orgmode'
   mime 'text/plain; charset=utf-8'

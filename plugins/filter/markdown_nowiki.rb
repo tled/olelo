@@ -1,5 +1,5 @@
 description  'Markdown nowiki filter'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 Filter.create :markdown_nowiki do |context, content|
   output = ''

@@ -1,5 +1,5 @@
 description  'Wraps fragment into html block to make it valid'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 Filter.create :html_wrapper do |context, content|
   %{<?xml version="1.0" encoding="UTF-8"?>

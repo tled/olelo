@@ -1,7 +1,7 @@
-description 'Download engine'
-dependencies 'engine/engine'
+description 'Download aspect'
+dependencies 'aspect/aspect'
 
-Engine.create(:download) do
+Aspect.create(:download) do
   def accepts?(page); !page.content.empty?; end
   def output(context)
     name = context.page.root? ? :root.t : context.page.name.gsub(/[^\w.\-_]/, '_')

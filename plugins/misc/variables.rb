@@ -1,5 +1,5 @@
 description  'Export variables to context and javascript'
-dependencies 'engine/engine'
+dependencies 'aspect/aspect'
 
 def variables(page)
   vars = {
@@ -16,7 +16,7 @@ def variables(page)
   }
 end
 
-# Export variables to engine context
+# Export variables to aspect context
 Context.hook(:initialized) do
   params.merge!(Plugin.current.variables(page))
 end

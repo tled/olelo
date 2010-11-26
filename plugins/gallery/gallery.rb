@@ -1,8 +1,8 @@
-description    'Gallery engine'
-dependencies   'engine/engine', 'utils/assets'
+description    'Gallery aspect'
+dependencies   'aspect/aspect', 'utils/assets'
 export_scripts '*.css'
 
-Engine.create(:gallery, :priority => 3, :layout => true, :hidden => true, :cacheable => true) do
+Aspect.create(:gallery, :priority => 3, :layout => true, :hidden => true, :cacheable => true) do
   def accepts?(page); !page.children.empty?; end
   def output(context)
     @per_row = 4
@@ -18,13 +18,13 @@ end
 
 __END__
 @@ gallery.slim
-= pagination(page_path(@page), @page_count, @page_nr, :output => 'gallery')
+= pagination(page_path(@page), @page_count, @page_nr, :aspect => 'gallery')
 table.gallery
   - @images.each_slice(@per_row) do |row|
     tr
       - row.each do |image|
         ruby:
-          thumb_path = page_path(image, :output => 'image', :geometry => '150x150>')
+          thumb_path = page_path(image, :aspect => 'image', :geometry => '150x150>')
           info_path  = page_path(image)
           description = image.attributes['description'] || image.attributes['title'] || \
             image.name.gsub(/([^\s])[_\-]/, '\1 ')

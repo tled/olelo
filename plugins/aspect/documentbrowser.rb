@@ -1,7 +1,7 @@
-description 'Document browser engine'
-dependencies 'engine/engine', 'utils/shell'
+description 'Document browser aspect'
+dependencies 'aspect/aspect', 'utils/shell'
 
-Engine.create(:documentbrowser, :priority => 1, :layout => true, :cacheable => true, :accepts => 'application/pdf|postscript') do
+Aspect.create(:documentbrowser, :priority => 1, :layout => true, :cacheable => true, :accepts => 'application/pdf|postscript') do
   def count_pages
     content = @page.content
     page_count = 0
@@ -25,10 +25,10 @@ end
 __END__
 
 @@ browser.slim
-= pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
+= pagination(page_path(@page), @page_count, @page_nr, :aspect => 'documentbrowser')
 p
-  img src=page_path(@page, :output => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)
-= pagination(page_path(@page), @page_count, @page_nr, :output => 'documentbrowser')
+  img src=page_path(@page, :aspect => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)
+= pagination(page_path(@page), @page_count, @page_nr, :aspect => 'documentbrowser')
 h3= :information.t
 table
   tbody
@@ -54,4 +54,4 @@ table
     tr
       td= :download.t
       td
-        a href=page_path(@page, :output => 'download') = :download.t
+        a href=page_path(@page, :aspect => 'download') = :download.t

@@ -1,5 +1,5 @@
 description  'Creole wiki text filter'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 require      'creole'
 
 class OleloCreoleParser < Creole
@@ -11,7 +11,7 @@ class OleloCreoleParser < Creole
     image_path = path.dup
     if path !~ %r{^(\w+)://}
       geometry = args.grep(/(\d+x)|(x\d+)|(\d+%)/).first
-      image_path += (path.include?('?') ? '&' : '?') + 'output=image'
+      image_path += (path.include?('?') ? '&' : '?') + 'aspect=image'
       if geometry
         args.delete(geometry)
         image_path += "&geometry=#{geometry}"

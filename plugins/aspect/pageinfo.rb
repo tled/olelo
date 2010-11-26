@@ -1,7 +1,7 @@
-description 'Page information engine'
-dependencies 'engine/engine'
+description 'Page information aspect'
+dependencies 'aspect/aspect'
 
-Engine.create(:pageinfo, :priority => 4, :layout => true, :cacheable => true) do
+Aspect.create(:pageinfo, :priority => 4, :layout => true, :cacheable => true) do
   def output(context)
     @page = context.page
     render :info
@@ -35,4 +35,4 @@ table
       tr
         td= :download.t
         td
-          a href=page_path(@page, :output => 'download') = :download.t
+          a href=page_path(@page, :aspect => 'download') = :download.t

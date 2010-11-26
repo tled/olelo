@@ -17,5 +17,5 @@ $('#menu > ul:first').prepend('<li class="selected" id="sidebar-tab-menu"><a hre
                               '</a></li><li id="sidebar-tab-tree"><a href="#sidebar-tree">' + $.t('tree') + '</a></li>');
 $('#sidebar-tab-menu, #sidebar-tab-tree').tabWidget({store: 'sidebar-tab'});
 $('#treeview').treeView({stateStore: 'treeview-state', cacheStore: 'treeview-cache', ajax: function(path, success, error) {
-    $.ajax({url: path, data: { output: 'treeview.json' }, success: success, error: error, dataType: 'json'});
+    $.ajax({url: path, data: { aspect: 'treeview.json' }, success: success, error: error, dataType: 'json'});
 }});

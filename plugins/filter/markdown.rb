@@ -1,5 +1,5 @@
 description  'Markdown text filter'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 require      'rdiscount'
 
 Filter.create :markdown do |context, content|

@@ -1,5 +1,5 @@
 description  'Adds links for section editing for creole-like headlines'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 Page.attributes do
   boolean :no_editsection

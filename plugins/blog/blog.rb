@@ -1,9 +1,9 @@
-description    'Blog engine'
+description    'Blog aspect'
 dependencies   'filter/tag', 'utils/assets'
 export_scripts '*.css'
 
 Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
-  params[:output] = 'blog'
+  params[:aspect] = 'blog'
   send('GET /')
 end
 
@@ -20,7 +20,7 @@ Tag.define 'menu', :optional => :path, :description => 'Show blog menu', :dynami
   end
 end
 
-Engine.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidden => true) do
+Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidden => true) do
   def accepts?(page); !page.children.empty?; end
   def output(context)
     @page = context.page
@@ -39,7 +39,7 @@ Engine.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidde
 
     @articles = articles.map do |page|
       begin
-        content = Engine.find!(page, :layout => true).output(context.subcontext(:page => page, :params => {:included => true}))
+        content = Aspect.find!(page, :layout => true).output(context.subcontext(:page => page, :params => {:included => true}))
         if !context.params[:full]
           paragraphs = XMLFragment(content).xpath('p')
           content = ''
@@ -48,7 +48,7 @@ Engine.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidde
             break if content.length > 10000
           end
         end
-      rescue Engine::NotAvailable => ex
+      rescue Aspect::NotAvailable => ex
         %{<span class="error">#{escape_html ex.message}</span>}
       end
       [page, content]
@@ -69,7 +69,7 @@ __END__
       .content== content
       - if !full
         a.full href=absolute_path(page.path) = :full_article.t
-= pagination(page_path(@page), @page_count, @page_nr, :output => 'blog')
+= pagination(page_path(@page), @page_count, @page_nr, :aspect => 'blog')
 @@ menu.slim
 table.blog-menu
   - years.keys.sort.each do |year|

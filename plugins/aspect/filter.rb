@@ -1,11 +1,11 @@
-description 'Filter pipeline engine'
-dependencies 'engine/engine'
+description 'Filter pipeline aspect'
+dependencies 'aspect/aspect'
 
 class Olelo::MandatoryFilterNotFound < NameError; end
 
 # Filter base class. Multiple filters can be chained
-# to build a filter engine.
-# A filter can manipulate the text and the engine context.
+# to build a filter aspect.
+# A filter can manipulate the text and the aspect context.
 class Olelo::Filter
   include PageHelper
   include Templates
@@ -70,7 +70,7 @@ class Olelo::AroundFilter < Olelo::Filter
   end
 end
 
-class Olelo::FilterEngine < Engine
+class Olelo::FilterAspect < Aspect
   def initialize(name, options, filter)
     super(name, options)
     @filter = filter
@@ -130,7 +130,7 @@ class FilterDSL
         end
       else
         if mandatory
-          raise MandatoryFilterNotFound, "Engine '#{@name}' not created because mandatory filter '#{name}' is not available"
+          raise MandatoryFilterNotFound, "Aspect '#{@name}' not created because mandatory filter '#{name}' is not available"
         else
           Plugin.current.logger.warn "Optional filter '#{name}' not available"
         end
@@ -140,8 +140,8 @@ class FilterDSL
     end
   end
 
-  # Build engine class
-  class EngineBuilder
+  # Build aspect class
+  class AspectBuilder
     def initialize(name)
       @name = name
       @options = {}
@@ -149,8 +149,8 @@ class FilterDSL
 
     def build(&block)
       instance_eval(&block)
-      raise("No filters defined for engine '#{name}'") if !@filter
-      FilterEngine.new(@name, @options, @filter)
+      raise("No filters defined for aspect '#{name}'") if !@filter
+      FilterAspect.new(@name, @options, @filter)
     end
 
     def filter(&block)
@@ -174,10 +174,10 @@ class FilterDSL
     end
   end
 
-  # Register engine
-  def engine(name, &block)
-    Engine.register(EngineBuilder.new(name).build(&block))
-    Plugin.current.logger.debug "Filter engine '#{name}' successfully created"
+  # Register aspect
+  def aspect(name, &block)
+    Aspect.register(AspectBuilder.new(name).build(&block))
+    Plugin.current.logger.debug "Filter aspect '#{name}' successfully created"
   rescue MandatoryFilterNotFound => ex
     Plugin.current.logger.warn ex.message
   rescue Exception => ex
@@ -186,6 +186,6 @@ class FilterDSL
 end
 
 def setup
-  file = File.join(Config.config_path, 'engines.rb')
+  file = File.join(Config.config_path, 'aspects.rb')
   FilterDSL.new.instance_eval(File.read(file), file)
 end

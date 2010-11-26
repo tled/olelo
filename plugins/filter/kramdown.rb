@@ -1,5 +1,5 @@
 description  'Kramdown markdown converter'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 require      'kramdown'
 
 Filter.create :kramdown do |context, content|

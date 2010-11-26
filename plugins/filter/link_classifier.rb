@@ -1,5 +1,5 @@
 description  'Classify links as absent/present/external'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 Filter.create :link_classifier do |context, content|
   doc = XMLFragment(content)

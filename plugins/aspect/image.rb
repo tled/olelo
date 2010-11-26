@@ -1,7 +1,7 @@
-description 'Image rendering engine'
-dependencies 'engine/engine', 'utils/imagemagick'
+description 'Image aspect'
+dependencies 'aspect/aspect', 'utils/imagemagick'
 
-Engine.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|image/', :cacheable => true) do
+Aspect.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|image/', :cacheable => true) do
   def ps?(page); page.mime.to_s =~ /postscript/; end
   def output(context)
     page = context.page

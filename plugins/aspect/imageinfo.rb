@@ -1,7 +1,7 @@
-description 'Image information engine'
+description 'Image information aspect'
 dependencies 'utils/imagemagick'
 
-Engine.create(:imageinfo, :priority => 1, :layout => true, :cacheable => true, :accepts => 'image/') do
+Aspect.create(:imageinfo, :priority => 1, :layout => true, :cacheable => true, :accepts => 'image/') do
   def output(context)
     @page = context.page
     identify = ImageMagick.identify('-format', '%m %h %w', '-').run(context.page.content).split(' ')
@@ -18,8 +18,8 @@ end
 __END__
 @@ info.slim
 p
-  a href=page_path(@page, :output => 'image')
-    img src=page_path(@page, :output => 'image', :geometry => '640x480>') alt=@page.title
+  a href=page_path(@page, :aspect => 'image')
+    img src=page_path(@page, :aspect => 'image', :geometry => '640x480>') alt=@page.title
 h3= :information.t
 table
   tbody

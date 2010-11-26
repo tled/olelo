@@ -1,5 +1,5 @@
 description  'Textile text filter'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 require      'redcloth'
 
 Filter.create :textile do |context, content|

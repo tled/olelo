@@ -1,5 +1,5 @@
 description  'Filter which sets Content-Disposition'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 Filter.create :disposition do |context, content|
   name = context.page.root? ? :root.t : context.page.name.gsub(/[^\w.\-_]/, '_')

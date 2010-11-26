@@ -1,5 +1,5 @@
 description  'Extends wiki text with custom xml tags'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 # Simple XML tag parser based on regular expressions
 class TagSoupParser

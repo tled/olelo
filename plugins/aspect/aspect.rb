@@ -1,19 +1,19 @@
-description 'Engine subsystem'
+description 'Aspect subsystem'
 dependencies 'utils/cache'
 
 Olelo::Page.attributes do
-  enum :output do
-    Engine.engines.keys.inject({}) do |hash, name|
-      hash[name] = Olelo::Locale.translate("engine_#{name}", :fallback => titlecase(name))
+  enum :aspect do
+    Aspect.aspects.keys.inject({}) do |hash, name|
+      hash[name] = Olelo::Locale.translate("aspect_#{name}", :fallback => titlecase(name))
       hash
     end
   end
 end
 
-# Engine context
-# A engine context holds the request parameters and other
-# variables used by the engines.
-# It is possible for a engine to run sub-engines. For this
+# Aspect context
+# A aspect context holds the request parameters and other
+# variables used by the aspects.
+# It is possible for a aspect to run sub-aspects. For this
 # purpose you create a subcontext which inherits the variables.
 class Olelo::Context
   include Hooks
@@ -41,26 +41,26 @@ class Olelo::Context
   end
 end
 
-# An Engine renders pages
-# Engines get a page as input and create text.
-class Olelo::Engine
+# An Aspect renders pages
+# Aspects get a page as input and create text.
+class Olelo::Aspect
   include PageHelper
   include Templates
 
-  @engines = {}
+  @aspects = {}
 
   class NotAvailable < NameError
     def initialize(name, page)
-      super(:engine_not_available.t(:engine => name, :page => page.path,
+      super(:aspect_not_available.t(:aspect => name, :page => page.path,
                                     :type => "#{page.mime.comment} (#{page.mime})"))
     end
   end
 
-  # Constructor for engine
+  # Constructor for aspect
   # Options:
-  # * layout: Engine output should be wrapped in HTML layout (Not used for download/image engines for example)
-  # * priority: Engine priority. The engine with the lowest priority will be used for a page.
-  # * cacheable: Engine is cacheable
+  # * layout: Aspect output should be wrapped in HTML layout (Not used for download/image aspects for example)
+  # * priority: Aspect priority. The aspect with the lowest priority will be used for a page.
+  # * cacheable: Aspect is cacheable
   def initialize(name, options)
     @name        = name.to_s
     @layout      = !!options[:layout]
@@ -76,50 +76,50 @@ class Olelo::Engine
   attr_reader :name, :priority, :mime, :accepts, :description, :plugin
   attr_reader? :layout, :hidden, :cacheable
 
-  # Engines hash
-  def self.engines
-    @engines
+  # Aspects hash
+  def self.aspects
+    @aspects
   end
 
-  # Create engine class. This is sugar to create and
-  # register an engine class in one step.
+  # Create aspect class. This is sugar to create and
+  # register an aspect class in one step.
   def self.create(name, options = {}, &block)
-    klass = Class.new(Engine)
+    klass = Class.new(Aspect)
     klass.class_eval(&block)
     register klass.new(name, options)
   end
 
-  # Register engine instance
-  def self.register(engine)
-    (@engines[engine.name] ||= []) << engine
+  # Register aspect instance
+  def self.register(aspect)
+    (@aspects[aspect.name] ||= []) << aspect
   end
 
-  # Find all accepting engines for a page
+  # Find all accepting aspects for a page
   def self.find_all(page)
-    @engines.values.map do |engines|
-      engines.sort_by {|e| e.priority }.find {|e| e.accepts?(page) }
+    @aspects.values.map do |aspects|
+      aspects.sort_by {|e| e.priority }.find {|e| e.accepts?(page) }
     end.compact
   end
 
-  # Find appropiate engine for page. An optional
-  # name can be given to claim a specific engine.
-  # If no engine is found a exception is raised.
+  # Find appropiate aspect for page. An optional
+  # name can be given to claim a specific aspect.
+  # If no aspect is found a exception is raised.
   def self.find!(page, options = {})
-    options[:name] ||= page.attributes['output']
-    engines = options[:name] ? @engines[options[:name].to_s] : @engines.values.flatten
-    engine = engines.to_a.sort_by {|e| e.priority }.find { |e| e.accepts?(page) && (!options[:layout] || e.layout?) }
-    raise NotAvailable.new(options[:name], page) if !engine
-    engine.dup
+    options[:name] ||= page.attributes['aspect']
+    aspects = options[:name] ? @aspects[options[:name].to_s] : @aspects.values.flatten
+    aspect = aspects.to_a.sort_by {|e| e.priority }.find { |e| e.accepts?(page) && (!options[:layout] || e.layout?) }
+    raise NotAvailable.new(options[:name], page) if !aspect
+    aspect.dup
   end
 
-  # Find appropiate engine for page. An optional
-  # name can be given to claim a specific engine.
-  # If no engine is found nil is returned.
+  # Find appropiate aspect for page. An optional
+  # name can be given to claim a specific aspect.
+  # If no aspect is found nil is returned.
   def self.find(page, options = {})
     find!(page, options) rescue nil
   end
 
-  # Acceptor should return true if page would be accepted by this engine.
+  # Acceptor should return true if page would be accepted by this aspect.
   # Reimplement this method.
   def accepts?(page)
     page.mime.to_s =~ /#{@accepts}/
@@ -130,15 +130,15 @@ class Olelo::Engine
   def output(context); raise NotImplementedError; end
 end
 
-# Plug-in the engine subsystem
+# Plug-in the aspect subsystem
 module Olelo::PageHelper
   def include_page(path)
     page = Page.find(path) rescue nil
     if page
       Cache.cache("include-#{page.path}-#{page.version.cache_id}", :update => request.no_cache?, :defer => true) do |context|
         begin
-          Engine.find!(page, :layout => true).output(Context.new(:page => page, :params => {:included => true}))
-        rescue Engine::NotAvailable => ex
+          Aspect.find!(page, :layout => true).output(Context.new(:page => page, :params => {:included => true}))
+        rescue Aspect::NotAvailable => ex
           %{<span class="error">#{escape_html ex.message}</span>}
         end
       end
@@ -148,47 +148,47 @@ module Olelo::PageHelper
   end
 end
 
-# Plug-in the engine subsystem
+# Plug-in the aspect subsystem
 class Olelo::Application
   def show_page
-    params[:output] ||= 'subpages' if params[:path].to_s.ends_with? '/'
-    @selected_engine, layout, response, content =
-      Cache.cache("engine-#{page.path}-#{page.version.cache_id}-#{build_query(original_params)}",
+    params[:aspect] ||= 'subpages' if params[:path].to_s.ends_with? '/'
+    @selected_aspect, layout, response, content =
+      Cache.cache("aspect-#{page.path}-#{page.version.cache_id}-#{build_query(original_params)}",
                   :update => request.no_cache?, :defer => true) do |cache|
-      engine = Engine.find!(page, :name => params[:output])
-      cache.disable! if !engine.cacheable?
+      aspect = Aspect.find!(page, :name => params[:aspect])
+      cache.disable! if !aspect.cacheable?
       context = Context.new(:page => page, :params => params, :request => request)
-      result = engine.output(context)
-      context.response['Content-Type'] ||= engine.mime.to_s if engine.mime
-      context.response['Content-Type'] ||= page.mime.to_s if !engine.layout?
-      [engine.name, engine.layout?, context.response.to_hash, result]
+      result = aspect.output(context)
+      context.response['Content-Type'] ||= aspect.mime.to_s if aspect.mime
+      context.response['Content-Type'] ||= page.mime.to_s if !aspect.layout?
+      [aspect.name, aspect.layout?, context.response.to_hash, result]
     end
     self.response.header.merge!(response)
 
     @menu_versions = true
     halt(layout ? render(:show, :locals => {:content => content}) : content)
-  rescue Engine::NotAvailable => ex
+  rescue Aspect::NotAvailable => ex
     cache_control :no_cache => true
     redirect absolute_path(page) if params[:path].to_s.ends_with? '/'
-    raise if params[:output]
+    raise if params[:aspect]
     flash.error ex.message
     redirect action_path(page, :edit)
   end
 
   hook :dom do |name, doc, layout|
     doc.css('#menu .action-view').each do |link|
-      menu = Cache.cache("engine-menu-#{page.path}-#{page.version.cache_id}-#{@selected_engine}",
+      menu = Cache.cache("aspect-menu-#{page.path}-#{page.version.cache_id}-#{@selected_aspect}",
                          :update => request.no_cache?, :defer => true) do
-        engines = Olelo::Engine.find_all(page).select {|e| !e.hidden? || e.name == @selected_engine }.map do |e|
-          [Olelo::Locale.translate("engine_#{e.name}", :fallback => titlecase(e.name)), e]
+        aspects = Olelo::Aspect.find_all(page).select {|e| !e.hidden? || e.name == @selected_aspect }.map do |e|
+          [Olelo::Locale.translate("aspect_#{e.name}", :fallback => titlecase(e.name)), e]
         end.sort_by(&:first)
         li = []
-        engines.select {|name, e| e.layout? }.each do |name, e|
-          li << %{<li#{e.name == @selected_engine ? ' class="selected"': ''}>
-                  <a href="#{escape_html page_path(page, :output => e.name)}">#{escape_html name}</a></li>}.unindent
+        aspects.select {|name, e| e.layout? }.each do |name, e|
+          li << %{<li#{e.name == @selected_aspect ? ' class="selected"': ''}>
+                  <a href="#{escape_html page_path(page, :aspect => e.name)}">#{escape_html name}</a></li>}.unindent
         end
-        engines.reject {|name, e| e.layout? }.each do |name, e|
-          li << %{<li class="download"><a href="#{escape_html page_path(page, :output => e.name)}">#{escape_html name}</a></li>}
+        aspects.reject {|name, e| e.layout? }.each do |name, e|
+          li << %{<li class="download"><a href="#{escape_html page_path(page, :aspect => e.name)}">#{escape_html name}</a></li>}
         end
         "<ul>#{li.join}</ul>"
       end

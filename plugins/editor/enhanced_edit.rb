@@ -1,5 +1,5 @@
 description  'Enhanced edit form with preview and diff'
-dependencies 'engine/engine'
+dependencies 'aspect/aspect'
 
 class Olelo::Application
   hook :dom do |name, doc, layout|
@@ -21,15 +21,15 @@ class Olelo::Application
     params[:content].gsub!("\r\n", "\n")
 
     if page.new? || !params[:pos]
-      # Whole page edited, assign new content before engine search
+      # Whole page edited, assign new content before aspect search
       page.content = params[:content]
-      engine = Engine.find(page, :layout => true)
+      aspect = Aspect.find(page, :layout => true)
     else
-      # We assume that engine stays the same if section is edited
-      engine = Engine.find(page, :layout => true)
+      # We assume that aspect stays the same if section is edited
+      aspect = Aspect.find(page, :layout => true)
       page.content = params[:content]
     end
-    flash.now[:preview] = engine && engine.output(Context.new(:page => page))
+    flash.now[:preview] = aspect && aspect.output(Context.new(:page => page))
     halt render(:edit)
   end
 

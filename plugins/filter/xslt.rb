@@ -1,5 +1,5 @@
 description  'XSLT filter which transforms XML'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 class Olelo::XSLT < Filter
   def configure(options)

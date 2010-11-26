@@ -1,9 +1,9 @@
 description    'Tree Viewer'
-dependencies   'engine/engine', 'utils/assets'
+dependencies   'aspect/aspect', 'utils/assets'
 export_scripts '*.js', '*.css'
 export_assets  'images/*'
 
-Engine.create('treeview.json', :hidden => true, :cacheable => true, :mime => 'application/json; charset=utf-8') do
+Aspect.create('treeview.json', :hidden => true, :cacheable => true, :mime => 'application/json; charset=utf-8') do
   def output(context)
     # Format [[has-children, classes, path, name], ...]
     # Example: [[0, 'file-type-pdf', '/a/b.pdf', 'b.pdf'], ...]

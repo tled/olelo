@@ -1,5 +1,5 @@
 description  'Auto-generated table of contents'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 Page.attributes do
   boolean :toc

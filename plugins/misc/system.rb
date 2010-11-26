@@ -23,9 +23,9 @@ ul.tabs
     a href="#tab-configuration" Configuration
   li#tabhead-plugins
     a href="#tab-plugins" Plugins
-  - if Olelo.const_defined? 'Engine'
-    li#tabhead-engines
-      a href="#tab-engines" Engines
+  - if Olelo.const_defined? 'Aspect'
+    li#tabhead-aspects
+      a href="#tab-aspects" Aspects
   - if Olelo.const_defined? 'Filter'
     li#tabhead-filters
       a href="#tab-filters" Filters
@@ -98,13 +98,13 @@ ul.tabs
           td #{plugin} (failed)
           td unknown
           td unknown
-- if Olelo.const_defined? 'Engine'
-  #tab-engines.tab
-    h2 Engines
+- if Olelo.const_defined? 'Aspect'
+  #tab-aspects.tab
+    h2 Aspects
     p
-      | Every page is rendered by an appropriate rendering engine. The engine is selected automatically,
-         where engines with lower priority are preferred. An alternative output engine
-         can be selected using the view menu or manually using the "output" query parameter.
+      | Every page is rendered by an appropriate aspect. The aspect is selected automatically,
+         where aspects with lower priority are preferred. An alternative aspect
+         can be selected using the view menu or manually using the "aspect" query parameter.
     .scrollable
       table.full
         thead
@@ -119,21 +119,21 @@ ul.tabs
             th Priority
             th Provided by plugin
         tbody
-          - Olelo::Engine.engines.values.flatten.each do |engine|
+          - Olelo::Aspect.aspects.values.flatten.each do |aspect|
             tr
-              td= engine.name
-              td= engine.description
-              td= engine.mime
-              td= engine.accepts
-              td== check_mark engine.hidden?
-              td== check_mark engine.cacheable?
-              td== check_mark engine.layout?
-              td= engine.priority
-              td= engine.plugin.name
+              td= aspect.name
+              td= aspect.description
+              td= aspect.mime
+              td= aspect.accepts
+              td== check_mark aspect.hidden?
+              td== check_mark aspect.cacheable?
+              td== check_mark aspect.layout?
+              td= aspect.priority
+              td= aspect.plugin.name
 - if Olelo.const_defined? 'Filter'
   #tab-filters.tab
-    h2 Filters used by filter engines
-    p Filters can be chained to build filter engines.
+    h2 Filters used by filter aspects
+    p Filters can be chained to build filter aspects.
     table.full
       thead
         tr
@@ -148,17 +148,17 @@ ul.tabs
             td= filter.description
             td== check_mark filter.respond_to?(:subfilter)
             td= filter.plugin.try(:name)
-    h2 Filter engine definitions
+    h2 Filter aspect definitions
     table.full
       thead
         tr
           th Name
           th Filters
       tbody
-      - Olelo::Engine.engines.values.flatten.select {|engine| Olelo::FilterEngine === engine }.each do |engine|
+      - Olelo::Aspect.aspects.values.flatten.select {|aspect| Olelo::FilterAspect === aspect }.each do |aspect|
         tr
-          td= engine.name
-          td= engine.definition
+          td= aspect.name
+          td= aspect.definition
 - if Olelo.const_defined? 'Tag'
   #tab-tags.tab
     h2 Tags

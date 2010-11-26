@@ -1,7 +1,7 @@
-description  'Subpages engine'
-dependencies 'engine/engine'
+description  'Subpages aspect'
+dependencies 'aspect/aspect'
 
-Engine.create(:subpages, :priority => 2, :layout => true, :cacheable => true) do
+Aspect.create(:subpages, :priority => 2, :layout => true, :cacheable => true) do
   def accepts?(page); !page.children.empty?; end
   def output(context)
     @page_nr = [context.params[:page].to_i, 1].max
@@ -15,7 +15,7 @@ end
 
 __END__
 @@ subpages.slim
-= pagination(page_path(@page), @page_count, @page_nr, :output => 'subpages')
+= pagination(page_path(@page), @page_count, @page_nr, :aspect => 'subpages')
 table#subpages-table
   thead
     tr
@@ -42,4 +42,4 @@ table#subpages-table
           a.action-history href=action_path(child, :history) title=:history.t = :history.t
           a.action-move href=action_path(child, :move) title=:move.t = :move.t
           a.action-delete href=action_path(child, :delete) title=:delete.t = :delete.t
-= pagination(page_path(@page), @page_count, @page_nr, :output => 'subpages')
+= pagination(page_path(@page), @page_count, @page_nr, :aspect => 'subpages')

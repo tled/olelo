@@ -1,5 +1,5 @@
 description 'Handle interwiki links'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 
 class Interwiki < Filter
   def configure(options)

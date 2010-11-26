@@ -1,5 +1,5 @@
 description  'Maruku/Markdown text filter'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 require      'maruku'
 
 Filter.create :maruku do |context, content|

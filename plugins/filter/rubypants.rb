@@ -1,5 +1,5 @@
 description  'Filter which fixes punctuation'
-dependencies 'engine/filter'
+dependencies 'aspect/filter'
 require      'rubypants'
 
 Filter.create :rubypants do |context, content|
