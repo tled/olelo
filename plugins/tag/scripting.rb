@@ -12,7 +12,7 @@ Tag.define :def, :optional => %w(value args), :requires => :name,
   if attrs['value']
     context.params[name] = Evaluator.eval(attrs['value'], context.params)
   else
-    functions = context.private[:functions] ||= {}
+    functions = context[:functions] ||= {}
     functions[name] = [attrs['args'].to_s.split(/\s+/), content]
   end
   nil
@@ -20,7 +20,7 @@ end
 
 Tag.define :call, :optional => '*', :requires => :name, :immediate => true, :description => 'Call function' do |context, attrs|
   name = attrs['name'].downcase
-  functions = context.private[:functions]
+  functions = context[:functions]
   raise NameError, "Function #{name} not found" if !functions || !functions[name]
   args, content = functions[name]
   args = args.inject({}) do |hash, arg|

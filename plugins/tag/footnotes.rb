@@ -2,8 +2,8 @@ description  'Footnote support'
 dependencies 'filter/tag'
 
 Tag.define :ref, :optional => :name, :description => 'Create footnote' do |context, attrs, content|
-  footnotes = context.private[:footnotes] ||= []
-  hash = context.private[:footnotes_hash] ||= {}
+  footnotes = context[:footnotes] ||= []
+  hash = context[:footnotes_hash] ||= {}
   name = attrs['name']
   if content.blank?
     raise(ArgumentError, 'Attribute name missing') if name.blank?
@@ -21,7 +21,7 @@ Tag.define :ref, :optional => :name, :description => 'Create footnote' do |conte
 end
 
 Tag.define :references, :description => 'Print all footnotes' do |context, attrs|
-  footnotes = context.private[:footnotes]
+  footnotes = context[:footnotes]
   render :footnotes, :locals => {:footnotes => footnotes} if footnotes
 end
 

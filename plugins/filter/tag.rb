@@ -198,13 +198,13 @@ class Olelo::Tag < NestingFilter
 
   # Parse nested tags. This method can be called from tag blocks.
   def nested_tags(context, content)
-    context.private[:tag_level] ||= 0
-    context.private[:tag_level] += 1
-    return 'Maximum tag nesting exceeded' if context.private[:tag_level] > MAX_RECURSION
+    context[:tag_level] ||= 0
+    context[:tag_level] += 1
+    return 'Maximum tag nesting exceeded' if context[:tag_level] > MAX_RECURSION
     result = TagSoupParser.new(@enabled_tags, content).parse do |name, attrs, text|
       process_tag(name, attrs, text, context)
     end
-    context.private[:tag_level] -= 1
+    context[:tag_level] -= 1
     result
   end
 
@@ -252,7 +252,7 @@ class Olelo::Tag < NestingFilter
     tag = @@tags[name]
     name = tag.full_name
 
-    tag_counter = context.private[:tag_counter] ||= {}
+    tag_counter = context[:tag_counter] ||= {}
     tag_counter[name] ||= 0
     tag_counter[name] += 1
 

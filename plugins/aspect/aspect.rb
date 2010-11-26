@@ -30,6 +30,14 @@ class Olelo::Context
     invoke_hook(:initialized)
   end
 
+  def [](key)
+    private[key]
+  end
+
+  def []=(key, value)
+    private[key] = value
+  end
+
   def subcontext(options = {})
     Context.new(:page    => options[:page] || page,
                 :private => private.merge(options[:private] || {}),
