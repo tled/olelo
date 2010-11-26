@@ -3,8 +3,8 @@ dependencies 'aspect/aspect'
 require     'rss/maker'
 
 Aspect.create(:changelog, :cacheable => true, :hidden => true) do
-  def output(context)
-    page, format = context.page, context.params[:format]
+  def call(context, page)
+    format = context.params[:format]
 
     url = context.request.url_without_path
     context.header['Content-Type'] = "application/#{format == 'rss' ? 'rss' : 'atom'}+xml; charset=utf-8"

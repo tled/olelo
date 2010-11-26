@@ -6,7 +6,7 @@ Tag.define :include, :optional => '*', :requires => :page, :limit => 10, :descri
   path = context.page.path/'..'/path if !path.starts_with? '/'
   if page = Page.find(path, context.page.tree_version)
     Aspect.find!(page, :name => attrs['aspect'], :layout => true).
-      output(context.subcontext(:params => attrs.merge(:included => true), :page => page))
+      call(context.subcontext(:params => attrs.merge(:included => true), :page => page), page)
   else
     %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
   end

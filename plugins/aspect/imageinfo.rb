@@ -2,12 +2,12 @@ description 'Image information aspect'
 dependencies 'utils/imagemagick'
 
 Aspect.create(:imageinfo, :priority => 1, :layout => true, :cacheable => true, :accepts => 'image/') do
-  def output(context)
-    @page = context.page
-    identify = ImageMagick.identify('-format', '%m %h %w', '-').run(context.page.content).split(' ')
+  def call(context, page)
+    @page = page
+    identify = ImageMagick.identify('-format', '%m %h %w', '-').run(page.content).split(' ')
     @type = identify[0]
     @geometry = "#{identify[1]}x#{identify[2]}"
-    @exif = Shell.exif('-m', '/dev/stdin').run(context.page.content)
+    @exif = Shell.exif('-m', '/dev/stdin').run(page.content)
     @exif.force_encoding(Encoding::UTF_8) if @exif.respond_to? :force_encoding
     @exif = @exif.split("\n").map {|line| line.split("\t") }
     @exif = nil if !@exif[0] || !@exif[0][1]

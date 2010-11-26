@@ -19,11 +19,10 @@ class Olelo::Context
   include Hooks
   has_hooks :initialized
 
-  attr_reader :page, :parent, :private, :params, :request, :header
+  attr_reader :page, :private, :params, :request, :header
 
   def initialize(options = {})
     @page     = options[:page]
-    @parent   = options[:parent]
     @private  = options[:private]  || Hash.with_indifferent_access
     @params   = Hash.with_indifferent_access.merge(options[:params] || {})
     @request  = options[:request]
@@ -32,8 +31,7 @@ class Olelo::Context
   end
 
   def subcontext(options = {})
-    Context.new(:page    => options[:page] || @page,
-                :parent  => self,
+    Context.new(:page    => options[:page] || page,
                 :private => private.merge(options[:private] || {}),
                 :params  => params.merge(options[:params] || {}),
                 :request => request,
@@ -127,7 +125,9 @@ class Olelo::Aspect
 
   # Render page content.
   # Reimplement this method.
-  def output(context); raise NotImplementedError; end
+  def call(context, page)
+    raise NotImplementedError
+  end
 end
 
 # Plug-in the aspect subsystem
@@ -137,7 +137,8 @@ module Olelo::PageHelper
     if page
       Cache.cache("include-#{page.path}-#{page.version.cache_id}", :update => request.no_cache?, :defer => true) do |context|
         begin
-          Aspect.find!(page, :layout => true).output(Context.new(:page => page, :params => {:included => true}))
+          context = Context.new(:page => page, :params => {:included => true})
+          Aspect.find!(page, :layout => true).call(context, page)
         rescue Aspect::NotAvailable => ex
           %{<span class="error">#{escape_html ex.message}</span>}
         end
@@ -158,7 +159,7 @@ class Olelo::Application
       aspect = Aspect.find!(page, :name => params[:aspect])
       cache.disable! if !aspect.cacheable?
       context = Context.new(:page => page, :params => params, :request => request)
-      result = aspect.output(context)
+      result = aspect.call(context, page)
       context.header['Content-Type'] ||= aspect.mime.to_s if aspect.mime
       context.header['Content-Type'] ||= page.mime.to_s if !aspect.layout?
       [aspect.name, aspect.layout?, context.header.to_hash, result]

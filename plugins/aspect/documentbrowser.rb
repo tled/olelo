@@ -14,8 +14,8 @@ Aspect.create(:documentbrowser, :priority => 1, :layout => true, :cacheable => t
     page_count
   end
 
-  def output(context)
-    @page = context.page
+  def call(context, page)
+    @page = page
     @page_nr = [context.params[:page].to_i, 1].max
     @page_count = count_pages
     render :browser

@@ -102,9 +102,9 @@ ul.tabs
   #tab-aspects.tab
     h2 Aspects
     p
-      | Every page is rendered by an appropriate aspect. The aspect is selected automatically,
-         where aspects with lower priority are preferred. An alternative aspect
-         can be selected using the view menu or manually using the "aspect" query parameter.
+      | Every page is rendered by an aspect. The default aspect is selected automatically,
+        where aspects with lower priority are preferred. An alternative aspect
+        can be selected using the view menu or manually using the "aspect" query parameter.
     .scrollable
       table.full
         thead
@@ -164,7 +164,7 @@ ul.tabs
     h2 Tags
     p
       | Tags can be included in the wikitext like normal html tags. These tags are provided by plugins as wikitext extensions.
-         The namespace prefixes are optional and can be used in case of ambiguities.
+        The namespace prefixes are optional and can be used in case of ambiguities.
     table.full
       thead
         tr

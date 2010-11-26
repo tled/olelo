@@ -3,10 +3,10 @@ dependencies 'aspect/aspect'
 
 Aspect.create(:download) do
   def accepts?(page); !page.content.empty?; end
-  def output(context)
-    name = context.page.root? ? :root.t : context.page.name.gsub(/[^\w.\-_]/, '_')
+  def call(context, page)
+    name = page.root? ? :root.t : page.name.gsub(/[^\w.\-_]/, '_')
     context.header['Content-Disposition'] = %{attachment; filename="#{name}"}
-    context.header['Content-Length'] = context.page.content.bytesize.to_s
-    context.page.content
+    context.header['Content-Length'] = page.content.bytesize.to_s
+    page.content
   end
 end

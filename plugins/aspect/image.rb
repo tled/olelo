@@ -3,8 +3,7 @@ dependencies 'aspect/aspect', 'utils/imagemagick'
 
 Aspect.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|image/', :cacheable => true) do
   def ps?(page); page.mime.to_s =~ /postscript/; end
-  def output(context)
-    page = context.page
+  def call(context, page)
     geometry = context.params[:geometry]
     trim = context.params[:trim]
     if page.mime == 'application/pdf' || ps?(page)

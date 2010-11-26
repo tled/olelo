@@ -22,10 +22,9 @@ end
 
 Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidden => true) do
   def accepts?(page); !page.children.empty?; end
-  def output(context)
-    @page = context.page
-
-    articles = @page.children.sort_by {|child| -child.version.date.to_i }
+  def call(context, page)
+    @page = page
+    articles = page.children.sort_by {|child| -child.version.date.to_i }
 
     year = context.params[:year].to_i
     articles.reject! {|article| article.version.date.year != year } if year != 0
@@ -39,7 +38,8 @@ Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidde
 
     @articles = articles.map do |page|
       begin
-        content = Aspect.find!(page, :layout => true).output(context.subcontext(:page => page, :params => {:included => true}))
+        subctx = context.subcontext(:page => page, :params => {:included => true})
+        content = Aspect.find!(page, :layout => true).call(subctx, page)
         if !context.params[:full]
           paragraphs = XMLFragment(content).xpath('p')
           content = ''

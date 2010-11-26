@@ -4,11 +4,11 @@ export_scripts '*.css'
 
 Aspect.create(:gallery, :priority => 3, :layout => true, :hidden => true, :cacheable => true) do
   def accepts?(page); !page.children.empty?; end
-  def output(context)
+  def call(context, page)
     @per_row = 4
     per_page = @per_row * 4
     @page_nr = [context.params[:page].to_i, 1].max
-    @page = context.page
+    @page = page
     @images = @page.children.select {|page| page.mime.image? }
     @page_count = @images.size / per_page + 1
     @images = @images[((@page_nr - 1) * per_page) ... (@page_nr * per_page)].to_a

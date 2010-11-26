@@ -2,8 +2,8 @@ description 'Page information aspect'
 dependencies 'aspect/aspect'
 
 Aspect.create(:pageinfo, :priority => 4, :layout => true, :cacheable => true) do
-  def output(context)
-    @page = context.page
+  def call(context, page)
+    @page = page
     render :info
   end
 end

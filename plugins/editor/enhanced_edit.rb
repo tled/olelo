@@ -29,7 +29,7 @@ class Olelo::Application
       aspect = Aspect.find(page, :layout => true)
       page.content = params[:content]
     end
-    flash.now[:preview] = aspect && aspect.output(Context.new(:page => page))
+    flash.now[:preview] = aspect && aspect.call(Context.new(:page => page, :request => request), page)
     halt render(:edit)
   end
 

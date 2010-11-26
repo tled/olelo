@@ -76,8 +76,8 @@ class Olelo::FilterAspect < Aspect
     @filter = filter
   end
 
-  def output(context)
-    @filter.call(context, context.page.content.dup)
+  def call(context, page)
+    @filter.call(context, page.content.dup)
   end
 
   def definition

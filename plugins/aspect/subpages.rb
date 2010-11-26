@@ -3,10 +3,10 @@ dependencies 'aspect/aspect'
 
 Aspect.create(:subpages, :priority => 2, :layout => true, :cacheable => true) do
   def accepts?(page); !page.children.empty?; end
-  def output(context)
+  def call(context, page)
     @page_nr = [context.params[:page].to_i, 1].max
     per_page = 20
-    @page = context.page
+    @page = page
     @page_count = @page.children.size / per_page + 1
     @children = @page.children[((@page_nr - 1) * per_page) ... (@page_nr * per_page)].to_a
     render :subpages
