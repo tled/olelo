@@ -125,7 +125,7 @@ class TagSoupParser
   end
 end
 
-class Olelo::Tag < AroundFilter
+class Olelo::Tag < NestingFilter
   @@tags = {}
 
   def self.tags

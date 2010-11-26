@@ -58,7 +58,7 @@ class Olelo::Filter
 end
 
 # Filter which supports subfilters
-class Olelo::AroundFilter < Olelo::Filter
+class Olelo::NestingFilter < Olelo::Filter
   attr_accessor :sub
 
   def subfilter(context, content)
@@ -125,7 +125,7 @@ class FilterDSL
         filter.previous = @filter
         @filter = filter
         if block
-          raise "Filter '#{name}' does not support subfilters" if !(AroundFilter === @filter)
+          raise "Filter '#{name}' does not support subfilters" if !(NestingFilter === @filter)
           @filter.sub = FilterBuilder.new(@name).build(&block)
         end
       else
