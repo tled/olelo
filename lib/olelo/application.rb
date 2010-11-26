@@ -237,12 +237,16 @@ module Olelo
       Page.commit(:attributes_edited.t(:page => page.title))
     end
 
+    def show_page
+      @menu_versions = true
+      halt render(:show, :locals => {:content => page.try(:content)})
+    end
+
     get '/version/:version(/:path)|/(:path)', :tail => true do
       begin
         @page = Page.find!(params[:path], params[:version])
         cache_control :version => page.version
-        @menu_versions = true
-        halt render(:show, :locals => {:content => page.try(:content)})
+        show_page
       rescue NotFound
         redirect absolute_path('new'/params[:path].to_s) if params[:version].blank?
         raise

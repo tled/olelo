@@ -149,36 +149,29 @@ end
 
 # Plug-in the engine subsystem
 class Olelo::Application
-  get '/version/:version(/:path)|/(:path)', :tail => true do
-    begin
-      @page = Page.find!(params[:path], params[:version])
-      cache_control :version => page.version
-      @menu_versions = true
-
-      params[:output] ||= 'subpages' if params[:path].to_s.ends_with? '/'
-      @selected_engine, layout, response, content =
-        Cache.cache("engine-#{page.path}-#{page.version.cache_id}-#{build_query(original_params)}",
-                    :update => request.no_cache?, :defer => true) do |cache|
-        engine = Engine.find!(page, :name => params[:output])
-        cache.disable! if !engine.cacheable?
-        context = Context.new(:page => page, :params => params, :request => request)
-        result = engine.output(context)
-        context.response['Content-Type'] ||= engine.mime.to_s if engine.mime
-        context.response['Content-Type'] ||= page.mime.to_s if !engine.layout?
-        [engine.name, engine.layout?, context.response.to_hash, result]
-      end
-      self.response.header.merge!(response)
-      halt(layout ? render(:show, :locals => {:content => content}) : content)
-    rescue Engine::NotAvailable => ex
-      cache_control :no_cache => true
-      redirect absolute_path(page) if params[:path].to_s.ends_with? '/'
-      raise if params[:output]
-      flash.error ex.message
-      redirect action_path(page, :edit)
-    rescue NotFound
-      redirect absolute_path('new'/params[:path].to_s) if params[:version].blank?
-      raise
+  def show_page
+    params[:output] ||= 'subpages' if params[:path].to_s.ends_with? '/'
+    @selected_engine, layout, response, content =
+      Cache.cache("engine-#{page.path}-#{page.version.cache_id}-#{build_query(original_params)}",
+                  :update => request.no_cache?, :defer => true) do |cache|
+      engine = Engine.find!(page, :name => params[:output])
+      cache.disable! if !engine.cacheable?
+      context = Context.new(:page => page, :params => params, :request => request)
+      result = engine.output(context)
+      context.response['Content-Type'] ||= engine.mime.to_s if engine.mime
+      context.response['Content-Type'] ||= page.mime.to_s if !engine.layout?
+      [engine.name, engine.layout?, context.response.to_hash, result]
     end
+    self.response.header.merge!(response)
+
+    @menu_versions = true
+    halt(layout ? render(:show, :locals => {:content => content}) : content)
+  rescue Engine::NotAvailable => ex
+    cache_control :no_cache => true
+    redirect absolute_path(page) if params[:path].to_s.ends_with? '/'
+    raise if params[:output]
+    flash.error ex.message
+    redirect action_path(page, :edit)
   end
 
   hook :dom do |name, doc, layout|
