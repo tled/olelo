@@ -19,7 +19,7 @@ class Olelo::Context
   include Hooks
   has_hooks :initialized
 
-  attr_reader :page, :parent, :private, :params, :request, :response
+  attr_reader :page, :parent, :private, :params, :request, :header
 
   def initialize(options = {})
     @page     = options[:page]
@@ -27,17 +27,17 @@ class Olelo::Context
     @private  = options[:private]  || Hash.with_indifferent_access
     @params   = Hash.with_indifferent_access.merge(options[:params] || {})
     @request  = options[:request]
-    @response = options[:response] || Hash.with_indifferent_access
+    @header   = options[:header] || Hash.with_indifferent_access
     invoke_hook(:initialized)
   end
 
   def subcontext(options = {})
-    Context.new(:page     => options[:page] || @page,
-                :parent   => self,
-                :private  => @private.merge(options[:private] || {}),
-                :params   => @params.merge(options[:params] || {}),
-                :request  => @request,
-                :response => @response)
+    Context.new(:page    => options[:page] || @page,
+                :parent  => self,
+                :private => private.merge(options[:private] || {}),
+                :params  => params.merge(options[:params] || {}),
+                :request => request,
+                :header  => header)
   end
 end
 
@@ -152,18 +152,18 @@ end
 class Olelo::Application
   def show_page
     params[:aspect] ||= 'subpages' if params[:path].to_s.ends_with? '/'
-    @selected_aspect, layout, response, content =
+    @selected_aspect, layout, header, content =
       Cache.cache("aspect-#{page.path}-#{page.version.cache_id}-#{build_query(original_params)}",
                   :update => request.no_cache?, :defer => true) do |cache|
       aspect = Aspect.find!(page, :name => params[:aspect])
       cache.disable! if !aspect.cacheable?
       context = Context.new(:page => page, :params => params, :request => request)
       result = aspect.output(context)
-      context.response['Content-Type'] ||= aspect.mime.to_s if aspect.mime
-      context.response['Content-Type'] ||= page.mime.to_s if !aspect.layout?
-      [aspect.name, aspect.layout?, context.response.to_hash, result]
+      context.header['Content-Type'] ||= aspect.mime.to_s if aspect.mime
+      context.header['Content-Type'] ||= page.mime.to_s if !aspect.layout?
+      [aspect.name, aspect.layout?, context.header.to_hash, result]
     end
-    self.response.header.merge!(response)
+    self.response.header.merge!(header)
 
     @menu_versions = true
     halt(layout ? render(:show, :locals => {:content => content}) : content)

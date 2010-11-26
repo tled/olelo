@@ -25,7 +25,7 @@ Aspect.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|im
         end
         args << 'JPEG:-'
       end
-      context.response['Content-Type'] = 'image/jpeg'
+      context.header['Content-Type'] = 'image/jpeg'
       cmd.run(page.content)
     elsif page.mime.to_s =~ /svg/ || geometry || trim
       cmd = ImageMagick.convert do |args|
@@ -33,7 +33,7 @@ Aspect.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|im
         args << '-thumbnail' << geometry if geometry =~ /^(\d+)?x?(\d+)?[%!<>]*$/
         args << '-' << (page.mime.to_s == 'image/jpeg' ? 'JPEG:-' : 'PNG:-')
       end
-      context.response['Content-Type'] = 'image/png'
+      context.header['Content-Type'] = 'image/png'
       cmd.run(page.content)
     else
       page.content

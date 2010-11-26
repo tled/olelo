@@ -7,7 +7,7 @@ Aspect.create(:changelog, :cacheable => true, :hidden => true) do
     page, format = context.page, context.params[:format]
 
     url = context.request.url_without_path
-    context.response['Content-Type'] = "application/#{format == 'rss' ? 'rss' : 'atom'}+xml; charset=utf-8"
+    context.header['Content-Type'] = "application/#{format == 'rss' ? 'rss' : 'atom'}+xml; charset=utf-8"
 
     content = RSS::Maker.make(format == 'rss' ? '2.0' : 'atom') do |feed|
       feed.channel.generator = 'Ōlelo'
