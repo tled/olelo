@@ -8,7 +8,8 @@ html.no-js lang=Olelo::Config.locale.sub('_', '-') class={page && !page.head? ? 
     = include_javascript
   body
     #header
-      h1= Olelo::Config.title
+      h1
+        a href=Olelo::Config.base_path = Olelo::Config.title
       #info
         - if Olelo::User.logged_in?
           a href=absolute_path(:profile) = Olelo::User.current.name

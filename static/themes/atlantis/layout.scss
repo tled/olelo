@@ -7,11 +7,12 @@
   height: 3em;
   h1 {
     @include reset-box-model;
-    border: none;
-    color: #ffffc2;
     font-size: 200%;
     font-weight: bold;
     float: left;
+    a, a:visited, a:active, a:hover {
+      color: #eeeeee;
+    }
   }
 }
 
