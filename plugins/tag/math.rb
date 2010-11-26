@@ -108,7 +108,10 @@ end
 
 Page.attributes do
   enum :math do
-    MathRenderer.registry.keys.map {|m| [m, Locale.translate("math_#{m}")] }.to_hash
+    MathRenderer.registry.keys.inject({}) do |hash, m|
+      hash[m] = Locale.translate("math_#{m}")
+      hash
+    end
   end
 end
 

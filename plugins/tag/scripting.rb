@@ -23,10 +23,11 @@ Tag.define :call, :optional => '*', :requires => :name, :immediate => true, :des
   functions = context.private[:functions]
   raise NameError, "Function #{name} not found" if !functions || !functions[name]
   args, content = functions[name]
-  args = args.map do |arg|
+  args = args.inject({}) do |hash, arg|
     raise ArgumentError, "Argument #{arg} is required" if !attrs[arg]
-    [arg, Evaluator.eval(attrs[arg], context.params)]
-  end.to_hash
+    hash[arg] = Evaluator.eval(attrs[arg], context.params)
+    hash
+  end
   result = nested_tags(context.subcontext(:params => args), content)
   if attrs['result']
     context.params[attrs['result']] = result

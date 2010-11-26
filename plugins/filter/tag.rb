@@ -189,7 +189,10 @@ class Olelo::Tag < AroundFilter
     super
     list = @options[:enable] ? tag_list(*@options[:enable]) : @@tags.keys
     list -= tag_list(*@options[:disable]) if @options[:disable]
-    @enabled_tags = list.map {|name| [name, @@tags[name].autoclose] }.to_hash
+    @enabled_tags = list.inject({}) do |hash, name|
+      hash[name] = @@tags[name].autoclose
+      hash
+    end
     @static = options[:static]
   end
 

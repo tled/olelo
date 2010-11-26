@@ -137,12 +137,6 @@ class Hash
   end
 end
 
-class Array
-  def to_hash
-    Hash[*self.flatten]
-  end
-end
-
 class Object
   # Metaclass of object
   #

@@ -12,10 +12,11 @@ module Olelo
       boolean :no_title
       string  :description
       string :mime do
-        Config.mime_suggestions.map do |mime|
+        Config.mime_suggestions.inject({}) do |hash, mime|
           comment = MimeMagic.new(mime).comment
-          [mime, comment.blank? ? mime : "#{comment} (#{mime})"]
-        end.to_hash
+          hash[mime] = comment.blank? ? mime : "#{comment} (#{mime})"
+          hash
+        end
       end
     end
 
