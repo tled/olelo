@@ -5,14 +5,11 @@ module Olelo
     end
 
     def handle_error(error)
-      result = []
       type = error.class
       while type
-	result.push(*self.class.error_handler[type].to_a.sort_by(&:first).map {|x| send(x.last, error) })
-        break if type == Exception
+        self.class.error_handler[type].to_a.sort_by(&:first).each {|x| send(x.last, error) }
         type = type.superclass
       end
-      result
     end
 
     module ClassMethods
