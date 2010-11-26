@@ -116,8 +116,8 @@ class TagSoupParser
         @content = $'
       # No closing tag
       else
-        @content.clear
         text << @content
+        @content = ''
         break
       end
     end
