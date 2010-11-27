@@ -6,7 +6,7 @@ Page.attributes do
 end
 
 NestingFilter.create :editsection do |context, content|
-  if context.page.new? || context.page.modified? || !context.page.head? || context.page.attributes['no_editsection']
+  if context[:preview] || !context.page.head? || context.page.attributes['no_editsection']
     subfilter(context, content)
   else
     prefix = "EDIT#{object_id}X"
