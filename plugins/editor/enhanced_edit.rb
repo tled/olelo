@@ -2,16 +2,13 @@ description  'Enhanced edit form with preview and diff'
 dependencies 'aspect/aspect'
 
 class Olelo::Application
-  hook :dom do |name, doc, layout|
-    if name == :edit
-      doc.css('#tab-edit').each do |element|
-        element << %{<div id="enhanced-edit">#{flash[:preview] || flash[:changes]}</div>}
-      end
+  before :edit_buttons do
+    %{<button data-target="enhanced-edit" type="submit" name="action" value="preview" accesskey="p">#{:preview.t}</button>
+      <button data-target="enhanced-edit" type="submit" name="action" value="changes" accesskey="c">#{:changes.t}</button>}
+  end
 
-      doc.css('#tab-edit button[type=submit]').before(
-        %{<button data-target="enhanced-edit" type="submit" name="action" value="preview" accesskey="p">#{:preview.t}</button>
-          <button data-target="enhanced-edit" type="submit" name="action" value="changes" accesskey="c">#{:changes.t}</button>}.unindent)
-    end
+  after :edit_buttons do
+    %{<div id="enhanced-edit">#{flash[:preview] || flash[:changes]}</div>}
   end
 
   def post_preview

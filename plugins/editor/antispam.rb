@@ -83,23 +83,21 @@ class SpamEvaluator
 end
 
 class Olelo::Application
-  hook :dom, 1000 do |name, doc, layout|
-    if flash[:show_captcha]
-      doc.css('#tab-edit button[type=submit]').before(
-        %{<br/><label for="recaptcha">#{:captcha.t}</label><br/><div id="recaptcha"></div><br/>})
-      doc.css('body').each do |body|
-        body << %{<script type="text/javascript"  src="https://api-secure.recaptcha.net/js/recaptcha_ajax.js"/>
-                  <script type="text/javascript">
-                    $(function() {
-                      Recaptcha.create('#{RECAPTCHA_PUBLIC}',
-                        'recaptcha', {
-                        theme: 'clean',
-                        callback: Recaptcha.focus_response_field
-                      });
-                    });
-                  </script>}.unindent
-      end
-    end
+  before :edit_buttons, 1000 do
+    %{<br/><label for="recaptcha">#{:captcha.t}</label><br/><div id="recaptcha"></div><br/>} if flash[:show_captcha]
+  end
+
+  hook :script do
+    %{<script type="text/javascript"  src="https://api-secure.recaptcha.net/js/recaptcha_ajax.js"/>
+      <script type="text/javascript">
+        $(function() {
+          Recaptcha.create('#{RECAPTCHA_PUBLIC}',
+            'recaptcha', {
+              theme: 'clean',
+              callback: Recaptcha.focus_response_field
+          });
+        });
+      </script>}.unindent if flash[:show_captcha]
   end
 
   redefine_method :post_edit do

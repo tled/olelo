@@ -1,11 +1,17 @@
 @import "lib/horizontal-list.scss";
 @import "constants.scss";
 
-@mixin menu-action($name) {
-  &.action-#{$name}:before {
+@mixin menu-action($prefix, $name) {
+  #item-#{$prefix}-#{$name} > a:before {
     content: url(images/actions/#{$name}.png) "\00a0";
   }
 }
+
+@include menu-action("actions", "edit");
+@include menu-action("actions", "history");
+@include menu-action("actions-edit", "new");
+@include menu-action("actions-edit", "delete");
+@include menu-action("actions-edit", "move");
 
 #menu {
   background: $main_bg;
@@ -15,7 +21,7 @@
   ul {
     @include list-bar;
     height: 1.6em;
-    &.actions {
+    &#menu-actions {
       float: right;
       li {
         border-left: $border;
@@ -67,12 +73,6 @@
         height: 1.6em;
         color: $dark_color;
         cursor: pointer;
-        @include menu-action("new");
-        @include menu-action("edit");
-        @include menu-action("history");
-        @include menu-action("delete");
-        @include menu-action("move");
-        @include menu-action("page");
         &:hover, &:focus, &:active {
           text-shadow: #333333 1px 1px 2px;
 	}

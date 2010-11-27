@@ -11,8 +11,8 @@ module Olelo
     attr_reader :page
     attr_setter :on_error
 
-    has_around_hooks :request, :routing, :action
-    has_hooks :auto_login, :render, :dom
+    has_around_hooks :request, :routing, :action, :title, :footer, :login_buttons, :edit_buttons
+    has_hooks :auto_login, :render, :menu, :head, :script
 
     class<< self
       attr_accessor :reserved_paths
@@ -49,6 +49,30 @@ module Olelo
       User.current = nil
     end
 
+    hook :menu do |menu|
+      if menu.name == :actions && page && !page.new?
+        menu.item(:view, :href => absolute_path(page), :accesskey => 'v')
+        edit_menu = menu.item(:edit, :href => action_path(page, :edit), :accesskey => 'e')
+        edit_menu.item(:new, :href => action_path(page, :new), :accesskey => 'n')
+        if !page.root?
+          edit_menu.item(:move, :href => action_path(page, :move))
+          edit_menu.item(:delete, :href => action_path(page, :delete))
+        end
+        history_menu = menu.item(:history, :href => action_path(page, :history), :accesskey => 'h')
+
+        if @menu_versions
+          head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
+          if page.previous_version || head || page.next_version
+            history_menu.item(:older, :href => absolute_path(page, original_params.merge(:version => page.previous_version)),
+                              :accesskey => 'o') if page.previous_version
+            history_menu.item(:head, :href => absolute_path(page, original_params), :accesskey => 'c') if head
+            history_menu.item(:newer, :href => absolute_path(page, original_params.merge(:version => page.next_version)),
+                              :accesskey => 'n') if page.next_version
+          end
+        end
+      end
+    end
+
     # Handle 404s
     error NotFound do |error|
       Olelo.logger.debug(error)
@@ -71,19 +95,6 @@ module Olelo
       render :error, :locals => {:error => error}
     end
 
-    # Layout hook which parses xml and calls layout_doc hook
-    hook :render, 1000 do |name, xml, layout|
-      doc = layout ? XMLDocument(xml) : XMLFragment(xml)
-      invoke_hook :dom, name, doc, layout
-      # FIXME: Nokogiri bug #339 - duplicate xml:lang attribute
-      doc.xpath('//*[@lang]').each {|elem| elem.delete('xml:lang') }
-      doc.xpath('//*[@xmlns]').each {|elem| elem.delete('xmlns') }
-      options = Nokogiri::XML::Node::SaveOptions::AS_XHTML |
-        Nokogiri::XML::Node::SaveOptions::NO_EMPTY_TAGS |
-        Nokogiri::XML::Node::SaveOptions::NO_DECLARATION
-      xml.replace(doc.to_xhtml(:save_with => options))
-    end
-
     get '/login' do
       render :login
     end
@@ -96,6 +107,7 @@ module Olelo
 
     post '/signup' do
       on_error :login
+      raise 'Sign-up is disabled' if !Config.authentication.enable_signup?
       User.current = User.create(params[:user], params[:password],
                                  params[:confirm], params[:email])
       redirect '/'

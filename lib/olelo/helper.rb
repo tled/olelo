@@ -4,17 +4,26 @@ module Olelo
       @blocks ||= Hash.with_indifferent_access('')
     end
 
-    def define_block(name, content = nil, &block)
-      if block_given? || content
-        blocks[name] = block_given? ? yield : content
-        ''
-      else
-        blocks[name]
-      end
+    def define_block(name, content = nil)
+      blocks[name] = block_given? ? yield : content
+      ''
     end
 
-    def footer(content = nil, &block); define_block(:footer, content, &block); end
-    def title(content = nil, &block);  define_block(:title,  content, &block); end
+    def include_block(name)
+      with_hooks(name) { blocks[name] }.join.html_safe
+    end
+
+    def render_block(name)
+      with_hooks(name) { yield }.join.html_safe
+    end
+
+    def include_or_define_block(name, content = nil, &block)
+      if block_given? || content
+        define_block(name, content, &block)
+      else
+        include_block(name)
+      end
+    end
   end
 
   module FlashHelper
@@ -37,7 +46,15 @@ module Olelo
 
     def include_page(path)
       page = Page.find(path) rescue nil
-      page ? page.content : %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
+      if page
+        render_page(page)
+      else
+        %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
+      end
+    end
+
+    def render_page(page)
+      page.content
     end
 
     def pagination(path, page_count, page_nr, options = {})
@@ -103,6 +120,7 @@ module Olelo
     end
 
     def absolute_path(path, options = {})
+      options = options.dup
       path = Config.base_path / (path.try(:path) || path).to_s
 
       # Append version string
@@ -222,33 +240,46 @@ module Olelo
       end
     end
 
-    def include_javascript
-      @@javascript ||=
-        begin
-          path = absolute_path("static/script.js?#{File.mtime(File.join(Config.app_path, 'static', 'script.js')).to_i}")
-          %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}.html_safe
-        end
+    def footer(content = nil, &block)
+      include_or_define_block(:footer, content, &block)
     end
 
-    def theme_link
+    def title(content = nil, &block)
+      include_or_define_block(:title,  content, &block)
+    end
+
+    def script
+      @@script_link ||=
+        begin
+          path = absolute_path("static/script.js?#{File.mtime(File.join(Config.app_path, 'static', 'script.js')).to_i}")
+          %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}
+        end
+      [@@script_link, *invoke_hook(:script)].join.html_safe
+    end
+
+    def head
       @@theme_link ||=
         begin
           file = File.join(Config.themes_path, Config.theme, 'style.css')
           path = Config.base_path + "static/themes/#{Config.theme}/style.css?#{File.mtime(file).to_i}"
-          %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}.html_safe
+          %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
         end
+      base_path = if page && page.root?
+        url = request.url_without_path
+        url << 'version'/page.tree_version << '/' if !page.head?
+        %{<base href="#{escape_html url}"/>}.html_safe
+      end
+      [base_path, @@theme_link, *invoke_hook(:head)].join.html_safe
     end
 
     def session
       env['rack.session'] ||= {}
     end
 
-    def base_path
-      if page && page.root?
-        url = request.url_without_path
-        url << 'version'/page.tree_version << '/' if !page.head?
-        %{<base href="#{escape_html url}"/>}.html_safe
-      end
+    def menu(name)
+      menu = Menu.new(name)
+      invoke_hook :menu, menu
+      menu.to_html
     end
 
     alias render_partial render

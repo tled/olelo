@@ -57,6 +57,9 @@ theme: atlantis
 # Authentication backend configuration
 
 authentication:
+  # Enable signup
+  enable_signup: true
+
   # Select a authentication service which is configured below.
   # Currently supported are: yamlfile, portal and stack.
   service:       yamlfile

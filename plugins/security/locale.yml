@@ -5,6 +5,7 @@ en:
   attribute_acl_delete: 'Delete subpages'
   group_acl:            'Access control lists'
   persistent_login:     'Persistent login'
+  login_first:          'You have to login first'
 de:
   access_denied:        'Zugriff verweigert'
   attribute_acl_write:  'Schreibzugriff'
@@ -12,3 +13,4 @@ de:
   attribute_acl_delete: 'Unterseiten löschen'
   group_acl:            'Zugriffslisten'
   persistent_login:     'Dauerhaft anmelden'
+  login_first:          'Sie müssen sich zuerst anmelden'

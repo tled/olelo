@@ -140,19 +140,14 @@ end
 
 # Plug-in the aspect subsystem
 module Olelo::PageHelper
-  def include_page(path)
-    page = Page.find(path) rescue nil
-    if page
-      Cache.cache("include-#{page.path}-#{page.version.cache_id}", :update => request.no_cache?, :defer => true) do |context|
-        begin
-          context = Context.new(:page => page, :params => {:included => true})
-          Aspect.find!(page, :layout => true).call(context, page)
-        rescue Aspect::NotAvailable => ex
-          %{<span class="error">#{escape_html ex.message}</span>}
-        end
+  def render_page(page)
+    Cache.cache("include-#{page.path}-#{page.version.cache_id}", :update => request.no_cache?, :defer => true) do |context|
+      begin
+        context = Context.new(:page => page, :params => {:included => true})
+        Aspect.find!(page, :layout => true).call(context, page)
+      rescue Aspect::NotAvailable => ex
+        %{<span class="error">#{escape_html ex.message}</span>}
       end
-    else
-      %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
     end
   end
 end
@@ -184,24 +179,20 @@ class Olelo::Application
     redirect action_path(page, :edit)
   end
 
-  hook :dom do |name, doc, layout|
-    doc.css('#menu .action-view').each do |link|
-      menu = Cache.cache("aspect-menu-#{page.path}-#{page.version.cache_id}-#{@selected_aspect}",
-                         :update => request.no_cache?, :defer => true) do
-        aspects = Olelo::Aspect.find_all(page).select {|e| !e.hidden? || e.name == @selected_aspect }.map do |e|
-          [Olelo::Locale.translate("aspect_#{e.name}", :fallback => titlecase(e.name)), e]
+  hook :menu do |menu|
+    if menu.name == :actions && view_menu = menu[:view]
+      Cache.cache("aspect-menu-#{page.path}-#{page.version.cache_id}-#{@selected_aspect}",
+                              :update => request.no_cache?, :defer => true) do
+        aspects = Aspect.find_all(page).select {|e| !e.hidden? || e.name == @selected_aspect }.map do |e|
+          [Locale.translate("aspect_#{e.name}", :fallback => titlecase(e.name)), e]
         end.sort_by(&:first)
-        li = []
-        aspects.select {|name, e| e.layout? }.each do |name, e|
-          li << %{<li#{e.name == @selected_aspect ? ' class="selected"': ''}>
-                  <a href="#{escape_html page_path(page, :aspect => e.name)}">#{escape_html name}</a></li>}.unindent
+        aspects.select {|label, e| e.layout? }.map do |label, e|
+          MenuItem.new(e.name, :label => label, :href => page_path(page, :aspect => e.name), :class => e.name == @selected_aspect ? 'selected' : nil)
+        end +
+        aspects.reject {|label, e| e.layout? }.map do |label, e|
+          MenuItem.new(e.name, :label => label, :href => page_path(page, :aspect => e.name), :class => 'download')
         end
-        aspects.reject {|name, e| e.layout? }.each do |name, e|
-          li << %{<li class="download"><a href="#{escape_html page_path(page, :aspect => e.name)}">#{escape_html name}</a></li>}
-        end
-        "<ul>#{li.join}</ul>"
-      end
-      link.after(menu)
+      end.each {|item| view_menu << item }
     end
   end
 end

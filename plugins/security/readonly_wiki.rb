@@ -15,11 +15,11 @@ class Olelo::Page
 end
 
 class Olelo::Application
-  hook :dom, 999 do |name, doc, layout|
-    doc.css('#menu .actions, #info, .editsection, form[action*=signup], #tabhead-signup').remove if !User.logged_in?
+  hook :render, 999 do |name, xml, layout|
+    xml.gsub!(/<a[^>]+class="[^"]*editsection.*?<\/a>/, '') if !User.logged_in?
   end
 
-  before :routing do
-    redirect '/login' if !User.logged_in? && request.path_info == '/signup'
+  hook :menu, 999 do |menu|
+    menu.remove(:edit) if menu.name == :actions && !User.logged_in?
   end
 end

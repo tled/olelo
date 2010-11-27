@@ -23,10 +23,11 @@ form action=absolute_path(page.new? ? nil : page) method='post'
     br
     label for='edit-comment' = :comment.t
     input#edit-comment type='text' name='comment' value=params[:comment] size='50'
-    button type='submit' name='action' value='edit' = :save.t
-    button type='submit' name='action' value='edit-close' = :save_and_close.t
-    button type='reset' = :reset.t
-    br
+    = render_block :edit_buttons do
+      button type='submit' name='action' value='edit' = :save.t
+      button type='submit' name='action' value='edit-close' = :save_and_close.t
+      button type='reset' = :reset.t
+      br
 form action=absolute_path(page.new? ? nil : page) method='post' enctype='multipart/form-data'
   #tab-upload.tab
     h2= :upload_file.t

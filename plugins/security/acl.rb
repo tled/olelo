@@ -27,7 +27,7 @@ class Olelo::Page
 
   # Page is deletable if parent is writable
   def deletable?
-    parent.access?(:delete)
+    parent && parent.access?(:delete)
   end
 
   # Page is movable if page is deletable and destination is writable
@@ -57,14 +57,11 @@ class Olelo::Page
 end
 
 class Olelo::Application
-  hook :dom, 999 do |name, doc, layout|
-    if page && layout
-      doc.css('#menu .action-edit').each {|link| link.delete('href') } if !page.writable?
-      if !page.root?
-        doc.css('#menu .action-delete').each {|link| link.parent.remove } if !page.deletable?
-        doc.css('#menu .action-move').each {|link| link.parent.remove } if !page.movable?
-      end
+  hook :menu, 999 do |menu|
+    if menu.name == :actions && page
+      menu.remove('edit/delete') if !page.deletable?
+      menu.remove('edit/move') if !page.movable?
+      menu['edit'].attributes.delete(:href) if !page.writable?
     end
   end
 end
-
