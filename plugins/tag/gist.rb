@@ -5,7 +5,7 @@ export_scripts 'gist-embed.css'
 
 Tag.define :gist, :requires => :id do |context, attrs|
   if attrs['id'] =~ /^\d+$/
-    body = open("http://gist.github.com/#{attrs['id']}.json").read
+    body = open("https://gist.github.com/#{attrs['id']}.json").read
     gist = JSON.parse(body)
     gist['div']
   else
