@@ -10,8 +10,7 @@
 ################################################################################
 
 regexp :remove_comments, /<!--.*?-->/m,         ''
-regexp :tag_shortcuts,   /\$\$(.*?)\$\$/m,      '<math display="inline">\1</math>',
-                         /\\\((.*?)\\\)/m,      '<math display="inline">\1</math>',
+regexp :tag_shortcuts,   /\\\((.*?)\\\)/m,      '<math display="inline">\1</math>',
                          /\\\[(.*?)\\\]/m,      '<math display="block">\1</math>',
                          /<<(.*?)(\|(.*?))?>>/, '<include page="\1" \3/>'
 regexp :creole_nowiki,   /\{\{\{.*?\}\}\}/m,    '<notags>\0</notags>'
