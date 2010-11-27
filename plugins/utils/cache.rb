@@ -17,7 +17,7 @@ class Olelo::Cache
   # * :update  Force cache update
   # * :defer   Deferred cache update
   def cache(key, options = {}, &block)
-    if options[:disable] || !Config.production?
+    if options[:disable] || !Config['production']
       yield(self)
     elsif @store.key?(key) && (!options[:update] || options[:defer])
       Worker.defer { update(key, options, &block) } if options[:update]
@@ -41,7 +41,7 @@ class Olelo::Cache
 
   class<< self
     def store
-      @store ||= Store.create(Config.cache_store)
+      @store ||= Store.create(Config['cache_store'])
     end
 
     def cache(*args, &block)

@@ -1,8 +1,8 @@
 description 'Anti-Spam'
 require     'net/http'
 
-RECAPTCHA_PUBLIC = Config.antispam.recaptcha.public
-RECAPTCHA_PRIVATE = Config.antispam.recaptcha.private
+RECAPTCHA_PUBLIC = Config['antispam.recaptcha.public']
+RECAPTCHA_PRIVATE = Config['antispam.recaptcha.private']
 
 class SpamEvaluator
   def self.bad_words

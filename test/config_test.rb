@@ -5,19 +5,8 @@ describe 'Olelo::Config' do
     config = Olelo::Config.new
     config['a.b.c'] = 42
     config['a.b.c'].should.equal 42
-  end
-
-  it 'should generate accessors' do
-    config = Olelo::Config.new
-
-    config['a.b.c'] = 42
-    config.a.b.c.should.equal 42
-
-    config[:x] = { 'y.z' => 43 }
-    config.x.y.z.should.equal 43
-
-    config.update(:n => { :m => 44 })
-    config.n.m.should.equal 44
+    config['a.b']['c'].should.equal 42
+    config['a']['b']['c'].should.equal 42
   end
 
   it 'should be enumerable' do
@@ -27,7 +16,7 @@ describe 'Olelo::Config' do
     config.each do |key, child|
       key.should.be.instance_of String
       child.should.be.instance_of Olelo::Config
-      child.x.y.should.be.instance_of Fixnum
+      child['x.y'].should.be.instance_of Fixnum
     end
   end
 

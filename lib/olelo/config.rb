@@ -3,35 +3,30 @@ module Olelo
     include Enumerable
 
     attr_reader :base, :hash
-    undef_method :type rescue nil if RUBY_VERSION < '1.9'
 
-    def initialize(hash = nil, base = nil)
+    def initialize(base = nil)
       @hash = {}
       @base = base.freeze
-      update(hash) if hash
-    end
+   end
 
     def [](key)
       key = key.to_s
-      i = key.index('.')
-      if i
-        _not_found(key) if !hash.include?(key[0...i])
+      if i = key.index('.')
+        not_found(key) unless Config === hash[key[0...i]]
         hash[key[0...i]][key[i+1..-1]]
       else
-        _not_found(key) if !hash.include?(key)
+        not_found(key) if !hash.include?(key)
         hash[key]
       end
     end
 
     def []=(key, value)
       key = key.to_s
-      i = key.index('.')
-      if i
-        _child(key[0...i])[key[i+1..-1]] = value
+      if i = key.index('.')
+        child(key[0...i])[key[i+1..-1]] = value
       elsif Hash === value
-        _child(key).update(value)
+        child(key).update(value)
       else
-        _create_accessor(key)
         hash[key] = value.freeze
       end
     end
@@ -40,10 +35,6 @@ module Olelo
       hash.each_pair do |key, value|
         self[key] = value
       end
-    end
-
-    def method_missing(key, *args)
-      _not_found(key)
     end
 
     def load(file)
@@ -62,8 +53,8 @@ module Olelo
       @instance ||= Config.new
     end
 
-    def self.method_missing(key, *args)
-      instance.send(key, *args)
+    def self.[](key)
+      instance[key]
     end
 
     def to_hash
@@ -81,24 +72,17 @@ module Olelo
 
     private
 
-    def _not_found(key)
+    def not_found(key)
       raise(NameError, "Configuration key #{base ? "#{base}.#{key}" : key} not found")
     end
 
-    def _child(key)
-      _create_accessor(key)
-      hash[key] ||= Config.new(nil, base ? "#{base}.#{key}" : key)
-    end
-
-    def _create_accessor(key)
-      if !respond_to?(key)
-        metaclass.class_eval do
-          define_method("#{key}?") { !!hash[key] }
-          define_method(key) { hash[key] }
-          define_method("#{key}=") { |x| hash[key] = x }
-        end
+    def child(key)
+      if child = hash[key]
+        raise "Configuration key #{key} is already used" unless Config === child
+        child
+      else
+        hash[key] = Config.new(base ? "#{base}.#{key}" : key)
       end
     end
-
   end
 end

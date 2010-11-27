@@ -12,15 +12,15 @@ module TestHelper
 
   def create_repository
     Olelo::Repository.instance = nil
-    Olelo::Config['repository.type'] = 'git'
-    Olelo::Config['repository.git.path'] = File.expand_path(File.join(File.dirname(__FILE__), '.test'))
-    Olelo::Config['repository.git.bare'] = true
+    Olelo::Config.instance['repository.type'] = 'git'
+    Olelo::Config.instance['repository.git.path'] = File.expand_path(File.join(File.dirname(__FILE__), '.test'))
+    Olelo::Config.instance['repository.git.bare'] = true
     load_plugin('repository/git/repository')
   end
 
   def destroy_repository
     Olelo::Repository.instance = nil
-    FileUtils.rm_rf(Olelo::Config.repository.git.path)
+    FileUtils.rm_rf(Olelo::Config['repository.git.path'])
   end
 
   def create_page(name, content = 'content')

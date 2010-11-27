@@ -50,29 +50,29 @@ ul.tabs
   table
     tr
       td Production mode:
-      td= Olelo::Config.production?
+      td= Olelo::Config['production']
     tr
       td Repository backend:
-      td= Olelo::Config.repository.type
+      td= Olelo::Config['repository.type']
     tr
       td Authentication backend:
-      td= Olelo::Config.authentication.service
+      td= Olelo::Config['authentication.service']
     tr
       td Locale:
-      td= Olelo::Config.locale
+      td= Olelo::Config['locale']
     tr
       td Base path:
-      td= Olelo::Config.base_path
+      td= Olelo::Config['base_path']
     tr
       td Log level:
-      td= Olelo::Config.log.level
+      td= Olelo::Config['log.level']
     tr
       td Sidebar page:
       td
-        a href="#{absolute_path(Olelo::Config.sidebar_page)}" = Olelo::Config.sidebar_page
+        a href="#{absolute_path(Olelo::Config['sidebar_page'])}" = Olelo::Config['sidebar_page']
     tr
       td Mime type detection order:
-      td= Olelo::Config.mime.join(', ')
+      td= Olelo::Config['mime'].join(', ')
 #tab-plugins.tab
   h2 Plugins
   p These plugins are currently available on your installation.

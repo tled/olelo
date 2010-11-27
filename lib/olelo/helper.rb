@@ -121,7 +121,7 @@ module Olelo
 
     def absolute_path(path, options = {})
       options = options.dup
-      path = Config.base_path / (path.try(:path) || path).to_s
+      path = Config['base_path'] / (path.try(:path) || path).to_s
 
       # Append version string
       version = options.delete(:version)
@@ -160,7 +160,7 @@ module Olelo
 
     # Cache control for page
     def cache_control(options)
-      return if !Config.production?
+      return if !Config['production']
 
       if options[:no_cache]
         response.headers.delete('ETag')
@@ -251,7 +251,7 @@ module Olelo
     def script
       @@script_link ||=
         begin
-          path = absolute_path("static/script.js?#{File.mtime(File.join(Config.app_path, 'static', 'script.js')).to_i}")
+          path = absolute_path("static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}")
           %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}
         end
       [@@script_link, *invoke_hook(:script)].join.html_safe
@@ -260,8 +260,8 @@ module Olelo
     def head
       @@theme_link ||=
         begin
-          file = File.join(Config.themes_path, Config.theme, 'style.css')
-          path = Config.base_path + "static/themes/#{Config.theme}/style.css?#{File.mtime(file).to_i}"
+          file = File.join(Config['themes_path'], Config['theme'], 'style.css')
+          path = "#{Config['base_path']}static/themes/#{Config['theme']}/style.css?#{File.mtime(file).to_i}"
           %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
         end
       base_path = if page && page.root?

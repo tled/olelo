@@ -67,11 +67,11 @@ class BlahtexImageRenderer < MathRenderer
   def initialize
     `blahtex`
     raise 'blahtex not found on path' if $?.exitstatus != 0
-    FileUtils.mkpath(Config.blahtex_directory)
+    FileUtils.mkpath(Config['blahtex_directory'])
   end
 
   def render(code, display)
-    content = Shell.blahtex('--png', '--png-directory', Config.blahtex_directory).run(code.strip)
+    content = Shell.blahtex('--png', '--png-directory', Config['blahtex_directory']).run(code.strip)
     if content =~ %r{<md5>(.*)</md5>}m
       path = absolute_path "_/tag/math/blahtex/#{$1}.png"
       %{<img src="#{escape_html path}" alt="#{escape_html code}" class="math #{display}"/>}
@@ -102,7 +102,7 @@ end
 
 Tag.define :math, :optional => :display do |context, attrs, code|
   raise('Limits exceeded') if code.size > 10240
-  renderer = context.page.attributes['math'] || Config.math_renderer
+  renderer = context.page.attributes['math'] || Config['math_renderer']
   (MathRenderer[renderer] || MathRenderer['latex']).render(code, attrs['display'] == 'block' ? 'block' : 'inline')
 end
 
@@ -117,7 +117,7 @@ end
 
 class Olelo::Application
   hook :render do |name, xml, layout|
-    if layout && xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config.math_renderer) == 'mathjax'
+    if layout && xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config['math_renderer']) == 'mathjax'
       xml.sub!('</body>', %{<script src="#{absolute_path 'static/mathjax/MathJax.js'}" type="text/javascript" async="async"/></body>})
     end
   end
@@ -125,7 +125,7 @@ class Olelo::Application
   get '/_/tag/math/blahtex/:name', :name => /[\w\.]+/ do
     begin
       response['Content-Type'] = 'image/png'
-      file = File.join(Config.blahtex_directory, params[:name])
+      file = File.join(Config['blahtex_directory'], params[:name])
       response['Content-Length'] ||= File.stat(file).size.to_s
       halt BlockFile.open(file, 'rb')
     rescue => ex

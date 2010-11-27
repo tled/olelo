@@ -107,7 +107,7 @@ module Olelo
 
     post '/signup' do
       on_error :login
-      raise 'Sign-up is disabled' if !Config.authentication.enable_signup?
+      raise 'Sign-up is disabled' if !Config['authentication.enable_signup']
       User.current = User.create(params[:user], params[:password],
                                  params[:confirm], params[:email])
       redirect '/'

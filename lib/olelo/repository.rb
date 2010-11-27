@@ -63,7 +63,7 @@ module Olelo
     class << self
       attr_writer :instance
       def instance
-        @instance ||= self[Config.repository.type].new(Config.repository[Config.repository.type])
+        @instance ||= self[Config['repository.type']].new(Config['repository'][Config['repository.type']])
       end
     end
 

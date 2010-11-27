@@ -186,6 +186,6 @@ class FilterDSL
 end
 
 def setup
-  file = File.join(Config.config_path, 'aspects.rb')
+  file = File.join(Config['config_path'], 'aspects.rb')
   FilterDSL.new.instance_eval(File.read(file), file)
 end

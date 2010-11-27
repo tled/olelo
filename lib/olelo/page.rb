@@ -12,7 +12,7 @@ module Olelo
       boolean :no_title
       string  :description
       string :mime do
-        Config.mime_suggestions.inject({}) do |hash, mime|
+        Config['mime_suggestions'].inject({}) do |hash, mime|
           comment = MimeMagic.new(mime).comment
           hash[mime] = comment.blank? ? mime : "#{comment} (#{mime})"
           hash
@@ -206,7 +206,7 @@ module Olelo
     end
 
     def self.default_mime
-      mime = Config.mime.find {|m| m.include? '/'}
+      mime = Config['mime'].find {|m| m.include? '/'}
       mime ? MimeMagic.new(mime) : nil
     end
 
@@ -231,7 +231,7 @@ module Olelo
 
     def detect_mime
       return MimeMagic.new(attributes['mime']) if attributes['mime']
-      Config.mime.each do |mime|
+      Config['mime'].each do |mime|
         mime = if mime == 'extension'
                  MimeMagic.by_extension(extension)
                elsif %w(content magic).include?(mime)

@@ -1,13 +1,13 @@
 ! doctype 5
-html.no-js lang=Olelo::Config.locale.sub('_', '-') class={page && !page.head? ? 'archive' : nil} xmlns='http://www.w3.org/1999/xhtml'
+html.no-js lang=Olelo::Config['locale'].sub('_', '-') class={page && !page.head? ? 'archive' : nil} xmlns='http://www.w3.org/1999/xhtml'
   head
-    title= Olelo::Config.title + ' - ' + title
+    title= Olelo::Config['title'] + ' - ' + title
     link rel='shortcut icon' href=absolute_path('static/images/favicon.png?1') type='image/png'
     = head
   body
     #header
       h1
-        a href=Olelo::Config.base_path = Olelo::Config.title
+        a href=Olelo::Config['base_path'] = Olelo::Config['title']
       #info
         - if Olelo::User.logged_in?
           a href=absolute_path(:profile) = Olelo::User.current.name
@@ -28,7 +28,7 @@ html.no-js lang=Olelo::Config.locale.sub('_', '-') class={page && !page.head? ? 
             = date page.version.date
       = menu :actions
     #container
-      #sidebar == include_page(Olelo::Config.sidebar_page)
+      #sidebar == include_page(Olelo::Config['sidebar_page'])
       #content == yield
     #footer
       == footer

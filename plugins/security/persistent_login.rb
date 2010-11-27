@@ -7,7 +7,7 @@ class Olelo::Application
   TOKEN_LIFETIME = 24*60*60*365
 
   def login_tokens
-    @login_tokens ||= Store.create(Config.tokens_store)
+    @login_tokens ||= Store.create(Config['tokens_store'])
   end
 
   hook :auto_login do

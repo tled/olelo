@@ -11,12 +11,12 @@ Aspect.create(:changelog, :cacheable => true, :hidden => true) do
 
     content = RSS::Maker.make(format == 'rss' ? '2.0' : 'atom') do |feed|
       feed.channel.generator = 'Ōlelo'
-      feed.channel.title = Config.title
+      feed.channel.title = Config['title']
       feed.channel.link = url + page.path
-      feed.channel.description = Config.title + ' Changelog'
+      feed.channel.description = Config['title'] + ' Changelog'
       feed.channel.id = url + page.path
       feed.channel.updated = Time.now
-      feed.channel.author = Config.title
+      feed.channel.author = Config['title']
       feed.items.do_sort = true
       page.history.each do |version|
         i = feed.items.new_item

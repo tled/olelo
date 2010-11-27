@@ -19,7 +19,7 @@ module Olelo
       i = path.index('/')
       if i
         item = @items_map[path[0...i]]
-        item[path[i..-1]] if item
+        item[path[i+1..-1]] if item
       else
         @items_map[name.to_sym]
       end
@@ -51,7 +51,7 @@ module Olelo
       i = path.index('/')
       if i
         item = @items_map[path[0...i]]
-        item.remove(path[i..-1]) if item
+        item.remove(path[i+1..-1]) if item
       else
         item = @items_map.delete(name.to_sym)
         @items.delete(item) if item

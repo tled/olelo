@@ -37,6 +37,7 @@ describe 'requests' do
       :sidebar_page      => 'Sidebar',
       :authentication => {
         :service  => :yamlfile,
+        :enable_signup => true,
         :yamlfile => {
           :store  => File.join(@test_path, 'users.yml'),
         },
@@ -61,7 +62,7 @@ describe 'requests' do
       }
     }
 
-    Olelo::Config.update(default_config)
+    Olelo::Config.instance.update(default_config)
     Olelo::Repository.instance = nil
 
     logger = Logger.new(File.join(@app_path, 'test.log'))
@@ -91,8 +92,8 @@ describe 'requests' do
   it 'should show login page' do
     get '/login'
     last_response.should.be.ok
-    last_response.body.should.include '<form action="/signup" method="post">'
-    last_response.body.should.include '<form action="/login" method="post">'
+    last_response.body.should.include '<form action="&#47;signup" method="post">'
+    last_response.body.should.include '<form action="&#47;login" method="post">'
   end
 
   it 'should show to /new' do

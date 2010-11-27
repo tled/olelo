@@ -3,7 +3,7 @@ description 'Authentication service stack'
 class StackService < User::Service
   def initialize(config)
     @stack = config.map do |name|
-      User::Service[name].new(Config.authentication[name])
+      User::Service[name].new(Config['authentication'][name])
     end
   end
 

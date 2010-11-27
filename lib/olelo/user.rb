@@ -84,7 +84,7 @@ module Olelo
       end
 
       def service
-        @service ||= Service[Config.authentication.service].new(Config.authentication[Config.authentication.service])
+        @service ||= Service[Config['authentication.service']].new(Config['authentication'][Config['authentication.service']])
       end
 
       def validate_password(password, confirm)

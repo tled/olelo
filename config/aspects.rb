@@ -50,7 +50,7 @@ regexp :textile_nowiki,  /<pre>.*?<\/pre>/m,    '<notags>\0</notags>'
 #
 ################################################################################
 
-interwiki_map = YAML.load_file(File.join(Config.config_path, 'interwiki.yml'))
+interwiki_map = YAML.load_file(File.join(Config['config_path'], 'interwiki.yml'))
 
 ################################################################################
 # Creole aspects configuration
