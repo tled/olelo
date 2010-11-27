@@ -303,5 +303,9 @@ module Olelo
     def deletion!(text)
       @html << '<del>' << escape_html(text) << '</del>'
     end
+
+    def context!(text)
+      @html << escape_html(text)
+    end
   end
 end

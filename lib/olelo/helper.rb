@@ -79,7 +79,7 @@ module Olelo
     end
 
     def date(t)
-      %{<span class="date epoch-#{t.to_i}">#{t.strftime('%d %h %Y %H:%M')}</span>}.html_safe
+      %{<span class="date" data-epoch="#{t.to_i}">#{t.strftime('%d %h %Y %H:%M')}</span>}.html_safe
     end
 
     def format_diff(diff)

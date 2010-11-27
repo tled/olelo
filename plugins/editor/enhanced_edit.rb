@@ -50,7 +50,7 @@ class Olelo::Application
     patch = IO.popen("diff -u '#{original.path}' '#{new.path}'", 'rb') {|io| io.read }
     patch.force_encoding(Encoding::UTF_8) if patch.respond_to? :force_encoding
     flash.now[:changes] = PatchParser.parse(patch, PatchFormatter.new).html
-
+    flash.now[:changes] = %{<div class="flash">#{:no_changes.t}</div>} if flash.now[:changes].blank?
     halt render(:edit)
   end
 end

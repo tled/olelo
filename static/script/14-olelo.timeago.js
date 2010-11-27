@@ -48,9 +48,9 @@
     $.fn.timeAgo = function() {
 	this.each(function() {
 	    var elem = $(this);
-            var match = elem.attr('class').match(/epoch-(\d+)/);
-	    if (match) {
-		elem.attr('title', elem.text()).html(timeAgo(match[1]));
+            var epoch = elem.data('epoch');
+	    if (epoch) {
+		elem.attr('title', elem.text()).html(timeAgo(epoch));
 	    }
 	});
     };

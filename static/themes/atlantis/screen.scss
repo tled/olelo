@@ -357,16 +357,17 @@ form {
       display: none;
     }
   }
-  .flash {
-    margin: 0.5em 0;
-    border: 1px solid #d33;
-    list-style-type: none;
-    padding: 0.5em;
-    background: #fdd;
-  }
   br {
     clear: left;
   }
+}
+
+.flash {
+  margin: 0.5em 0;
+  border: 1px solid #d33;
+  list-style-type: none;
+  padding: 0.5em;
+  background: #fdd;
 }
 
 table input {
