@@ -8,10 +8,9 @@ class GitRepository < Repository
   ATTRIBUTE_EXT = '.attributes'
 
   def initialize(config)
-    logger = Plugin.current.logger
-    logger.info "Opening git repository: #{config[:path]}"
+    Olelo.logger.info "Opening git repository: #{config[:path]}"
     @shared_git = Gitrb::Repository.new(:path => config[:path], :create => true,
-                                        :bare => config[:bare], :logger => logger)
+                                        :bare => config[:bare], :logger => Olelo.logger)
     @git = {}
   end
 

@@ -1,18 +1,22 @@
 module Olelo
+  class<< self
+    attr_accessor :logger
+  end
+
   class Initializer
     include Util
 
-    def self.init(logger)
+    def self.initialize(logger)
       @instance ||= Initializer.new(logger)
     end
 
     def initialize(logger)
-      @logger = logger
+      Olelo.logger = logger
       init_locale
       init_templates
       init_plugins
       init_routes
-      init_custom
+      init_scripts
     end
 
     private
@@ -41,7 +45,6 @@ module Olelo
       Plugin.after(:load) { Locale.load(File.join(File.dirname(file), 'locale.yml')) }
 
       # Configure plugin system
-      Plugin.logger = @logger
       Plugin.disabled = Config.disabled_plugins.to_a
       Plugin.dir = Config.plugins_path
 
@@ -55,18 +58,18 @@ module Olelo
         router.head.map {|name, pattern, keys| pattern }
       end.flatten
       Application.router.each do |method, router|
-        @logger.debug method
+        Olelo.logger.debug method
         router.each do |name, pattern, keys|
-          @logger.debug "#{name} -> #{pattern.inspect}"
+          Olelo.logger.debug "#{name} -> #{pattern.inspect}"
         end
-      end if @logger.debug?
+      end if Olelo.logger.debug?
     end
 
-    def init_custom
+    def init_scripts
       Dir[File.join(Config.initializers_path, '*.rb')].sort_by do |f|
         File.basename(f)
       end.each do |f|
-        @logger.debug "Running custom initializer #{f}"
+        Olelo.logger.debug "Running script initializer #{f}"
 	instance_eval(File.read(f), f)
       end
     end

@@ -288,7 +288,7 @@ class Olelo::Tag < NestingFilter
       "#{@protection_prefix}#{@protected_tags.length-1}#{@protection_suffix}"
     end
   rescue Exception => ex
-    Plugin.current.logger.error ex
+    Olelo.logger.error ex
     "#{name} - #{ex.message}"
   end
 
@@ -330,11 +330,11 @@ Application.hook :render, 2000 do |name, xml, layout|
           Tag.tags[name].dynamic.new.call(context, attrs).to_s
         end
       rescue Exception => ex
-        Plugin.current.logger.error ex
+        Olelo.logger.error ex
         "#{name} - #{escape_html ex.message}"
       end
     rescue Exception => ex
-      Plugin.current.logger.error ex
+      Olelo.logger.error ex
       ''
     end
   end

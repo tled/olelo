@@ -11,7 +11,7 @@ class Olelo::MathRenderer
         registry[name] = klass.new
       rescue Exception => ex
         registry.delete(name)
-        Plugin.current.logger.warn "Failed to initialize math renderer #{name}: #{ex.message}"
+        Olelo.logger.warn "Failed to initialize math renderer #{name}: #{ex.message}"
       end
     end
   end

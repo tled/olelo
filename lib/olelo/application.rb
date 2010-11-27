@@ -8,7 +8,7 @@ module Olelo
     include ApplicationHelper
 
     patterns :path => Page::PATH_PATTERN
-    attr_reader :logger, :page
+    attr_reader :page
     attr_setter :on_error
 
     has_around_hooks :request, :routing, :action
@@ -22,19 +22,9 @@ module Olelo
       end
     end
 
-    def initialize(app = nil, options = {})
-      @app = app
-      @logger = options[:logger] || Logger.new(nil)
-      Initializer.init(@logger)
-    end
-
     # Executed before each request
     before :routing do
-      # Set request ip as progname
-      @logger = logger.dup
-      logger.progname = request.ip
-
-      logger.debug env
+      Olelo.logger.debug env
 
       User.current = User.find(session[:olelo_user])
       if !User.current
@@ -57,14 +47,14 @@ module Olelo
 
     # Handle 404s
     error NotFound do |error|
-      logger.debug(error)
+      Olelo.logger.debug(error)
       cache_control :no_cache => true
       halt render(:not_found, :locals => {:error => error})
     end
 
     error StandardError do |error|
       if on_error
-        logger.error error
+        Olelo.logger.error error
         (error.try(:messages) || [error.message]).each {|msg| flash.error!(msg) }
         halt render(on_error)
       end
@@ -72,7 +62,7 @@ module Olelo
 
     # Show wiki error page
     error Exception do |error|
-      logger.error(error)
+      Olelo.logger.error(error)
       cache_control :no_cache => true
       render :error, :locals => {:error => error}
     end

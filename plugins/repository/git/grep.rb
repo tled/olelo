@@ -20,7 +20,7 @@ class Olelo::Application
               (@matches[path] ||= []) << match
             end
           rescue => ex
-            logger.error ex
+            Olelo.logger.error ex
           end
         end
       end rescue nil # git-grep returns 1 if nothing is found
@@ -38,7 +38,7 @@ class Olelo::Application
               @matches[path] = [truncate(page.content, 500)] if page.mime.text?
             end
           rescue => ex
-            logger.error ex
+            Olelo.logger.error ex
           end
         end
       end

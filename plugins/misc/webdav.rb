@@ -11,10 +11,10 @@ class Olelo::Application
       :created
     end
   rescue NotFound => ex
-    logger.error ex
+    Olelo.logger.error ex
     :not_found
   rescue Exception => ex
-    logger.error ex
+    Olelo.logger.error ex
     :bad_request
   end
 

@@ -10,7 +10,7 @@ module Olelo::Worker
           User.current = user
           task.call
         rescue => ex
-          Plugin.current.logger.error(ex)
+          Olelo.logger.error(ex)
         ensure
           User.current = nil
         end

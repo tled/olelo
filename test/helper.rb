@@ -5,7 +5,7 @@ require 'rack/test'
 
 module TestHelper
   def load_plugin(*plugins)
-    Olelo::Plugin.logger = Logger.new(File.expand_path(File.join(File.dirname(__FILE__), '..', 'test.log')))
+    Olelo.logger = Logger.new(File.expand_path(File.join(File.dirname(__FILE__), '..', 'test.log')))
     Olelo::Plugin.dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'plugins'))
     Olelo::Plugin.load(*plugins)
   end

@@ -73,7 +73,8 @@ describe 'requests' do
       end
       use Rack::Session::Pool
       use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
-      run Olelo::Application.new(nil, :logger => logger)
+      Olelo::Initializer.initialize(logger)
+      run Olelo::Application.new
     end
   end
 

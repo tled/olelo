@@ -75,6 +75,7 @@ end
 use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
 use Rack::RelativeRedirect
 
-run Olelo::Application.new(nil, :logger => logger)
+Olelo::Initializer.initialize(logger)
+run Olelo::Application.new
 
 logger.info "Olelo started in #{Olelo::Config.production? ? 'production' : 'development'} mode"

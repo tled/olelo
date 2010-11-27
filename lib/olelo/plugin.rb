@@ -10,10 +10,9 @@ module Olelo
     @failed = []
     @disabled = []
     @dir = ''
-    @logger = nil
 
     class<< self
-      attr_accessor :dir, :logger, :disabled
+      attr_accessor :dir, :disabled
 
       # Get failed plugins
       attr_reader :failed
@@ -59,19 +58,19 @@ module Olelo
 	    false
 	  else
             begin
-	      plugin = new(name, file, logger)
+	      plugin = new(name, file)
               plugin.with_hooks :load do
                 @plugins[name] = plugin
                 plugin.instance_eval(File.read(file), file)
-                logger.debug("Plugin #{name} successfully loaded")
+                Olelo.logger.debug("Plugin #{name} successfully loaded")
               end
             rescue Exception => ex
               @failed << name
               if LoadError === ex
-                logger.warn "Plugin #{name} could not be loaded due to: #{ex.message} (Missing gem?)"
+                Olelo.logger.warn "Plugin #{name} could not be loaded due to: #{ex.message} (Missing gem?)"
               else
-                logger.error "Plugin #{name} could not be loaded due to: #{ex.message}"
-                logger.error ex
+                Olelo.logger.error "Plugin #{name} could not be loaded due to: #{ex.message}"
+                Olelo.logger.error ex
               end
               @plugins.delete(name)
               false
@@ -98,10 +97,10 @@ module Olelo
 
     attr_reader :name, :file
     attr_reader? :started
-    attr_setter :description, :logger
+    attr_setter :description
 
-    def initialize(name, file, logger)
-      @name, @file, @logger = name, file, logger
+    def initialize(name, file)
+      @name, @file = name, file
       @started = false
     end
 
@@ -117,11 +116,11 @@ module Olelo
     def start
       return true if @started
       setup if respond_to?(:setup)
-      logger.debug "Plugin #{name} successfully started"
+      Olelo.logger.debug "Plugin #{name} successfully started"
       @started = true
     rescue Exception => ex
-      logger.error "Plugin #{name} failed to start due to: #{ex.message}"
-      logger.error ex
+      Olelo.logger.error "Plugin #{name} failed to start due to: #{ex.message}"
+      Olelo.logger.error ex
       false
     end
 

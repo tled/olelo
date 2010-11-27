@@ -132,7 +132,7 @@ class FilterDSL
         if mandatory
           raise MandatoryFilterNotFound, "Aspect '#{@name}' not created because mandatory filter '#{name}' is not available"
         else
-          Plugin.current.logger.warn "Optional filter '#{name}' not available"
+          Olelo.logger.warn "Optional filter '#{name}' not available"
         end
         @filter = FilterBuilder.new(@name, @filter).build(&block) if block
       end
@@ -177,11 +177,11 @@ class FilterDSL
   # Register aspect
   def aspect(name, &block)
     Aspect.register(AspectBuilder.new(name).build(&block))
-    Plugin.current.logger.debug "Filter aspect '#{name}' successfully created"
+    Olelo.logger.debug "Filter aspect '#{name}' successfully created"
   rescue MandatoryFilterNotFound => ex
-    Plugin.current.logger.warn ex.message
+    Olelo.logger.warn ex.message
   rescue Exception => ex
-    Plugin.current.logger.error ex
+    Olelo.logger.error ex
   end
 end
 
