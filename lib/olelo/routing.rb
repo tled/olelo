@@ -30,9 +30,13 @@ module Olelo
       @params = @original_params = @request.params.with_indifferent_access
       @original_params.freeze
 
-      perform!
-      status, header, body = response.finish
-      [status, header, request.head? ? [] : body]
+      catch(:forward) do
+        with_hooks(:request) { perform! }
+        status, header, body = response.finish
+        return [status, header, request.head? ? [] : body]
+      end
+
+      @app ? @app.call(env) : error!(NotFound.new(@request.path_info))
     end
 
     # Halt routing with response
@@ -64,6 +68,14 @@ module Olelo
     # @api public
     def pass
       throw :pass
+    end
+
+    # Forward to next application on the rack stack
+    #
+    # @return [void]
+    # @api public
+    def forward
+      throw :forward
     end
 
     private

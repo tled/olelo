@@ -87,17 +87,18 @@ class Olelo::Application
     if flash[:show_captcha]
       doc.css('#tab-edit button[type=submit]').before(
         %{<br/><label for="recaptcha">#{:captcha.t}</label><br/><div id="recaptcha"></div><br/>})
-      doc.css('body').first <<\
-      %{<script type="text/javascript"  src="https://api-secure.recaptcha.net/js/recaptcha_ajax.js"/>
-        <script type="text/javascript">
-          $(function() {
-            Recaptcha.create('#{RECAPTCHA_PUBLIC}',
-              'recaptcha', {
-              theme: 'clean',
-              callback: Recaptcha.focus_response_field
-            });
-          });
-        </script>}.unindent
+      doc.css('body').each do |body|
+        body << %{<script type="text/javascript"  src="https://api-secure.recaptcha.net/js/recaptcha_ajax.js"/>
+                  <script type="text/javascript">
+                    $(function() {
+                      Recaptcha.create('#{RECAPTCHA_PUBLIC}',
+                        'recaptcha', {
+                        theme: 'clean',
+                        callback: Recaptcha.focus_response_field
+                      });
+                    });
+                  </script>}.unindent
+      end
     end
   end
 

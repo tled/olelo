@@ -8,6 +8,7 @@
 	    ol:     ['# ', 'list item', '', true],
 	    h1:     ['= ', 'headline', '', true],
 	    h2:     ['== ', 'headline', '', true],
+	    h3:     ['=== ', 'headline', '', true],
 	    sub:    ['~~', 'subscript', '~~'],
 	    sup:    ['^^', 'superscript', '^^'],
 	    del:    ['--', 'deleted text', '--'],
@@ -38,7 +39,8 @@
 	    ul:     ['- ', 'list item', ''],
 	    ol:     ['1. ', 'list item', ''],
 	    h1:     ['* ',  'headline', ''],
-	    h2:     ['** ', 'headline', '']
+	    h2:     ['** ', 'headline', ''],
+	    h3:     ['*** ', 'headline', '']
 	},
 	textile: {
 	    link: function(selected) {
@@ -51,6 +53,7 @@
 	    ol:     ['# ', 'list item', '', true],
 	    h1:     ['h1. ', 'headline', '', true],
 	    h2:     ['h2. ', 'headline', '', true],
+	    h3:     ['h3. ', 'headline', '', true],
 	    em:     ['_', 'emphasized text', '_'],
 	    sub:    ['~', 'subscript', '~'],
 	    sup:    ['^', 'superscript', '^'],
@@ -95,7 +98,7 @@
 	    buttons.sort();
 	    for (var i = 0; i < buttons.length; ++i)
 		list.append('<li><a href="#" id="markup-editor-' + buttons[i] + '">' + buttons[i] + '</a></li>');
-	    this.after(list);
+	    this.before(list);
 
 	    var textarea = this;
 	    $('a', list).click(function() {

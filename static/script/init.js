@@ -29,4 +29,19 @@ $(function() {
     $('.pagination a').pagination('#content');
     $('#content').bind('pageLoaded', function() { pageLoaded(this); });
     pageLoaded();
+
+    $('button[data-target]').live('click', function() {
+	var button = $(this);
+	var form = $(this.form);
+	button.addClass('loading');
+        $.ajax({
+            type: form.attr('method') || 'get',
+            url:  form.attr('action') || window.location.href,
+            data: form.serialize() + '&' + button.attr('name') + '=' + button.attr('value') + '&no_layout=1',
+            success: function(data) {
+		$('#' + button.data('target')).html(data);
+		button.removeClass('loading');
+            }});
+	return false;
+    });
 });

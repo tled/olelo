@@ -22,6 +22,10 @@ module Olelo
       end
     end
 
+    def initialize(app = nil)
+      @app = app
+    end
+
     # Executed before each request
     before :routing do
       Olelo.logger.debug env

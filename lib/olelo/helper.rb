@@ -255,7 +255,7 @@ module Olelo
 
     def render(name, options = {})
       layout = options.delete(:layout) != false && !params[:no_layout]
-      output = render_partial(name, options)
+      output = Symbol === name ? render_partial(name, options) : name
       output = render_partial(:layout, options) { output } if layout
       invoke_hook :render, name, output, layout
       output

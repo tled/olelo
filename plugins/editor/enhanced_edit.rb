@@ -4,15 +4,13 @@ dependencies 'aspect/aspect'
 class Olelo::Application
   hook :dom do |name, doc, layout|
     if name == :edit
-      if flash[:preview]
-        doc.css('#content .tabs').before %{<div class="preview">#{flash[:preview]}</div>}
-      elsif flash[:changes]
-        doc.css('#content .tabs').before flash[:changes]
+      doc.css('#tab-edit').each do |element|
+        element << %{<div id="enhanced-edit">#{flash[:preview] || flash[:changes]}</div>}
       end
 
       doc.css('#tab-edit button[type=submit]').before(
-        %{<button type="submit" name="action" value="preview" accesskey="p">#{:preview.t}</button>
-          <button type="submit" name="action" value="changes" accesskey="c">#{:changes.t}</button>}.unindent)
+        %{<button data-target="enhanced-edit" type="submit" name="action" value="preview" accesskey="p">#{:preview.t}</button>
+          <button data-target="enhanced-edit" type="submit" name="action" value="changes" accesskey="c">#{:changes.t}</button>}.unindent)
     end
   end
 
@@ -30,8 +28,9 @@ class Olelo::Application
       page.content = params[:content]
     end
     context = Context.new(:page => page, :request => request, :private => {:preview => true})
-    flash.now[:preview] = aspect && aspect.call(context, page)
-    halt render(:edit)
+    preview = aspect && aspect.call(context, page)
+    flash.now[:preview] = preview ? %{<hr/>#{preview}} : nil
+    halt render(request.xhr? ? flash.now[:preview] : :edit)
   end
 
   def post_changes
@@ -49,8 +48,8 @@ class Olelo::Application
     # Read in binary mode and fix encoding afterwards
     patch = IO.popen("diff -u '#{original.path}' '#{new.path}'", 'rb') {|io| io.read }
     patch.force_encoding(Encoding::UTF_8) if patch.respond_to? :force_encoding
-    flash.now[:changes] = PatchParser.parse(patch, PatchFormatter.new).html
-    flash.now[:changes] = %{<div class="flash">#{:no_changes.t}</div>} if flash.now[:changes].blank?
-    halt render(:edit)
+    changes = PatchParser.parse(patch, PatchFormatter.new).html
+    flash.now[:changes] = changes.blank? ? %{<div class="flash">#{:no_changes.t}</div>} : changes
+    halt render(request.xhr? ? flash.now[:changes] : :edit)
   end
 end
