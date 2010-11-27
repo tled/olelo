@@ -268,15 +268,15 @@ module Olelo
         else
           @html << 'new"><th>' << escape_html(dst)
         end
-        @html << '</th></tr></thead><tbody><tr><td>'
+        @html << '</th></tr></thead><tbody><tr><td><pre>'
       else
-        @html << '><tbody><tr><td>'
+        @html << '><tbody><tr><td><pre>'
       end
     end
 
     def end!
       super
-      @html << '</td></tr></tbody></table>'
+      @html << '</pre></td></tr></tbody></table>'
       @file += 1
     end
 
@@ -293,7 +293,7 @@ module Olelo
     end
 
     def separator!
-      @html << '</td></tr><tr><td>'
+      @html << '</pre></td></tr><tr><td><pre>'
     end
 
     def insertion!(text)
