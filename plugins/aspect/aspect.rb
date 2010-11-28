@@ -103,7 +103,7 @@ class Olelo::Aspect
   # Find all accepting aspects for a page
   def self.find_all(page)
     @aspects.values.map do |aspects|
-      aspects.sort_by {|e| e.priority }.find {|e| e.accepts?(page) }
+      aspects.sort_by(&:priority).find {|a| a.accepts?(page) }
     end.compact
   end
 
@@ -113,7 +113,7 @@ class Olelo::Aspect
   def self.find!(page, options = {})
     options[:name] ||= page.attributes['aspect']
     aspects = options[:name] ? @aspects[options[:name].to_s] : @aspects.values.flatten
-    aspect = aspects.to_a.sort_by {|e| e.priority }.find { |e| e.accepts?(page) && (!options[:layout] || e.layout?) }
+    aspect = aspects.to_a.sort_by(&:priority).find {|a| a.accepts?(page) && (!options[:layout] || a.layout?) }
     raise NotAvailable.new(options[:name], page) if !aspect
     aspect.dup
   end
@@ -183,14 +183,14 @@ class Olelo::Application
     if menu.name == :actions && view_menu = menu[:view]
       Cache.cache("aspect-menu-#{page.path}-#{page.version.cache_id}-#{@selected_aspect}",
                               :update => request.no_cache?, :defer => true) do
-        aspects = Aspect.find_all(page).select {|e| !e.hidden? || e.name == @selected_aspect }.map do |e|
-          [Locale.translate("aspect_#{e.name}", :fallback => titlecase(e.name)), e]
+        aspects = Aspect.find_all(page).select {|a| !a.hidden? || a.name == @selected_aspect || a.name == page.attributes['aspect'] }.map do |a|
+          [Locale.translate("aspect_#{a.name}", :fallback => titlecase(a.name)), a]
         end.sort_by(&:first)
-        aspects.select {|label, e| e.layout? }.map do |label, e|
-          MenuItem.new(e.name, :label => label, :href => page_path(page, :aspect => e.name), :class => e.name == @selected_aspect ? 'selected' : nil)
+        aspects.select {|label, a| a.layout? }.map do |label, a|
+          MenuItem.new(a.name, :label => label, :href => page_path(page, :aspect => a.name), :class => a.name == @selected_aspect ? 'selected' : nil)
         end +
-        aspects.reject {|label, e| e.layout? }.map do |label, e|
-          MenuItem.new(e.name, :label => label, :href => page_path(page, :aspect => e.name), :class => 'download')
+        aspects.reject {|label, a| a.layout? }.map do |label, a|
+          MenuItem.new(a.name, :label => label, :href => page_path(page, :aspect => a.name), :class => 'download')
         end
       end.each {|item| view_menu << item }
     end
