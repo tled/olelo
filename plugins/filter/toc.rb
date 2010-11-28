@@ -1,5 +1,5 @@
 description  'Auto-generated table of contents'
-dependencies 'aspect/filter'
+dependencies 'aspect/filter', 'utils/xml'
 
 Page.attributes do
   boolean :toc
@@ -8,7 +8,7 @@ end
 Filter.create :toc do |context, content|
   return content if !context.page.attributes['toc']
 
-  doc = XMLFragment(content)
+  doc = XML::Fragment(content)
   toc = ''
   level = 0
   count = [0]

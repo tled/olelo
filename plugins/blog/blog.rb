@@ -1,5 +1,5 @@
 description    'Blog aspect'
-dependencies   'filter/tag', 'utils/assets'
+dependencies   'filter/tag', 'utils/assets', 'utils/xml'
 export_scripts '*.css'
 
 Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
@@ -41,7 +41,7 @@ Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidde
         subctx = context.subcontext(:page => page, :params => {:included => true})
         content = Aspect.find!(page, :layout => true).call(subctx, page)
         if !context.params[:full]
-          paragraphs = XMLFragment(content).xpath('p')
+          paragraphs = XML::Fragment(content).xpath('p')
           content = ''
           paragraphs.each do |p|
             content += p.to_xhtml

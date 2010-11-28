@@ -164,22 +164,6 @@ module Olelo
       end.join('&')
     end
 
-    # Parse xml document string and return DOM object (Nokogiri)
-    #
-    # @param [String] xml document string
-    # @return [Nokogiri::HTML::Document] Nokogiri Document
-    def XMLDocument(xml)
-      Nokogiri::HTML(xml, nil, 'UTF-8')
-    end
-
-    # Parse xml fragment and return DOM object (Nokogiri)
-    #
-    # @param [String] xml fragment string
-    # @return [Nokogiri::HTML::DocumentFragment] Nokogiri Document Fragment
-    def XMLFragment(xml)
-      Nokogiri::HTML::DocumentFragment.new(XMLDocument(nil), xml)
-    end
-
     # Creates deep copy of object by abusing `Marshal`
     # This method is slow and not adequate for huge objects.
     # It can only copy objects which are serializable.

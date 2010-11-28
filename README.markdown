@@ -34,7 +34,6 @@ First, you have to install the [Gem][] dependencies via `gem`:
     gem install mimemagic
     gem install slim
     gem install rack
-    gem install nokogiri
     gem install unicorn
 
 ### Optional:
@@ -46,6 +45,7 @@ First, you have to install the [Gem][] dependencies via `gem`:
     gem install evaluator
     gem install org-ruby
     gem install yajl-ruby
+    gem install nokogiri
 
 Then, run the program using the command in the application directory:
 

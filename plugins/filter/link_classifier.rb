@@ -1,8 +1,8 @@
 description  'Classify links as absent/present/external'
-dependencies 'aspect/filter'
+dependencies 'aspect/filter', 'utils/xml'
 
 Filter.create :link_classifier do |context, content|
-  doc = XMLFragment(content)
+  doc = XML::Fragment(content)
   doc.css('a[href]').each do |link|
     href =  link['href']
     classes = [link['class']].compact
