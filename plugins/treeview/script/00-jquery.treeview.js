@@ -4,22 +4,33 @@
     // Create treeview
     // $('div#id').treeView(...);
     $.fn.treeView = function(options) {
-        if (!options) options = {};
-        if (!options.root) options.root = '/';
-        if (!options.url) options.url = '/treeview.json';
-        if (!options.delay) options.delay = 2000;
-	if (!options.ajax) options.ajax = function(path, success, error) {
-            $.ajax({url: options.url, data: { dir: path }, success: success, error: error, dataType: 'json'});
-        };
+        if (!options) {
+            options = {};
+        }
+        if (!options.root) {
+            options.root = '/';
+        }
+        if (!options.url) {
+            options.url = '/treeview.json';
+        }
+        if (!options.delay) {
+            options.delay = 2000;
+        }
+        if (!options.ajax) {
+            options.ajax = function(path, success, error) {
+                $.ajax({url: options.url, data: { dir: path }, success: success, error: error, dataType: 'json'});
+            };
+        }
 
         // Store if node is expanded
         function setExpanded(path, expanded) {
             if (options.stateStore) {
                 var state = jStorage.get(options.stateStore, []);
-                if (!expanded)
+                if (!expanded) {
                     state = $.grep(state, function(n, i) { return n != path; });
-                else if ($.inArray(path, state) < 0)
+                } else if ($.inArray(path, state) < 0) {
                     state.push(path);
+                }
                 jStorage.set(options.stateStore, state);
             }
         }
@@ -56,22 +67,24 @@
         }
 
         // Open tree element with path
-	function openTree(element, path) {
+        function openTree(element, path) {
             // Cache key for cached json data
             var cacheKey = options.cacheStore ? options.cacheStore + ':' + path : null;
 
             // Store json in cache
             function store(data) {
-                if (cacheKey)
+                if (cacheKey) {
                     jStorage.set(cacheKey, data);
+                }
             }
 
             // Data loaded via ajax (callback) or from the cache
             function dataLoaded(data) {
                 var ul = $('<ul/>');
                 $.each(data, function(i, child) { ul.append(createChild(child)); });
-                if (path == options.root)
+                if (path == options.root) {
                     element.empty();
+                }
                 element.children('ul').remove();
                 element.append(ul);
             }
@@ -86,41 +99,44 @@
                 });
                 $('> ul > li', element).each(function() {
                     var li = $(this), name = li.data('name');
-                    if (!exists[name])
+                    if (!exists[name]) {
                         li.remove();
-                    else
+                    } else {
                         delete exists[name];
+                    }
                     list.push($(this));
-		});
+                });
                 $.each(exists, function(name, child) {
                     var inserted = false;
                     $.each(list, function(i, other) {
-		        if (name < other.data('name')) {
+                        if (name < other.data('name')) {
                             inserted = true;
                             other.before(createChild(child));
                             return false;
                         }
                     });
-                    if (!inserted)
+                    if (!inserted) {
                         element.children('ul').append(createChild(child));
+                    }
                 });
-	    }
+            }
 
             // Update this element with some delay
             function update() {
                 setTimeout(function() {
                     options.ajax(path, dataUpdated, function() {
-                        if (cacheKey)
+                        if (cacheKey) {
                             jStorage.remove(cacheKey);
+                        }
                     });
                 }, options.delay);
             }
 
             // If children exist, show them and update this element
-	    if (element.children('ul').length != 0) {
-	        element.children('ul').show();
+            if (element.children('ul').length !== 0) {
+                element.children('ul').show();
                 update();
-	    } else {
+            } else {
                 // Try to load from cache
                 var data = cacheKey ? jStorage.get(cacheKey) : null;
                 if (data) {
@@ -142,7 +158,7 @@
         }
 
         this.each(function() {
-	    openTree($(this), options.root);
-	});
+            openTree($(this), options.root);
+        });
     };
 })(jQuery);
