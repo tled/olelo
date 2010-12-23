@@ -3,8 +3,7 @@ dependencies   'filter/tag', 'utils/assets', 'utils/xml'
 export_scripts '*.css'
 
 Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
-  params[:aspect] = 'blog'
-  send('GET /')
+  reroute :get, '/', :year => params[:year], :month => params[:month], :aspect => 'blog'
 end
 
 Tag.define 'menu', :optional => :path, :description => 'Show blog menu', :dynamic => true do |context, attrs, content|
@@ -59,16 +58,19 @@ end
 
 __END__
 @@ blog.slim
-.blog
-  - @articles.each do |page, content|
-    .article
-      h2
-        a.name href=absolute_path(page) = page.name
-      .date= date page.version.date
-      .author= :written_by.t(:author => page.version.author.name)
-      .content== content
-      - if !full
-        a.full href=absolute_path(page.path) = :full_article.t
+- if @articles.empty?
+  .error= :no_articles.t
+- else
+  .blog
+    - @articles.each do |page, content|
+      .article
+        h2
+          a.name href=absolute_path(page) = page.name
+        .date= date page.version.date
+        .author= :written_by.t(:author => page.version.author.name)
+        .content== content
+        - if !full
+          a.full href=absolute_path(page.path) = :full_article.t
 = pagination(page_path(@page), @page_count, @page_nr, :aspect => 'blog')
 @@ menu.slim
 table.blog-menu

@@ -1,6 +1,8 @@
 en:
   full_article:   'Full Article'
   written_by:     'written by #{author}'
+  no_articles:    'No articles found'
 de:
   full_article:   'Ganzer Artikel'
   written_by:     'verfasst von #{author}'
+  no_articles:    'Keine Artikel gefunden'
