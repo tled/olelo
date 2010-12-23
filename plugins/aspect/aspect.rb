@@ -157,7 +157,7 @@ class Olelo::Application
   def show_page
     params[:aspect] ||= 'subpages' if params[:path].to_s.ends_with? '/'
     @selected_aspect, layout, header, content =
-    Cache.cache("aspect-#{page.path}-#{page.version.cache_id}-#{build_query(original_params)}",
+    Cache.cache("aspect-#{page.path}-#{page.version.cache_id}-#{build_query(params)}",
                 :update => request.no_cache?, :defer => true) do |cache|
       aspect = Aspect.find!(page, :name => params[:aspect])
       cache.disable! if !aspect.cacheable?

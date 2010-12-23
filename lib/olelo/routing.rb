@@ -130,7 +130,7 @@ module Olelo
     def nested_route!(method, path, params = {})
       while method
         method = method.to_s.upcase
-        result = catch (:reroute) do
+        result = catch(:reroute) do
           route!(method, path, params)
           nil
         end

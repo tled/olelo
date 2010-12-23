@@ -2,7 +2,7 @@ description    'Blog aspect'
 dependencies   'filter/tag', 'utils/assets', 'utils/xml'
 export_scripts '*.css'
 
-Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
+Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[0-2])' do
   reroute :get, "/#{params[:path]}", :year => params[:year], :month => params[:month], :aspect => 'blog'
 end
 
