@@ -3,7 +3,7 @@ dependencies   'filter/tag', 'utils/assets', 'utils/xml'
 export_scripts '*.css'
 
 Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
-  reroute :get, '/', :year => params[:year], :month => params[:month], :aspect => 'blog'
+  reroute :get, "/#{params[:path]}", :year => params[:year], :month => params[:month], :aspect => 'blog'
 end
 
 Tag.define 'menu', :optional => :path, :description => 'Show blog menu', :dynamic => true do |context, attrs, content|
