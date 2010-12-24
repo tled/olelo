@@ -1,8 +1,5 @@
 module Olelo
   module Templates
-    # FIXME CompileSite is deprecated, remove if new tilt is released
-    include Tilt::CompileSite
-
     class << self
       attr_reader :cache
       attr_accessor :loader
