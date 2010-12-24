@@ -171,13 +171,13 @@ class Olelo::Store
       end
     end
 
-    # Uses the memcache-client gem
+    # Uses the dalli gem (memcache-client successor)
     class Ruby < Store
       include Util
 
       def initialize(config)
-        require 'memcache'
-        @server = ::MemCache.new(config[:server], :namespace => (config[:prefix] rescue nil))
+        require 'dalli'
+        @server = ::Dalli.new(config[:server], :namespace => (config[:prefix] rescue nil))
       end
 
       # @override
