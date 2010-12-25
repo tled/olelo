@@ -249,12 +249,7 @@ module Olelo
     end
 
     def script
-      @@script_link ||=
-        begin
-          path = absolute_path("static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}")
-          %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}
-        end
-      [@@script_link, *invoke_hook(:script)].join.html_safe
+      invoke_hook(:script).join.html_safe
     end
 
     def head
@@ -264,12 +259,17 @@ module Olelo
           path = "#{Config['base_path']}static/themes/#{Config['theme']}/style.css?#{File.mtime(file).to_i}"
           %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
         end
+      @@script_link ||=
+        begin
+          path = absolute_path("static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}")
+          %{<script src="#{escape_html path}" type="text/javascript"/>}
+        end
       base_path = if page && page.root?
         url = request.url_without_path
         url << 'version'/page.tree_version << '/' if !page.head?
         %{<base href="#{escape_html url}"/>}.html_safe
       end
-      [base_path, @@theme_link, *invoke_hook(:head)].join.html_safe
+      [base_path, @@theme_link, @@script_link, *invoke_hook(:head)].join.html_safe
     end
 
     def session
