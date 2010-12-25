@@ -1,12 +1,12 @@
 .patch {
   width: 100%;
-  border: 1px solid #999999;
+  border: 1px solid #BBB;
   border-collapse: collapse;
   border-spacing: 0;
   tr {
     td {
       padding: 0.5em;
-      border-top: 1px solid #999999;
+      border-top: 1px solid #BBB;
       font-family: "Bitstream Vera Sans Mono", monospace;
       pre {
         border: 0px none;
@@ -25,7 +25,7 @@
     th {
       font-variant: normal;
       padding: 0.2em 0.5em;
-      border: 1px solid #999999;
+      border: 1px solid #BBB;
     }
     &.new th {
 	background: url(images/actions/new.png) 2px 2px no-repeat;

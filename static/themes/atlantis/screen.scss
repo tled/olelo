@@ -209,15 +209,25 @@ pre {
   display: block;
 }
 
+#history-table .compare {
+  padding: 0;
+  width: 1em;
+  button {
+    margin: 1px;
+    display: inline;
+    font-size: small;
+  }
+  input {
+    display: inline;
+    margin: 0 3px;
+  }
+}
+
 table.full, #history-table, #subpages-table {
   width: 100%;
   td, th {
     white-space: nowrap;
   }
-}
-
-.history-draggable {
-  background-color: #ffd4d4;
 }
 
 @mixin action-icon($name) {
@@ -295,6 +305,26 @@ table.full, #history-table, #subpages-table {
   font-size: 80%;
 }
 
+button {
+  @include rounded;
+  background: url(images/bg/button.png) repeat-x left bottom #FFF;
+  float: left;
+  margin: 0.3em 0.5em 0.3em 0;
+  padding: 2px;
+  border: 1px solid $border_color;
+  color: $dark_color;
+  white-space: nowrap;
+  &:active:not([disabled]), &.loading {
+    background: url(images/bg/button.png) repeat-x left bottom $light_bg1;
+  }
+  &.loading {
+    background: url(images/loading.gif) repeat $light_bg1;
+  }
+  &[disabled] {
+    color: #999;
+  }
+}
+
 form {
   display: inline;
   select, textarea, input {
@@ -306,22 +336,6 @@ form {
     color: $dark_color;
     &:focus {
       border-style: dotted;
-    }
-  }
-  button {
-    @include rounded;
-    background: url(images/bg/button.png) repeat-x left bottom transparent;
-    float: left;
-    margin: 0.3em 0.5em 0.3em 0;
-    padding: 2px;
-    border: 1px solid $border_color;
-    color: $dark_color;
-    white-space: nowrap;
-    &:active, &.loading {
-      background: url(images/bg/button.png) repeat-x left bottom $light_bg1;
-    }
-    &.loading {
-      background: $light_bg1 url(images/loading.gif) repeat;
     }
   }
   label {

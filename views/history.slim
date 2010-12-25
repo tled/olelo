@@ -1,7 +1,5 @@
 - title :history_of.t(:page => page.title)
 h1= title
-div
-  p= :drag_drop_for_compare.t
 = pagination(action_path(page, :history), @page_count, @page_nr)
 table#history-table
   thead
