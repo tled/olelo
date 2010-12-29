@@ -12,7 +12,7 @@ table#history-table
       tr id="version-#{version}"
         td
           a href=absolute_path(page, :version => version) = truncate(version.comment, 50)
-          | (
+          |  (
           a href=action_path(page, 'changes'/version) = :changes.t
           | )
         td= truncate(version.author.name, 30)
