@@ -50,7 +50,7 @@
     $('input.observe, textarea.observe, select.observe').live('change autocompletechange', updateUnsaved);
 
     var submitForm = false;
-    $('form').submit(function() {
+    $('form').live('submit', function() {
 	submitForm = true;
     }).bind('reset', function() {
 	$('.unsaved', this).removeClass('unsaved');
