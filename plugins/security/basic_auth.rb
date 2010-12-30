@@ -1,7 +1,7 @@
 description 'HTTP basic authentication'
-require     'rack/auth/basic'
+require 'rack/auth/basic'
 
-class Olelo::Application
+class ::Olelo::Application
   hook :auto_login do
     if params[:auth] && !User.current
       auth = Rack::Auth::Basic::Request.new(env)

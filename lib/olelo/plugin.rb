@@ -1,12 +1,12 @@
 module Olelo
   # Olelo plugin system
-  class Plugin
+  class Plugin < Module
     include Util
     include Hooks
 
     has_around_hooks :load
 
-    @plugins = {}
+    @loaded = {}
     @failed = []
     @disabled = []
     @dir = ''
@@ -21,87 +21,128 @@ module Olelo
       def current(level = 0)
         last = nil
         caller.each do |line|
-          if line =~ %r{^#{@dir}/(.+?)\.rb} && $1 != last
+          if line =~ %r{^#{@dir}/(.+?)(?:\/main)?\.rb} && $1 != last
             last = $1
             level -= 1
-            return @plugins[$1] if level < 0
+            return @loaded[$1] if level < 0
           end
         end
         nil
       end
 
-      # Get all plugins
-      def plugins
-        @plugins.values
+      # Get loaded plugins
+      def loaded
+        @loaded.values
       end
 
       # Start plugins
       # @return [void]
       def start
-        @plugins.each_value {|plugin| plugin.start }
+        @loaded.each_value {|plugin| plugin.start }
       end
 
-      # Load plugins by name
+      def register(path, plugin)
+        @loaded[path] = plugin
+      end
+
+      # Load plugins by path
       #
-      # @param list List of plugin names to load
+      # @param list List of plugin paths to load
       # @return [Boolean] true if every plugin was loaded
       def load(*list)
-        files = list.map do |name|
-          Dir[File.join(@dir, '**', "#{name.cleanpath}.rb")]
-        end.flatten
+        files = list.map {|path| [File.join(@dir, path, 'main.rb'), File.join(@dir, "#{path}.rb")] }.flatten.select {|file| File.file?(file) }
         return false if files.empty?
         files.inject(true) do |result,file|
-          name = file[(@dir.size+1)..-4]
-          if @plugins.include?(name)
+          path = File.basename(file) == 'main.rb' ? file[(@dir.size+1)..-9] : file[(@dir.size+1)..-4]
+          if @loaded.include?(path)
 	    result
-	  elsif @failed.include?(name) || !enabled?(name)
+	  elsif @failed.include?(path) || !enabled?(path)
 	    false
 	  else
             begin
-	      plugin = new(name, file)
-              plugin.with_hooks :load do
-                @plugins[name] = plugin
-                plugin.instance_eval(File.read(file), file)
-                Olelo.logger.debug("Plugin #{name} successfully loaded")
-              end
+	      new(path, file)
             rescue Exception => ex
-              @failed << name
+              @failed << path
               if LoadError === ex
-                Olelo.logger.warn "Plugin #{name} could not be loaded due to: #{ex.message} (Missing gem?)"
+                Olelo.logger.warn "Plugin #{path} could not be loaded due to: #{ex.message} (Missing gem?)"
               else
-                Olelo.logger.error "Plugin #{name} could not be loaded due to: #{ex.message}"
+                Olelo.logger.error "Plugin #{path} could not be loaded due to: #{ex.message}"
                 Olelo.logger.error ex
               end
-              @plugins.delete(name)
+              @loaded.delete(path)
               false
             end
 	  end
         end
       end
 
+      # Load all plugins
+      def load_all
+        load(*Dir[File.join(@dir, '**', '*.rb')].map {|file| file[(@dir.size+1)..-4] })
+      end
+
       # Check if plugin is enabled
       #
-      # @param [String] plugin name
+      # @param [String] plugin path
       # @return [Boolean] true if enabled
       #
-      def enabled?(name)
-        paths = name.split(File::SEPARATOR)
-        paths.inject(nil) do |path, x|
-          path = path ? File.join(path, x) : x
-          return false if disabled.include?(path)
-          path
+      def enabled?(path)
+        path.split('/').inject('') do |parent, x|
+          parent /= x
+          return false if disabled.include?(parent)
+          parent
         end
         true
       end
+
+      def for(obj)
+        if Module === obj
+          names = obj.name.split('::')
+          mod = Object
+          names.map {|name| mod = mod.const_get(name) }.reverse.each do |mod|
+            return mod if Plugin === mod
+          end
+        elsif Proc === obj
+          return obj.binding.eval('PLUGIN')
+        else
+          raise 'Plugin cannot be found for #{obj}'
+        end
+      end
     end
 
-    attr_reader :name, :file
-    attr_reader? :started
+    attr_reader :path, :file
     attr_setter :description
+    attr_reader? :started
 
-    def initialize(name, file)
-      @name, @file = name, file
+    def initialize(path, file)
+      @path, @file = path, file
       @started = false
+      @dependencies = Set.new
+      const_set(:PLUGIN, self)
+
+      with_hooks :load do
+        names = path.split('/')
+        names[0..-2].inject('') do |parent, x|
+          parent /= x
+          Plugin.load(parent)
+          parent
+        end
+
+        (0...names.length).inject(Plugin) do |mod, i|
+          elem = names[i].split('_').map(&:capitalize).join
+          if mod.local_const_defined?(elem)
+            mod.const_get(elem)
+          else
+            child = i == names.length - 1 ? self : Module.new
+            child.module_eval { include mod } if mod != Plugin
+            mod.const_set(elem, child)
+          end
+        end
+
+        Plugin.register(path, self)
+        module_eval(File.read(file), file)
+        Olelo.logger.debug("Plugin #{path} successfully loaded")
+      end
     end
 
     # Virtual filesystem used to load plugin assets
@@ -115,26 +156,32 @@ module Olelo
     # @return [Boolean] true for success
     def start
       return true if @started
-      setup if respond_to?(:setup)
-      Olelo.logger.debug "Plugin #{name} successfully started"
+      module_eval(&@setup) if @setup
+      Olelo.logger.debug "Plugin #{path} successfully started"
       @started = true
     rescue Exception => ex
-      Olelo.logger.error "Plugin #{name} failed to start due to: #{ex.message}"
+      Olelo.logger.error "Plugin #{path} failed to start due to: #{ex.message}"
       Olelo.logger.error ex
       false
     end
 
     # Load specified plugins and fail with LoadError if dependencies are missing
     #
-    # @param list List of plugin names to load
-    # @return List of dependencies (plugin names)
+    # @param list List of plugin paths to load
+    # @return List of dependencies (plugin paths)
     def dependencies(*list)
-      @dependencies ||= []
-      @dependencies += list
-      list.each do |dep|
-        raise(LoadError, "Could not load dependency #{dep} for #{name}") if !Plugin.load(dep)
+      if !list.empty?
+        raise 'Plugin is already started' if started?
+        @dependencies.merge(list)
+        list.each do |dep|
+          raise(LoadError, "Could not load dependency #{dep} for #{path}") if !Plugin.load(dep)
+        end
       end
       @dependencies
+    end
+
+    def setup(&block)
+      @setup = block
     end
 
     private_class_method :new

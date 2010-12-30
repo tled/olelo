@@ -1,16 +1,6 @@
 description 'Access control lists'
 
-class Olelo::AccessDenied < RuntimeError
-  def initialize
-    super(:access_denied.t)
-  end
-
-  def status
-    :forbidden
-  end
-end
-
-class Olelo::Page
+class ::Olelo::Page
   attributes do
     group :acl do
       list :write
@@ -56,7 +46,7 @@ class Olelo::Page
   end
 end
 
-class Olelo::Application
+class ::Olelo::Application
   hook :menu, 999 do |menu|
     if menu.name == :actions && page
       menu.remove('edit/delete') if !page.deletable?

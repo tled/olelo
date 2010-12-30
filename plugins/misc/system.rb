@@ -1,6 +1,6 @@
 description 'System information'
 
-class Olelo::Application
+class ::Olelo::Application
   get '/system' do
     GC.start
     @memory = `ps -o rss= -p #{$$}`.to_i / 1024
@@ -23,13 +23,13 @@ ul.tabs
     a href="#tab-configuration" Configuration
   li#tabhead-plugins
     a href="#tab-plugins" Plugins
-  - if Olelo.const_defined? 'Aspect'
+  - if defined?(Olelo::Plugin::Aspects::Aspect)
     li#tabhead-aspects
       a href="#tab-aspects" Aspects
-  - if Olelo.const_defined? 'Filter'
+  - if defined?(Olelo::Plugin::Filters::Filter)
     li#tabhead-filters
       a href="#tab-filters" Filters
-  - if Olelo.const_defined? 'Tag'
+  - if defined?(Olelo::Plugin::Tags::Tag)
     li#tabhead-tags
       a href="#tab-tags" Tags
 #tab-runtime.tab
@@ -41,7 +41,7 @@ ul.tabs
     tr
       td Memory usage:
       td #{@memory} MiB
-    - if Olelo.const_defined? 'Worker'
+    - if defined?(Olelo::Worker)
       tr
         td Worker jobs
         td= Olelo::Worker.jobs
@@ -83,11 +83,11 @@ ul.tabs
         th Description
         th Dependencies
     tbody
-      - Olelo::Plugin.plugins.sort_by(&:name).each do |plugin|
+      - Olelo::Plugin.loaded.sort_by(&:path).each do |plugin|
         tr
-          td= plugin.name
+          td= plugin.path
           td= plugin.description
-          td= plugin.dependencies.join(', ')
+          td= plugin.dependencies.to_a.join(', ')
       - Olelo::Plugin.disabled.sort.each do |plugin|
         tr
           td #{plugin} (disabled)
@@ -98,7 +98,7 @@ ul.tabs
           td #{plugin} (failed)
           td unknown
           td unknown
-- if Olelo.const_defined? 'Aspect'
+- if defined?(Olelo::Plugin::Aspects::Aspect)
   #tab-aspects.tab
     h2 Aspects
     p
@@ -119,7 +119,7 @@ ul.tabs
             th Priority
             th Provided by plugin
         tbody
-          - Olelo::Aspect.aspects.values.flatten.each do |aspect|
+          - Olelo::Plugin::Aspects::Aspect.aspects.values.flatten.sort_by(&:name).each do |aspect|
             tr
               td= aspect.name
               td= aspect.description
@@ -129,8 +129,8 @@ ul.tabs
               td== check_mark aspect.cacheable?
               td== check_mark aspect.layout?
               td= aspect.priority
-              td= aspect.plugin.name
-- if Olelo.const_defined? 'Filter'
+              td= aspect.plugin.path
+- if defined?(Olelo::Plugin::Filters::Filter)
   #tab-filters.tab
     h2 Filters used by filter aspects
     p Filters can be chained to build filter aspects.
@@ -142,12 +142,12 @@ ul.tabs
           th Subfilters
           th Provided by plugin
       tbody
-        - Olelo::Filter.registry.each do |name, filter|
+        - Olelo::Plugin::Filters::Filter.registry.values.sort_by(&:name).each do |filter|
           tr
-            td= name
+            td= filter.name
             td= filter.description
             td== check_mark filter.respond_to?(:subfilter)
-            td= filter.plugin.try(:name)
+            td= filter.plugin.path
     h2 Filter aspect definitions
     table.full
       thead
@@ -155,11 +155,11 @@ ul.tabs
           th Name
           th Filters
       tbody
-      - Olelo::Aspect.aspects.values.flatten.select {|aspect| Olelo::FilterAspect === aspect }.each do |aspect|
+      - Olelo::Plugin::Aspects::Aspect.aspects.values.flatten.select {|aspect| Olelo::Plugin::Filters::FilterAspect === aspect }.sort_by(&:name).each do |aspect|
         tr
           td= aspect.name
           td= aspect.definition
-- if Olelo.const_defined? 'Tag'
+- if defined?(Olelo::Plugin::Tags::Tag)
   #tab-tags.tab
     h2 Tags
     p
@@ -177,13 +177,13 @@ ul.tabs
           th Optional attributes
           th Required attributes
       tbody
-        - Olelo::Tag.tags.values.uniq.sort_by(&:full_name).each do |tag|
+        - Olelo::Plugin::Tags::Tag.tags.values.uniq.sort_by(&:full_name).each do |tag|
           tr
             td= tag.full_name
             td= tag.description
             td== check_mark tag.immediate
             td== check_mark tag.dynamic
             td== check_mark tag.autoclose
-            td= tag.plugin.name
+            td= tag.plugin.path
             td= tag.optional.to_a.join(', ')
             td= tag.requires.to_a.join(', ')

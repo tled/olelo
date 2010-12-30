@@ -1,5 +1,5 @@
 description 'Anti-Spam'
-require     'net/http'
+require 'net/http'
 
 RECAPTCHA_PUBLIC = Config['antispam.recaptcha.public']
 RECAPTCHA_PRIVATE = Config['antispam.recaptcha.private']
@@ -82,7 +82,7 @@ class SpamEvaluator
   end
 end
 
-class Olelo::Application
+class ::Olelo::Application
   before :edit_buttons, 1000 do
     %{<br/><label for="recaptcha">#{:captcha.t}</label><br/><div id="recaptcha"></div><br/>} if flash[:show_captcha]
   end

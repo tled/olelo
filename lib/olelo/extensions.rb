@@ -49,6 +49,18 @@ class Module
     end
     include(Module.new { define_method(name, &block) })
   end
+
+  if method(:const_defined?).arity == 1
+    # Ruby 1.8
+    def local_const_defined?(const)
+      const_defined?(const)
+    end
+  else
+    # Ruby 1.9
+    def local_const_defined?(const)
+      const_defined?(const, false)
+    end
+  end
 end
 
 class Hash

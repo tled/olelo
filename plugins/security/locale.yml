@@ -1,5 +1,4 @@
 en:
-  access_denied:        'Access denied'
   attribute_acl_write:  'Write access'
   attribute_acl_create: 'Create subpages'
   attribute_acl_delete: 'Delete subpages'
@@ -7,7 +6,6 @@ en:
   persistent_login:     'Persistent login'
   login_first:          'You have to login first'
 de:
-  access_denied:        'Zugriff verweigert'
   attribute_acl_write:  'Schreibzugriff'
   attribute_acl_create: 'Unterseiten anlegen'
   attribute_acl_delete: 'Unterseiten löschen'

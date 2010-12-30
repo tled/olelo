@@ -1,6 +1,6 @@
 description 'Asset manager'
 
-class Olelo::Application
+class ::Olelo::Application
   @assets = {}
   @scripts = {}
 
@@ -49,10 +49,10 @@ class Olelo::Application
   end
 end
 
-class Olelo::Plugin
+class ::Olelo::Plugin
   def export_assets(*files)
     virtual_fs.glob(*files) do |file|
-      Application.assets[File.dirname(name)/file.name] = file
+      Application.assets[plugin_dir/file.name] = file
     end
   end
 
@@ -60,7 +60,15 @@ class Olelo::Plugin
     virtual_fs.glob(*files) do |file|
       raise 'Invalid script type' if file.name !~ /\.(css|js)$/
       scripts = Application.scripts[$1].to_a
-      Application.scripts[$1] = [[scripts[0], file.mtime].compact.max, "#{scripts[1]}/* #{File.dirname(name)/file.name} */\n#{file.read}\n"]
+      Application.scripts[$1] = [[scripts[0], file.mtime].compact.max, "#{scripts[1]}/* #{plugin_dir/file.name} */\n#{file.read}\n"]
+    end
+  end
+
+  def plugin_dir
+    if File.basename(file) == 'main.rb'
+      path
+    else
+      File.dirname(path)
     end
   end
 end

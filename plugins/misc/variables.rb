@@ -1,7 +1,7 @@
 description  'Export variables to context and javascript'
-dependencies 'aspect/aspect'
+dependencies 'aspects'
 
-def Olelo.exported_variables(page)
+def self.exported_variables(page)
   vars = {
     'page_name'             => page.name,
     'page_new'              => page.new?,
@@ -17,13 +17,13 @@ def Olelo.exported_variables(page)
 end
 
 # Export variables to aspect context
-Context.hook(:initialized) do
-  params.merge!(Olelo.exported_variables(page))
+Aspects::Context.hook(:initialized) do
+  params.merge!(PLUGIN.exported_variables(page))
 end
 
 # Export variables to javascript for client extensions
 Application.hook :head do
-  vars = page ? params.merge(Olelo.exported_variables(page)) : params
+  vars = page ? params.merge(PLUGIN.exported_variables(page)) : params
   vars = vars.merge('user_logged_in' => !User.logged_in?, 'user_name' => User.current.name)
   %{<script type="text/javascript">Olelo = #{escape_javascript(vars.to_json)};</script>}
 end

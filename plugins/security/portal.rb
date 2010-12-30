@@ -1,6 +1,6 @@
 description 'Proprietary web portal based user storage'
-require     'open-uri'
-require     'openssl'
+require 'open-uri'
+require 'openssl'
 
 class PortalService < User::Service
   def initialize(config)

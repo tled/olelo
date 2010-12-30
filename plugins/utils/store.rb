@@ -5,11 +5,11 @@ require 'delegate'
 #
 # Store supports a subset of the Moneta interface,
 # Moneta can be used as a drop-in replacement.
-# It is recommended to wrap the moneta store in a Olelo::Store::Delegated
-# to only expose the Olelo::Store interface.
+# It is recommended to wrap the moneta store in a Store::Delegated
+# to only expose the Store interface.
 #
 # @abstract
-class Olelo::Store
+class Store
   extend Factory
 
   # Exists the value with key
@@ -311,3 +311,5 @@ class Olelo::Store
 
   register :file, File
 end
+
+Olelo::Store = Store

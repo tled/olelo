@@ -1,4 +1,5 @@
 en:
+  access_denied:          'Access denied'
   actions:                'Actions'
   already_exists:         '#{page} exists already'
   attribute_mime:         'Mime-Type'
@@ -88,6 +89,7 @@ en:
   wrong_user_or_pw:       'Wrong username or password'
   wrong_password:         'Wrong password'
 de:
+  access_denied:          'Zugriff verweigert'
   actions:                'Aktionen'
   already_exists:         '#{page} existiert bereits'
   attribute_mime:         'Mime-Typ'

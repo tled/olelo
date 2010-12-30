@@ -1,4 +1,4 @@
-description  'XML support'
+description 'XML support'
 require 'nokogiri'
 
 # Nokogiri uses dump_html instead of serialize for broken libxml versions
@@ -6,7 +6,7 @@ require 'nokogiri'
 # FIXME: Remove this check as soon as nokogiri works correctly.
 raise 'The libxml version used by nokogiri is broken, upgrade to 2.7' if Nokogiri.uses_libxml? && %w[2 6] === Nokogiri::LIBXML_VERSION.split('.')[0..1]
 
-module Olelo::XML
+module XML
   extend self
 
   # Parse xml document string and return DOM object (Nokogiri)
@@ -25,3 +25,5 @@ module Olelo::XML
     Nokogiri::HTML::DocumentFragment.new(Document(nil), xml)
   end
 end
+
+Olelo::XML = XML

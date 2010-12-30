@@ -48,8 +48,7 @@ module Olelo
       Plugin.disabled = Config['disabled_plugins'].to_a
       Plugin.dir = Config['plugins_path']
 
-      # Load all plugins
-      Plugin.load('*')
+      Plugin.load_all
       Plugin.start
     end
 

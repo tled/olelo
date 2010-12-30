@@ -1,6 +1,6 @@
 description 'Simple webdav interface to the wiki files'
 
-class Olelo::Application
+class ::Olelo::Application
   def webdav_post
     Page.transaction do
       page = request.put? ? Page.find!(params[:path]) : Page.new(params[:path])

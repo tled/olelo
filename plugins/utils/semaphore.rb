@@ -2,7 +2,7 @@ description 'Semaphore class'
 
 # Semaphore implementation based on {Mutex} and {ConditionVariable}.
 # A mutex allows a number of threads to enter a synchronized section in parallel.
-class Olelo::Semaphore
+class Semaphore
   # @param [Integer] counter Number of threads which can enter the section in parallel
   def initialize(counter = 1)
     @mutex = Mutex.new
@@ -46,3 +46,5 @@ class Olelo::Semaphore
     leave
   end
 end
+
+Olelo::Semaphore = Semaphore

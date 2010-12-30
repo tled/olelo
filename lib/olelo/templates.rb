@@ -20,7 +20,7 @@ module Olelo
       locals = options.delete(:locals) || {}
       name = "#{name}.slim"
       path = Templates.loader.context.to_s/name
-      id = [path, options.map {|x| x}].flatten.join('-')
+      id = [path, options.to_a].flatten.join('-')
       template = Templates.with_caching(id) do
         Slim::Template.new(path, options) { Templates.loader.load(name) }
       end

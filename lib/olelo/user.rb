@@ -1,5 +1,18 @@
 module Olelo
   class AuthenticationError < RuntimeError
+    def status
+      :forbidden
+    end
+  end
+
+  class AccessDenied < RuntimeError
+    def initialize
+      super(:access_denied.t)
+    end
+
+    def status
+      :forbidden
+    end
   end
 
   class User

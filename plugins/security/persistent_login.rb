@@ -1,8 +1,8 @@
 description  'Persistent login'
 dependencies 'utils/store'
-require      'securerandom'
+require 'securerandom'
 
-class Olelo::Application
+class ::Olelo::Application
   TOKEN_NAME = 'olelo.token'
   TOKEN_LIFETIME = 24*60*60*365
 

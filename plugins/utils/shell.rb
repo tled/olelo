@@ -1,7 +1,7 @@
 description 'Shell utility'
 require 'shellwords'
 
-class Olelo::Shell
+class Shell
   def run(data = nil)
     cmd = @cmd.join(' | ')
     return `#{cmd}` if !data
@@ -41,3 +41,5 @@ class Olelo::Shell
     new.send(*args, &block)
   end
 end
+
+Olelo::Shell = Shell

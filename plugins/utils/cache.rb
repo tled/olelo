@@ -1,7 +1,7 @@
 description  'Caching support'
 dependencies 'utils/worker', 'utils/store'
 
-class Olelo::Cache
+class Cache
   def initialize(store)
     @store = store
     @disabled = false
@@ -49,3 +49,5 @@ class Olelo::Cache
     end
   end
 end
+
+Olelo::Cache = Cache

@@ -1,6 +1,6 @@
 description 'Forbid anonymous access, redirect to login'
 
-class Olelo::Application
+class ::Olelo::Application
   PUBLIC_ACCESS = %w(/login)
 
   redefine_method :include_page do |path|

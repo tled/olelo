@@ -1,8 +1,10 @@
-description  'Background worker'
+description 'Background worker'
+require 'thread'
 
-module Olelo::Worker
+module Worker
+  @queue = Queue.new
+
   def self.start
-    @queue = Queue.new
     Thread.new do
       loop do
         begin
@@ -27,6 +29,8 @@ module Olelo::Worker
   end
 end
 
-def setup
+setup do
   Worker.start
 end
+
+Olelo::Worker = Worker
