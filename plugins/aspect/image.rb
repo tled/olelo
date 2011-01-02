@@ -2,14 +2,14 @@ description 'Image aspect'
 dependencies 'aspect/aspect', 'utils/imagemagick'
 
 Aspect.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|image/', :cacheable => true) do
-  def ps?(page); page.mime.to_s =~ /postscript/; end
   def call(context, page)
     geometry = context.params[:geometry]
     trim = context.params[:trim]
-    if page.mime == 'application/pdf' || ps?(page)
+    ps = page.mime.to_s =~ /postscript/
+    if ps || page.mime == 'application/pdf'
       page_nr = [context.params[:page].to_i, 1].max
       cmd = ImageMagick.new
-      if ps?(page)
+      if ps
         cmd.cmd($1 == 'gz' ? 'gunzip' : 'bunzip2') if page.mime.to_s =~ /(bz|gz)/
         cmd.psselect "-p#{page_nr}"
         cmd.gs('-sDEVICE=jpeg', '-sOutputFile=-', '-r144', '-dBATCH', '-dNOPAUSE', '-q', '-')
@@ -17,7 +17,7 @@ Aspect.create(:image, :priority => 5, :accepts => 'application/pdf|postscript|im
       cmd.convert('-depth', 8, '-quality', 50) do |args|
         args << '-trim' if trim
         args << '-thumbnail' << geometry if geometry =~ /^(\d+)?x?(\d+)?[%!<>]*$/
-        if ps?(page)
+        if ps
           args << '-'
         else
           args << '-density' << 144 << "-[#{page_nr - 1}]"
