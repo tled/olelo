@@ -92,7 +92,7 @@ module Olelo
     error Exception do |error|
       Olelo.logger.error(error)
       cache_control :no_cache => true
-      render :error, :locals => {:error => error}
+      halt render(:error, :locals => {:error => error})
     end
 
     get '/login' do
