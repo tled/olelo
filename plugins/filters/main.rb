@@ -15,7 +15,7 @@ class Filter
   attr_reader :name, :description, :plugin, :options
 
   # Initialize filter
-  def initialize(name, options)
+  def initialize(name, options = {})
     @name        = name.to_s
     @plugin      = options[:plugin] || Plugin.for(self.class)
     @description = options[:description] || @plugin.description
@@ -56,6 +56,21 @@ class Filter
     klass.class_eval { define_method(:filter, &block) }
     register(name, klass, options)
   end
+
+  # Create regexp filter
+  def self.regexp(name, *regexps)
+    create(name, :description => 'Regular expression filter') do |context, content|
+      regexps.each_slice(2) { |regexp, sub| content.gsub!(regexp, sub) }
+      content
+    end
+  end
+
+  # Find filter by name
+  def self.find(name, options = {})
+    filter = self[name].dup
+    filter.configure(options.with_indifferent_access)
+    filter
+  end
 end
 
 # Filter which supports subfilters
@@ -72,7 +87,7 @@ class NestingFilter < Filter
 end
 
 class FilterAspect < Aspects::Aspect
-  def initialize(name, options, filter)
+  def initialize(name, filter, options)
     super(name, options)
     @filter = filter
   end
@@ -95,18 +110,18 @@ class FilterDSL
     end
 
     # Add optional filter
-    def filter(name, options = nil, &block)
+    def filter(name, options = {}, &block)
       add(name, false, options, &block)
     end
 
     # Add mandatory filter
-    def filter!(name, options = nil, &block)
+    def filter!(name, options = {}, &block)
       add(name, true, options, &block)
     end
 
     # Add filter with method name.
     # Mandatory filters must end with !
-    def method_missing(name, options = nil, &block)
+    def method_missing(name, options = {}, &block)
       name = name.to_s
       name.ends_with?('!') ? filter!(name[0..-2], options, &block) : filter(name, options, &block)
     end
@@ -118,11 +133,9 @@ class FilterDSL
 
     private
 
-    def add(name, mandatory, options = nil, &block)
-      filter = Filter[name] rescue nil
+    def add(name, mandatory, options, &block)
+      filter = Filter.find(name, options) rescue nil
       if filter
-        filter = filter.dup
-        filter.configure((options || {}).with_indifferent_access)
         filter.previous = @filter
         @filter = filter
         if block
@@ -133,7 +146,7 @@ class FilterDSL
         if mandatory
           raise MandatoryFilterNotFound, "Aspect '#{@name}' not created because mandatory filter '#{name}' is not available"
         else
-          Olelo.logger.warn "Optional filter '#{name}' not available"
+          Olelo.logger.warn "Aspect '#{@name}' - Optional filter '#{name}' not available"
         end
         @filter = FilterBuilder.new(@name, @filter).build(&block) if block
       end
@@ -151,7 +164,7 @@ class FilterDSL
     def build(&block)
       instance_eval(&block)
       raise("No filters defined for aspect '#{name}'") if !@filter
-      FilterAspect.new(@name, @options, @filter)
+      FilterAspect.new(@name, @filter, @options)
     end
 
     def filter(&block)
@@ -169,10 +182,7 @@ class FilterDSL
 
   # Register regexp filter
   def regexp(name, *regexps)
-    Filter.create(name, :description => 'Regular expression filter') do |context, content|
-      regexps.each_slice(2) { |regexp, sub| content.gsub!(regexp, sub) }
-      content
-    end
+    Filter.regexp(name, *regexps)
   end
 
   # Register aspect
