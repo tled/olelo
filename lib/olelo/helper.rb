@@ -5,7 +5,7 @@ module Olelo
     end
 
     def define_block(name, content = nil)
-      blocks[name] = block_given? ? yield : content
+      blocks[name] = block_given? ? yield : escape_html(content)
       ''
     end
 
