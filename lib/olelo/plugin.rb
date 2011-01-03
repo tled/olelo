@@ -18,16 +18,15 @@ module Olelo
       attr_reader :failed
 
       # Current plugin
-      def current(level = 0)
-        last = nil
-        caller.each do |line|
+      def caller
+        last, stack = nil, []
+        Kernel.caller(1).each do |line|
           if line =~ %r{^#{@dir}/(.+?)(?:\/main)?\.rb} && $1 != last
+            stack << @loaded[$1]
             last = $1
-            level -= 1
-            return @loaded[$1] if level < 0
           end
         end
-        nil
+        stack
       end
 
       # Get loaded plugins

@@ -30,11 +30,11 @@ module Olelo
       Templates.enable_caching if Config['production']
       Templates.loader = Class.new do
         def context
-          Plugin.current.try(:name)
+          Plugin.caller.first.try(:name)
         end
 
         def load(name)
-          VirtualFS::Union.new(Plugin.current.try(:virtual_fs),
+          VirtualFS::Union.new(Plugin.caller.first.try(:virtual_fs),
                                VirtualFS::Native.new(Config['views_path'])).read(name)
         end
       end.new
