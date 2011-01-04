@@ -7,10 +7,15 @@ Aspect.create(:imageinfo, :priority => 1, :layout => true, :cacheable => true, :
     identify = ImageMagick.identify('-format', '%m %h %w', '-').run(page.content).split(' ')
     @type = identify[0]
     @geometry = "#{identify[1]}x#{identify[2]}"
-    @exif = Shell.exif('-m', '/dev/stdin').run(page.content)
-    @exif.force_encoding(Encoding::UTF_8) if @exif.respond_to? :force_encoding
-    @exif = @exif.split("\n").map {|line| line.split("\t") }
-    @exif = nil if !@exif[0] || !@exif[0][1]
+    begin
+      @exif = Shell.exif('-m', '/dev/stdin').run(page.content)
+      @exif.force_encoding(Encoding::UTF_8) if @exif.respond_to? :force_encoding
+      @exif = @exif.split("\n").map {|line| line.split("\t") }
+      @exif = nil if !@exif[0] || !@exif[0][1]
+    rescue => ex
+      Olelo.logger.warn "Exif data could not be read: #{ex.message}"
+      @exif = nil
+    end
     render :info
   end
 end
