@@ -1,5 +1,5 @@
 description    'Gallery aspect'
-dependencies   'utils/assets'
+dependencies   'utils/assets', 'aspects'
 export_scripts '*.css'
 
 Aspects::Aspect.create(:gallery, :priority => 3, :layout => true, :hidden => true, :cacheable => true) do

@@ -7,6 +7,8 @@ module Pygments
   @patterns = {}
   @formats = []
 
+  include Util
+
   def self.pre(text)
     "<pre>#{escape_html(text.strip)}</pre>"
   end
