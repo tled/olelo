@@ -15,7 +15,7 @@ module TestHelper
     Olelo::Config.instance['repository.type'] = 'git'
     Olelo::Config.instance['repository.git.path'] = File.expand_path(File.join(File.dirname(__FILE__), '.test'))
     Olelo::Config.instance['repository.git.bare'] = true
-    load_plugin('repository/git/repository')
+    load_plugin('repositories/git')
   end
 
   def destroy_repository
