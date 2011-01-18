@@ -118,7 +118,7 @@ end
 class ::Olelo::Application
   hook :render do |name, xml, layout|
     if layout && xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config['math_renderer']) == 'mathjax'
-      xml.sub!('</body>', %{<script src="#{absolute_path 'static/mathjax/MathJax.js'}" type="text/javascript" async="async"/></body>})
+      xml.sub!('</body>', %{<script src="#{absolute_path 'static/mathjax/MathJax.js'}" type="text/javascript"/></body>})
     end
   end
 

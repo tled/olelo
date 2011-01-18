@@ -14,7 +14,7 @@ class ::Olelo::Application
     js = Application.scripts['js']
     if js && !disable_assets?
       path = absolute_path "_/assets/assets.js?#{js.first.to_i}"
-      %{<script src="#{escape_html path}" type="text/javascript" async="async"/>}
+      %{<script src="#{escape_html path}" type="text/javascript"/>}
     end
   end
 
