@@ -180,8 +180,10 @@ aspect :page do
   is_cacheable.needs_layout.has_priority(2)
   accepts 'text/x-markdown(\.kramdown)?'
   filter do
-    remove_comments.tag_shortcuts.markdown_nowiki
-    tag(:disable => 'html:*') { kramdown! }
+    editsection do
+      remove_comments.tag_shortcuts.markdown_nowiki
+      tag(:disable => 'html:*') { kramdown! }
+    end
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
   end
