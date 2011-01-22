@@ -94,7 +94,7 @@ module Olelo
           (@deletion ||= '') << line[1..-1] << "\n"
         when ' '
           handle_change
-          context!(line[1..-1])
+          context!(line[1..-1] + "\n")
         end
       end
 
