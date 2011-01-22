@@ -124,7 +124,7 @@ ul.tabs
               td= aspect.name
               td= aspect.description
               td= aspect.mime
-              td= aspect.accepts
+              td= aspect.accepts ? aspect.accepts.inspect : '*'
               td== check_mark aspect.hidden?
               td== check_mark aspect.cacheable?
               td== check_mark aspect.layout?
