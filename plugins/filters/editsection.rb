@@ -4,41 +4,64 @@ Page.attributes do
   boolean :no_editsection
 end
 
-# Supported are
-#  * ATX/Markdown style headlines (e.g. ## Headline)
-#  * Creole/Mediawiki style headlines (e.g. == Headline)
-HEADLINE_STYLE = [
-  [%r{^text/x-creole$},  /^([ \t]*(=+)(.*?))=*\s*$/],
-  [%r{^text/x-markdown}, /^([ \t\n]*(#+)\s(.*?))#*\s*$/]
-]
+class EditSection < Filters::NestingFilter
+  def find_sections_regexp(content, regexp)
+    sections, offset = [], 0
+    while (offset = content.index(regexp, offset))
+      sections.last[1] = offset if sections.last
+      # [Section start, section end, Position to insert edit link, section text]
+      sections << [offset + $2.size, content.length, offset + $1.size, $3.strip]
+      offset += $&.size
+    end
+    sections
+  end
 
-NestingFilter.create :editsection do |context, content|
-  page = context.page
-  if context[:preview] || !page.head? || page.attributes['no_editsection']
-    subfilter(context, content)
-  else
-    style = HEADLINE_STYLE.find {|mime,regexp| page.mime.to_s =~ mime }
-    raise "Mime type #{page.mime} not supported by editsection filter" if !style
-    prefix = "EDIT#{object_id}X"
-    len = content.length
-    pos, off = [], 0
-    while (off = content.index(style.last, off))
-      pos << [$2.size, off, off + $1.size, $3.strip]
-      off += $&.size
+  # Creole/Mediawiki style headlines (e.g. == Headline ==)
+  def find_sections_creole(content)
+    find_sections_regexp(content, /((\A|\s*\n)=+(.*?))=*\s*$/)
+  end
+
+  # ATX/Markdown style headlines (e.g. ## Headline)
+  def find_sections_atx(content)
+    find_sections_regexp(content, /((\A|\s*\n)#+(.*))$/)
+  end
+
+  # Returns section array
+  # [[Section start, section end, Position to insert edit link, section text], ...]
+  def find_sections(mime, content)
+    case mime.to_s
+    when %r{^text/x-creole$}
+      find_sections_creole(content)
+    when %r{^text/x-markdown}
+      find_sections_atx(content)
+    else
+      raise "Mime type #{mime} not supported by editsection filter"
     end
-    off = 0
-    pos.each_with_index do |p,i|
-      link = " #{prefix}#{i} "
-      content.insert(p[2] + off, link)
-      off += link.size
+  end
+
+  def filter(context, content)
+    page = context.page
+    if context[:preview] || !page.head? || page.attributes['no_editsection']
+      subfilter(context, content)
+    else
+      sections = find_sections(context.page.mime, content)
+      offset = 0
+      prefix = "EDIT#{object_id}X"
+      sections.each_with_index do |h,i|
+        link = " #{prefix}#{i} "
+        content.insert(h[2] + offset, link)
+        offset += link.size
+      end
+      content = subfilter(context, content)
+      content.gsub!(/#{prefix}(\d+)/) do
+        i = $1.to_i
+        len = sections[i][1] - sections[i][0]
+        path = action_path(page, :edit) + "?pos=#{sections[i][0]}&len=#{len}&comment=#{:section_edited.t(:section => sections[i][3])}"
+        %{<a class="editsection" href="#{escape_html path}" title="#{escape_html :edit_section.t(:section => sections[i][3])}">#{escape_html :edit.t}</a>}
+      end
+      content
     end
-    content = subfilter(context, content)
-    content.gsub!(/#{prefix}(\d+)/) do |match|
-      i = $1.to_i
-      l = pos[i+1] ? pos[i+1][1] - pos[i][1] - 1 : len - pos[i][1]
-      path = action_path(page, :edit) + "?pos=#{pos[i][1]}&len=#{l}&comment=#{:section_edited.t(:section => pos[i][3])}"
-      %{<a class="editsection" href="#{escape_html path}" title="#{escape_html :edit_section.t(:section => pos[i][3])}">#{escape_html :edit.t}</a>}
-    end
-    content
   end
 end
+
+Filters::Filter.register :editsection, EditSection

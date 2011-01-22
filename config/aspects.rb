@@ -140,8 +140,10 @@ aspect :page do
   is_cacheable.needs_layout.has_priority(1)
   accepts 'text/x-markdown'
   filter do
-    remove_comments.tag_shortcuts.markdown_nowiki
-    tag(:disable => 'html:*') { markdown! }
+    editsection do
+      remove_comments.tag_shortcuts.markdown_nowiki
+      tag(:disable => 'html:*') { markdown! }
+    end
     fix_img_tag.toc
     interwiki(:map => interwiki_map).link_classifier
   end
