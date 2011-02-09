@@ -2,7 +2,7 @@ description  'Enhanced edit form with preview and diff'
 dependencies 'aspects'
 
 class ::Olelo::Application
-  before :edit_buttons do
+  before :edit_buttons, 1000 do
     %{<button data-target="enhanced-edit" type="submit" name="action" value="preview" accesskey="p">#{:preview.t}</button>
       <button data-target="enhanced-edit" type="submit" name="action" value="changes" accesskey="c">#{:changes.t}</button>}
   end

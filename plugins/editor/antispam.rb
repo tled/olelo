@@ -83,7 +83,7 @@ class SpamEvaluator
 end
 
 class ::Olelo::Application
-  before :edit_buttons, 1000 do
+  before :edit_buttons do
     %{<br/><label for="recaptcha">#{:captcha.t}</label><br/><div id="recaptcha"></div><br/>} if flash[:show_captcha]
   end
 
