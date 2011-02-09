@@ -8,6 +8,7 @@ form action=absolute_path(page.new? ? nil : page) method='post'
   #tab-edit.tab
     h2= :edit.t
     = flash_messages if action?(:edit) || page.new?
+    - content = edit_content(page)
     - if page.new?
       label for='edit-path' = :path.t
       input#edit-path name='path' type='text' value=params[:path]
@@ -17,9 +18,8 @@ form action=absolute_path(page.new? ? nil : page) method='post'
       input type='hidden' name='version' value=page.version
       - if params[:pos]
         input type='hidden' name='pos' value=params[:pos]
-        - if params[:len]
-          input type='hidden' name='len' value=params[:len]
-    textarea#edit-content.observe name='content' cols='100' rows='20' = edit_content(page)
+        input type='hidden' name='len' value=content.size
+    textarea#edit-content.observe name='content' cols='100' rows='20' = content
     br
     label for='edit-comment' = :comment.t
     input#edit-comment type='text' name='comment' value=params[:comment] size='50'
