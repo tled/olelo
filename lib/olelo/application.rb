@@ -102,7 +102,7 @@ module Olelo
     post '/login' do
       on_error :login
       User.current = User.authenticate(params[:user], params[:password])
-      redirect session.delete(:olelo_goto) || '/'
+      redirect absolute_path(session.delete(:olelo_goto).to_s)
     end
 
     post '/signup' do
@@ -110,12 +110,12 @@ module Olelo
       raise 'Sign-up is disabled' if !Config['authentication.enable_signup']
       User.current = User.create(params[:user], params[:password],
                                  params[:confirm], params[:email])
-      redirect '/'
+      redirect absolute_path('/')
     end
 
     get '/logout' do
       User.current = User.anonymous(request)
-      redirect '/'
+      redirect absolute_path('/')
     end
 
     get '/profile' do

@@ -256,7 +256,7 @@ module Olelo
       @@theme_link ||=
         begin
           file = File.join(Config['themes_path'], Config['theme'], 'style.css')
-          path = "#{Config['base_path']}static/themes/#{Config['theme']}/style.css?#{File.mtime(file).to_i}"
+          path = absolute_path "static/themes/#{Config['theme']}/style.css?#{File.mtime(file).to_i}"
           %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
         end
       @@script_link ||=
