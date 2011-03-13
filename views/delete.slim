@@ -1,6 +1,6 @@
 - title :delete_page.t(:page => page.title)
 h1= title
-form action=build_path(page) method='post'
+form action=build_path(page.path) method='post'
   .box
     = flash_messages
     input type='hidden' name='_method' value='delete'

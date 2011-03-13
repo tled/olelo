@@ -18,5 +18,5 @@ table
       td= :parents.t
       td.version
         - @version.parents.each do |parent|
-          a href=build_path('changes'/parent) = Olelo::Version.short(parent)
+          a href=build_path(parent, :action => :changes) = Olelo::Version.short(parent)
 = format_diff(@diff)

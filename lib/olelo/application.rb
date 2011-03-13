@@ -51,21 +51,21 @@ module Olelo
 
     hook :menu do |menu|
       if menu.name == :actions && page && !page.new?
-        menu.item(:view, :href => build_path(page), :accesskey => 'v')
-        edit_menu = menu.item(:edit, :href => action_path(page, :edit), :accesskey => 'e')
-        edit_menu.item(:new, :href => action_path(page, :new), :accesskey => 'n')
+        menu.item(:view, :href => build_path(page.path), :accesskey => 'v')
+        edit_menu = menu.item(:edit, :href => build_path(page, :action => :edit), :accesskey => 'e')
+        edit_menu.item(:new, :href => build_path(page, :action => :new), :accesskey => 'n')
         if !page.root?
-          edit_menu.item(:move, :href => action_path(page, :move))
-          edit_menu.item(:delete, :href => action_path(page, :delete))
+          edit_menu.item(:move, :href => build_path(page, :action => :move))
+          edit_menu.item(:delete, :href => build_path(page, :action => :delete))
         end
-        history_menu = menu.item(:history, :href => action_path(page, :history), :accesskey => 'h')
+        history_menu = menu.item(:history, :href => build_path(page, :action => :history), :accesskey => 'h')
 
         if @menu_versions
           head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
           if page.previous_version || head || page.next_version
             history_menu.item(:older, :href => build_path(page, original_params.merge(:version => page.previous_version)),
                               :accesskey => 'o') if page.previous_version
-            history_menu.item(:head, :href => build_path(page, original_params), :accesskey => 'c') if head
+            history_menu.item(:head, :href => build_path(page.path, original_params), :accesskey => 'c') if head
             history_menu.item(:newer, :href => build_path(page, original_params.merge(:version => page.next_version)),
                               :accesskey => 'n') if page.next_version
           end
@@ -102,7 +102,7 @@ module Olelo
     post '/login' do
       on_error :login
       User.current = User.authenticate(params[:user], params[:password])
-      redirect build_path(session.delete(:olelo_goto).to_s)
+      redirect build_path(session.delete(:olelo_goto))
     end
 
     post '/signup' do
@@ -171,7 +171,7 @@ module Olelo
         raise :reserved_path.t if self.class.reserved_path?(destination)
         page.move(destination)
         Page.commit(:page_moved.t(:page => page.path, :destination => destination))
-        redirect build_path(page)
+        redirect build_path(page.path)
       end
     end
 
@@ -184,8 +184,7 @@ module Olelo
 
     get '/compare(/:path)' do
       versions = params[:versions] || []
-      redirect build_path(versions.size < 2 ? "#{params[:path]}/history" :
-                             "/compare/#{versions.first}...#{versions.last}/#{params[:path]}")
+      redirect build_path(params[:path], :action => versions.size < 2 ? :history : "compare/#{versions.first}...#{versions.last}")
     end
 
     get '/edit(/:path)' do
@@ -213,7 +212,7 @@ module Olelo
                      else
                        params[:content]
                      end
-      redirect build_path(page) if @close && !page.modified?
+      redirect build_path(page.path) if @close && !page.modified?
       check do |errors|
         errors << :version_conflict.t if !page.new? && page.version.to_s != params[:version]
         errors << :no_changes.t if !page.modified?
@@ -234,7 +233,7 @@ module Olelo
 
     def post_attributes
       page.update_attributes(params)
-      redirect build_path(page) if @close && !page.modified?
+      redirect build_path(page.path) if @close && !page.modified?
       check do |errors|
         errors << :version_conflict.t if !page.new? && page.version.to_s != params[:version]
         errors << :no_changes.t if !page.modified?
@@ -254,7 +253,7 @@ module Olelo
         cache_control :version => page.version
         show_page
       rescue NotFound
-        redirect build_path('new'/params[:path].to_s) if params[:version].blank?
+        redirect build_path(params[:path], :action => :new) if params[:version].blank?
         raise
       end
     end
@@ -274,7 +273,7 @@ module Olelo
 
       if @close
         flash.clear
-        redirect build_path(page)
+        redirect build_path(page.path)
       else
         flash.info! :changes_saved.t
         render :edit

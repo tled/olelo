@@ -18,14 +18,14 @@ end
 
 __END__
 @@ gallery.slim
-= pagination(page_path(@page), @page_count, @page_nr, :aspect => 'gallery')
+= pagination(@page, @page_count, @page_nr, :aspect => 'gallery')
 table.gallery
   - @images.each_slice(@per_row) do |row|
     tr
       - row.each do |image|
         ruby:
-          thumb_path = page_path(image, :aspect => 'image', :geometry => '150x150>')
-          info_path  = page_path(image)
+          thumb_path = build_path(image, :aspect => 'image', :geometry => '150x150>')
+          info_path  = build_path(image)
           description = image.attributes['description'] || image.attributes['title'] || \
             image.name.gsub(/([^\s])[_\-]/, '\1 ')
         td

@@ -174,10 +174,10 @@ class ::Olelo::Application
     halt(layout ? render(:show, :locals => {:content => content}) : content)
   rescue Aspect::NotAvailable => ex
     cache_control :no_cache => true
-    redirect build_path(page) if params[:path].to_s.ends_with? '/'
+    redirect build_path(page.path) if params[:path].to_s.ends_with? '/'
     raise if params[:aspect]
     flash.error ex.message
-    redirect action_path(page, :edit)
+    redirect build_path(page, :action => :edit)
   end
 
   hook :menu do |menu|
@@ -188,10 +188,10 @@ class ::Olelo::Application
           [Locale.translate("aspect_#{a.name}", :fallback => titlecase(a.name)), a]
         end.sort_by(&:first)
         aspects.select {|label, a| a.layout? }.map do |label, a|
-          MenuItem.new(a.name, :label => label, :href => page_path(page, :aspect => a.name), :class => a.name == @selected_aspect ? 'selected' : nil)
+          MenuItem.new(a.name, :label => label, :href => build_path(page, :aspect => a.name), :class => a.name == @selected_aspect ? 'selected' : nil)
         end +
         aspects.reject {|label, a| a.layout? }.map do |label, a|
-          MenuItem.new(a.name, :label => label, :href => page_path(page, :aspect => a.name), :class => 'download')
+          MenuItem.new(a.name, :label => label, :href => build_path(page, :aspect => a.name), :class => 'download')
         end
       end.each {|item| view_menu << item }
     end

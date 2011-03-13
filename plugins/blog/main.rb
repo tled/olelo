@@ -71,7 +71,7 @@ __END__
         .content== content
         - if !full
           a.full href=build_path(page.path) = :full_article.t
-= pagination(page_path(@page), @page_count, @page_nr, :aspect => 'blog')
+= pagination(@page, @page_count, @page_nr, :aspect => 'blog')
 @@ menu.slim
 table.blog-menu
   - years.keys.sort.each do |year|

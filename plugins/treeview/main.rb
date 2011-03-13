@@ -10,7 +10,7 @@ Aspects::Aspect.create('treeview.json', :hidden => true, :cacheable => true, :mi
     page.children.map do |child|
       classes = child.children.empty? ? 'page' : 'folder'
       classes << " file-type-#{child.extension.downcase}" if !child.extension.empty?
-      [child.children.empty? ? 0 : 1, classes, page_path(child), child.name]
+      [child.children.empty? ? 0 : 1, classes, build_path(child), child.name]
     end.to_json
   end
 end

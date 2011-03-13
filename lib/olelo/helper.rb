@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module Olelo
   module BlockHelper
     def blocks
@@ -49,7 +50,7 @@ module Olelo
       if page
         render_page(page)
       else
-        %{<a href="#{escape_html build_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
+        %{<a href="#{escape_html build_path(path, :action => :new)}">#{escape_html :create_page.t(:page => path)}</a>}
       end
     end
 
@@ -109,39 +110,33 @@ module Olelo
     def breadcrumbs(page)
       path = page.try(:path) || ''
       li = [%{<li class="first breadcrumb#{path.empty? ? ' last' : ''}">
-              <a accesskey="z" href="#{escape_html build_path('', :version => page)}">#{escape_html :root.t}</a></li>}.unindent]
+              <a accesskey="z" href="#{escape_html build_path(nil, :version => page)}">#{escape_html :root.t}</a></li>}.unindent]
       path.split('/').inject('') do |parent,elem|
         current = parent/elem
         li << %{<li class="breadcrumb#{current == path ? ' last' : ''}">
-                <a href="#{escape_html build_path('/' + current, :version => page)}">#{escape_html elem}</a></li>}.unindent
+                <a href="#{escape_html build_path(current, :version => page)}">#{escape_html elem}</a></li>}.unindent
         current
       end
       li.join('<li class="breadcrumb">/</li>').html_safe
     end
 
-    def build_path(path, options = {})
+    def build_path(page, options = {})
       options = options.dup
-      path = Config['base_path'] / (path.try(:path) || path).to_s
-
-      # Append version string
+      action = options.delete(:action)
       version = options.delete(:version)
-      # Use version of page
-      version = version.tree_version if Page === version
-      path = 'version'/version/path if version && (options.delete(:force_version) || !version.head?)
+      path = (page.try(:path) || page).to_s
 
-      # Append query parameters
+      if action
+        raise ArgumentError if version
+        path = action.to_s/path
+      else
+        version ||= page.try(:version)
+        version = version.try(:tree_version) || version
+        path = 'version'/version/path if version && (options.delete(:force_version) || !version.head?)
+      end
+
       path += '?' + build_query(options) if !options.empty?
-
-      '/' + path
-    end
-
-    def page_path(page, options = {})
-      options[:version] ||= page
-      build_path(page, options)
-    end
-
-    def action_path(path, action)
-      build_path(action.to_s / (path.try(:path) || path).to_s)
+      '/' + (Config['base_path'] / path)
     end
 
     def edit_content(page)
@@ -261,7 +256,7 @@ module Olelo
         end
       @@script_link ||=
         begin
-          path = build_path("static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}")
+          path = build_path "static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}"
           %{<script src="#{escape_html path}" type="text/javascript"/>}
         end
       base_path = if page && page.root?

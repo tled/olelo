@@ -34,4 +34,4 @@ table
       tr
         td= :download.t
         td
-          a href=page_path(@page, :aspect => 'download') = :download.t
+          a href=build_path(@page, :aspect => 'download') = :download.t
