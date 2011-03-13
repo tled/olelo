@@ -69,7 +69,7 @@ ul.tabs
     tr
       td Sidebar page:
       td
-        a href=absolute_path(Olelo::Config['sidebar_page']) = Olelo::Config['sidebar_page']
+        a href=build_path(Olelo::Config['sidebar_page']) = Olelo::Config['sidebar_page']
     tr
       td Mime type detection order:
       td= Olelo::Config['mime'].join(', ')

@@ -73,7 +73,7 @@ class BlahtexImageRenderer < MathRenderer
   def render(code, display)
     content = Shell.blahtex('--png', '--png-directory', Config['blahtex_directory']).run(code.strip)
     if content =~ %r{<md5>(.*)</md5>}m
-      path = absolute_path "_/tag/math/blahtex/#{$1}.png"
+      path = build_path "_/tag/math/blahtex/#{$1}.png"
       %{<img src="#{escape_html path}" alt="#{escape_html code}" class="math #{display}"/>}
     elsif content.include?('error') && content =~ %r{<message>(.*)</message>}
       raise $1
@@ -118,7 +118,7 @@ end
 class ::Olelo::Application
   hook :render do |name, xml, layout|
     if layout && xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config['math_renderer']) == 'mathjax'
-      xml.sub!('</body>', %{<script src="#{absolute_path 'static/mathjax/MathJax.js'}" type="text/javascript"/></body>})
+      xml.sub!('</body>', %{<script src="#{build_path 'static/mathjax/MathJax.js'}" type="text/javascript"/></body>})
     end
   end
 

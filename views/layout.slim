@@ -2,7 +2,7 @@ doctype 5
 html.no-js lang=Olelo::Config['locale'].sub('_', '-') class={page && !page.head? ? 'archive' : nil} xmlns='http://www.w3.org/1999/xhtml'
   head
     title= Olelo::Config['title'] + ' - ' + title
-    link rel='shortcut icon' href=absolute_path('static/images/favicon.png?1') type='image/png'
+    link rel='shortcut icon' href=build_path('static/images/favicon.png?1') type='image/png'
     = head
   body
     #header
@@ -10,13 +10,13 @@ html.no-js lang=Olelo::Config['locale'].sub('_', '-') class={page && !page.head?
         a href=Olelo::Config['base_path'] = Olelo::Config['title']
       #info
         - if Olelo::User.logged_in?
-          a href=absolute_path(:profile) = Olelo::User.current.name
+          a href=build_path(:profile) = Olelo::User.current.name
           ' |
-          a href=absolute_path(:logout) = :logout.t
+          a href=build_path(:logout) = :logout.t
         - else
-          a href=absolute_path(:login) = :login.t
+          a href=build_path(:login) = :login.t
       #search
-        form action=absolute_path(:search) method='get'
+        form action=build_path(:search) method='get'
           div
             label.hidden for='pattern' = :search.t
             input type='text' id='pattern' name='pattern' value={params[:pattern] || :search.t} class={!params[:pattern] && 'placeholder'}

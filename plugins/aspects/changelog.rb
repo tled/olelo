@@ -31,14 +31,14 @@ end
 
 Application.hook :head do
   %{<link rel="alternate" type="application/atom+xml" title="Sitewide Atom Changelog"
-    href="#{escape_html absolute_path('/', :aspect => 'changelog', :format => 'atom')}"/>
+    href="#{escape_html build_path('/', :aspect => 'changelog', :format => 'atom')}"/>
     <link rel="alternate" type="application/rss+xml" title="Sitewide RSS Changelog"
-    href="#{escape_html absolute_path('/', :aspect => 'changelog', :format => 'rss')}"/>}.unindent
+    href="#{escape_html build_path('/', :aspect => 'changelog', :format => 'rss')}"/>}.unindent
 end
 
 Application.hook :head do
   %{<link rel="alternate" type="application/atom+xml" title="#{escape_html page.path} Atom Changelog"
-    href="#{escape_html(absolute_path(page, :aspect => 'changelog', :format => 'atom'))}"/>
+    href="#{escape_html(build_path(page, :aspect => 'changelog', :format => 'atom'))}"/>
     <link rel="alternate" type="application/rss+xml" title="#{escape_html page.path} RSS Changelog"
-    href="#{escape_html(absolute_path(page, :aspect => 'changelog', :format => 'rss'))}"/>}.unindent if page && !page.new? && !page.root?
+    href="#{escape_html(build_path(page, :aspect => 'changelog', :format => 'rss'))}"/>}.unindent if page && !page.new? && !page.root?
 end

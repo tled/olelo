@@ -13,7 +13,7 @@ class ::Olelo::Application
   hook :script, 1 do
     js = Application.scripts['js']
     if js && !disable_assets?
-      path = absolute_path "_/assets/assets.js?#{js.first.to_i}"
+      path = build_path "_/assets/assets.js?#{js.first.to_i}"
       %{<script src="#{escape_html path}" type="text/javascript"/>}
     end
   end
@@ -21,7 +21,7 @@ class ::Olelo::Application
   hook :head, 1 do
     css = Application.scripts['css']
     if css && !disable_assets?
-      path = absolute_path "_/assets/assets.css?#{css.first.to_i}"
+      path = build_path "_/assets/assets.css?#{css.first.to_i}"
       %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
     end
   end

@@ -1,7 +1,7 @@
 - title :login.t
 p
   = Olelo::Config['authentication.enable_signup'] ? tabs(:login, :signup) : tabs(:login)
-  form action=absolute_path(:login) method='post'
+  form action=build_path(:login) method='post'
     #tab-login.tab.fieldset
       h2 Login
       = flash_messages :login
@@ -16,7 +16,7 @@ p
           button type='submit' = :login.t
       br
   - if Olelo::Config['authentication.enable_signup']
-    form action=absolute_path(:signup) method='post'
+    form action=build_path(:signup) method='post'
       #tab-signup.tab.fieldset
         h2= :signup.t
         = flash_messages :signup

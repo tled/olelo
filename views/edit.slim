@@ -4,7 +4,7 @@
   - title params[:pos] ? :edit_page_section.t(:page => page.title) : :edit_page.t(:page => page.title)
 h1= title
 = tabs :edit, :upload, :attributes
-form action=absolute_path(page.new? ? nil : page) method='post'
+form action=build_path(page.new? ? nil : page) method='post'
   #tab-edit.tab
     h2= :edit.t
     = flash_messages if action?(:edit) || page.new?
@@ -28,7 +28,7 @@ form action=absolute_path(page.new? ? nil : page) method='post'
       button type='submit' name='action' value='edit-close' = :save_and_close.t
       button type='reset' = :reset.t
       br
-form action=absolute_path(page.new? ? nil : page) method='post' enctype='multipart/form-data'
+form action=build_path(page.new? ? nil : page) method='post' enctype='multipart/form-data'
   #tab-upload.tab
     h2= :upload_file.t
     - if page.new?
@@ -46,7 +46,7 @@ form action=absolute_path(page.new? ? nil : page) method='post' enctype='multipa
     button type='submit' name='action' value='upload-close' = :save_and_close.t
     button type='reset' = :reset.t
     br
-form action=absolute_path(page.new? ? nil : page) method='post'
+form action=build_path(page.new? ? nil : page) method='post'
   #tab-attributes.tab.fieldset
     h2= :attributes.t
     - if page.new?

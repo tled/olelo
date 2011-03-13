@@ -7,7 +7,7 @@ Tag.define :include, :optional => '*', :requires => :page, :limit => 10, :descri
     Aspects::Aspect.find!(page, :name => attrs['aspect'], :layout => true).
       call(context.subcontext(:params => attrs.merge(:included => true), :page => page), page)
   else
-    %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
+    %{<a href="#{escape_html build_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
   end
 end
 

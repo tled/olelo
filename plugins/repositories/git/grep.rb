@@ -67,5 +67,5 @@ p= :match.t(:count => @matches.length)
   - @matches.each do |path, content|
     .match
       h2
-        a.name href=absolute_path(path) = emphasize(path)
+        a.name href=build_path(path) = emphasize(path)
       .content= emphasize(content)

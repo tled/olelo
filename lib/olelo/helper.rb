@@ -49,7 +49,7 @@ module Olelo
       if page
         render_page(page)
       else
-        %{<a href="#{escape_html absolute_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
+        %{<a href="#{escape_html build_path('new'/path)}">#{escape_html :create_page.t(:page => path)}</a>}
       end
     end
 
@@ -61,7 +61,7 @@ module Olelo
       return if page_count <= 1
       li = []
       li << if page_nr > 1
-              %{<a href="#{escape_html absolute_path(path, options.merge(:page => page_nr - 1))}">&#9666;</a>}
+              %{<a href="#{escape_html build_path(path, options.merge(:page => page_nr - 1))}">&#9666;</a>}
             else
               %{<span class="disabled">&#9666;</span>}
             end
@@ -75,20 +75,20 @@ module Olelo
       max = max + 2 < page_count ? max : page_count
       min = min > 3 ? min : 1
       if min != 1
-        li << %{<a href="#{escape_html absolute_path(path, options.merge(:page => 1))}">1</a>} << %{<span class="ellipsis"/>}
+        li << %{<a href="#{escape_html build_path(path, options.merge(:page => 1))}">1</a>} << %{<span class="ellipsis"/>}
       end
       (min..max).each do |i|
         li << if i == page_nr
                 %{<span class="current">#{i}</span>}
               else
-                %{<a href="#{escape_html absolute_path(path, options.merge(:page => i))}">#{i}</a>}
+                %{<a href="#{escape_html build_path(path, options.merge(:page => i))}">#{i}</a>}
               end
       end
       if max != page_count
-        li << %{<span class="ellipsis"/>} << %{<a href="#{escape_html absolute_path(path, options.merge(:page => page_count))}">#{page_count}</a>}
+        li << %{<span class="ellipsis"/>} << %{<a href="#{escape_html build_path(path, options.merge(:page => page_count))}">#{page_count}</a>}
       end
       li << if page_nr < page_count
-              %{<a href="#{escape_html absolute_path(path, options.merge(:page => page_nr + 1))}">&#9656;</a>}
+              %{<a href="#{escape_html build_path(path, options.merge(:page => page_nr + 1))}">&#9656;</a>}
             else
               %{<span class="disabled">&#9656;</span>}
             end
@@ -109,17 +109,17 @@ module Olelo
     def breadcrumbs(page)
       path = page.try(:path) || ''
       li = [%{<li class="first breadcrumb#{path.empty? ? ' last' : ''}">
-              <a accesskey="z" href="#{escape_html absolute_path('', :version => page)}">#{escape_html :root.t}</a></li>}.unindent]
+              <a accesskey="z" href="#{escape_html build_path('', :version => page)}">#{escape_html :root.t}</a></li>}.unindent]
       path.split('/').inject('') do |parent,elem|
         current = parent/elem
         li << %{<li class="breadcrumb#{current == path ? ' last' : ''}">
-                <a href="#{escape_html absolute_path('/' + current, :version => page)}">#{escape_html elem}</a></li>}.unindent
+                <a href="#{escape_html build_path('/' + current, :version => page)}">#{escape_html elem}</a></li>}.unindent
         current
       end
       li.join('<li class="breadcrumb">/</li>').html_safe
     end
 
-    def absolute_path(path, options = {})
+    def build_path(path, options = {})
       options = options.dup
       path = Config['base_path'] / (path.try(:path) || path).to_s
 
@@ -137,11 +137,11 @@ module Olelo
 
     def page_path(page, options = {})
       options[:version] ||= page
-      absolute_path(page, options)
+      build_path(page, options)
     end
 
     def action_path(path, action)
-      absolute_path(action.to_s / (path.try(:path) || path).to_s)
+      build_path(action.to_s / (path.try(:path) || path).to_s)
     end
 
     def edit_content(page)
@@ -256,12 +256,12 @@ module Olelo
       @@theme_link ||=
         begin
           file = File.join(Config['themes_path'], Config['theme'], 'style.css')
-          path = absolute_path "static/themes/#{Config['theme']}/style.css?#{File.mtime(file).to_i}"
+          path = build_path "static/themes/#{Config['theme']}/style.css?#{File.mtime(file).to_i}"
           %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
         end
       @@script_link ||=
         begin
-          path = absolute_path("static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}")
+          path = build_path("static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}")
           %{<script src="#{escape_html path}" type="text/javascript"/>}
         end
       base_path = if page && page.root?

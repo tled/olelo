@@ -16,7 +16,7 @@ class ::Olelo::Application
       if !PUBLIC_ACCESS.include?(request.path_info)
         flash.error :login_first.t
         session[:olelo_goto] = request.path_info if request.get? && request.path_info !~ %r{^/_/}
-        redirect absolute_path('/login')
+        redirect build_path('/login')
       end
       @disable_assets = true
     end

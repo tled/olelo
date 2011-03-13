@@ -1,7 +1,7 @@
 - title page.title
 = footer do
   ' #{:version.t}
-  a.version href=absolute_path(page, :version => page.version, :force_version => true) title=page.version = page.version.short
+  a.version href=build_path(page, :version => page.version, :force_version => true) title=page.version = page.version.short
   '  #{:by.t} #{page.version.author.name},
   = date page.version.date
 - if !page.attributes['no_title']

@@ -174,7 +174,7 @@ class ::Olelo::Application
     halt(layout ? render(:show, :locals => {:content => content}) : content)
   rescue Aspect::NotAvailable => ex
     cache_control :no_cache => true
-    redirect absolute_path(page) if params[:path].to_s.ends_with? '/'
+    redirect build_path(page) if params[:path].to_s.ends_with? '/'
     raise if params[:aspect]
     flash.error ex.message
     redirect action_path(page, :edit)
