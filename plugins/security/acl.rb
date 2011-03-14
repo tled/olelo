@@ -51,7 +51,7 @@ class ::Olelo::Application
     if menu.name == :actions && page
       menu.remove('edit/delete') if !page.deletable?
       menu.remove('edit/move') if !page.movable?
-      menu['edit'].options.delete(:href) if !page.writable?
+      menu['edit'].options.delete(:href) if menu['edit'] && !page.writable?
     end
   end
 end
