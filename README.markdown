@@ -2,7 +2,7 @@ README
 ======
 
 Ōlelo is a wiki that stores pages in a [Git][] repository.
-See the demo installation at <http://git.awiki.org/>.
+See the demo installation at <http://www.gitwiki.org/>.
 
 Features
 --------
