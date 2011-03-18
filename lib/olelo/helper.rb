@@ -130,8 +130,8 @@ module Olelo
         raise ArgumentError if version
         path = action.to_s/path
       else
-        version ||= page.try(:version)
-        version = version.try(:tree_version) || version
+        version ||= page if Page === page
+        version = version.tree_version if Page === version
         path = 'version'/version/path if version && (options.delete(:force_version) || !version.head?)
       end
 
