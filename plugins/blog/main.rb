@@ -47,7 +47,7 @@ Aspects::Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => tru
             break if content.length > 10000
           end
         end
-      rescue Aspect::NotAvailable => ex
+      rescue Aspects::Aspect::NotAvailable => ex
         %{<span class="error">#{escape_html ex.message}</span>}
       end
       [page, content]
