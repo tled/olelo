@@ -351,8 +351,3 @@ Tag.define :notags, :description => 'Disable tag processing', :immediate => true
   content
 end
 
-# Dynamic test tag
-Tag.define :fortune, :autoclose => true, :description => 'Show fortune message', :dynamic => true do |context, attrs|
-  text = `fortune`
-  escape_html(text) if valid_xml_chars?(text)
-end
