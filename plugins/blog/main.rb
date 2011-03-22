@@ -38,7 +38,7 @@ Aspects::Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => tru
     @articles = articles.map do |page|
       begin
         subctx = context.subcontext(:page => page, :params => {:included => true})
-        content = Aspect.find!(page, :layout => true).call(subctx, page)
+        content = Aspects::Aspect.find!(page, :layout => true).call(subctx, page)
         if !context.params[:full]
           paragraphs = XML::Fragment(content).xpath('p')
           content = ''
