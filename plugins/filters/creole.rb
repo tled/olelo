@@ -1,7 +1,7 @@
 description  'Creole wiki text filter'
 require 'creole'
 
-class OleloCreole < ::Creole
+class OleloCreole < ::Creole::Parser
   include PageHelper
   include Util
 
