@@ -330,7 +330,7 @@ Application.hook :render, 2000 do |name, xml, layout|
           Tag.tags[name].dynamic.new.call(context, attrs).to_s
         end
       rescue Exception => ex
-        Olelo.logger.error ex.message
+        Olelo.logger.debug ex
         "#{name} - #{escape_html ex.message}"
       end
     rescue Exception => ex
