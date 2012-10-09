@@ -24,9 +24,9 @@ form action=build_path(page.new? ? nil : page.path) method='post'
     label for='edit-comment' = :comment.t
     &text#edit-comment name='comment' value=params[:comment] size='50'
     = render_block :edit_buttons do
-      button type='submit' name='action' value='edit' = :save.t
-      button type='submit' name='action' value='edit-close' = :save_and_close.t
-      button type='reset' = :reset.t
+      button&submit name='action' value='edit' = :save.t
+      button&submit name='action' value='edit-close' = :save_and_close.t
+      button&reset = :reset.t
       br
 form action=build_path(page.new? ? nil : page.path) method='post' enctype='multipart/form-data'
   #tab-upload.tab
@@ -42,9 +42,9 @@ form action=build_path(page.new? ? nil : page.path) method='post' enctype='multi
     label for='upload-file' = :file.t
     &file#upload-file.observe name='file'
     br
-    button type='submit' name='action' value='upload' = :save.t
-    button type='submit' name='action' value='upload-close' = :save_and_close.t
-    button type='reset' = :reset.t
+    button&submit name='action' value='upload' = :save.t
+    button&submit name='action' value='upload-close' = :save_and_close.t
+    button&reset = :reset.t
     br
 form action=build_path(page.new? ? nil : page.path) method='post'
   #tab-attributes.tab.fieldset
@@ -59,7 +59,7 @@ form action=build_path(page.new? ? nil : page.path) method='post'
     = flash_messages :attributes
     = page.attribute_editor
     .indent
-      button type='submit' name='action' value='attributes' = :save.t
-      button type='submit' name='action' value='attributes-close' = :save_and_close.t
-      button type='reset' = :reset.t
+      button&submit name='action' value='attributes' = :save.t
+      button&submit name='action' value='attributes-close' = :save_and_close.t
+      button&reset = :reset.t
     br

@@ -5,5 +5,5 @@ form action=build_path(page.path) method='post'
     = flash_messages
     &hidden name='_method' value='delete'
     label for='submit' = :really_delete.t
-    button#submit name='submit' type='submit' accesskey='d' = :delete.t
-    button type='button' accesskey='c' onclick='history.back()' = :cancel.t
+    button&submit#submit name='submit' accesskey='d' = :delete.t
+    button&button accesskey='c' onclick='history.back()' = :cancel.t

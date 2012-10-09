@@ -13,7 +13,7 @@ p
       br
       .indent
         = render_block :login_buttons do
-          button type='submit' = :login.t
+          button&submit= :login.t
       br
   - if Olelo::Config['authentication.enable_signup']
     form action=build_path(:signup) method='post'
@@ -33,5 +33,5 @@ p
         &text#signup-email name='email'
         br
         .indent
-          button type='submit' = :signup.t
+          button&submit = :signup.t
         br

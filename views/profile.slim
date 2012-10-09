@@ -22,5 +22,5 @@ form action=build_path(:profile) method='post'
       - Olelo::User.current.groups.each do |x|
         li= x
     br
-    button type='submit' = :save.t
+    button&submit = :save.t
     br

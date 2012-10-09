@@ -6,5 +6,5 @@ form action=build_path(page, :action => :move) method='post'
     label for='destination' = :destination.t
     &text#destination name='destination' value={params[:destination] || page.path}
     br
-    button type='submit' accesskey='m' = :move.t
-    button type='button' accesskey='c' onclick='history.back()' = :cancel.t
+    button&submit accesskey='m' = :move.t
+    button&button accesskey='c' onclick='history.back()' = :cancel.t
