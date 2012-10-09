@@ -5,17 +5,17 @@ form action=build_path(:profile) method='post'
     = flash_messages
     h2= :change_password.t
     label for='oldpassword' = :old_password.t
-    input type='password' name='oldpassword' id='oldpassword'
+    &password name='oldpassword' id='oldpassword'
     br
     label for='password' = :password.t
-    input type='password' name='password' id='password'
+    &password name='password' id='password'
     br
     label for='confirm' = :confirm_password.t
-    input type='password' name='confirm' id='confirm'
+    &password name='confirm' id='confirm'
     br
     h2= :settings.t
     label for='email' = :email.t
-    input type='email' name='email' id='email' value=Olelo::User.current.email
+    &email name='email' id='email' value=Olelo::User.current.email
     br
     h2= :groups.t
     ul

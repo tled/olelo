@@ -4,7 +4,7 @@ form action=build_path(page, :action => :move) method='post'
   .box
     = flash_messages
     label for='destination' = :destination.t
-    input#destination name='destination' type='text' value={params[:destination] || page.path}
+    &text#destination name='destination' value={params[:destination] || page.path}
     br
     button type='submit' accesskey='m' = :move.t
     button type='button' accesskey='c' onclick='history.back()' = :cancel.t

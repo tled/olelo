@@ -6,10 +6,10 @@ p
       h2 Login
       = flash_messages :login
       label for='login-user' = :user.t
-      input#login-user type='text' name='user'
+      &text#login-user name='user'
       br
       label for='login-password' = :password.t
-      input#login-password type='password' name='password'
+      &password#login-password name='password'
       br
       .indent
         = render_block :login_buttons do
@@ -21,16 +21,16 @@ p
         h2= :signup.t
         = flash_messages :signup
         label for='signup-user' = :user.t
-        input#signup-user type='text' name='user'
+        &text#signup-user name='user'
         br
         label for='signup-password' = :password.t
-        input#signup-password type='password' name='password'
+        &password#signup-password name='password'
         br
         label for='signup-confirm' = :confirm_password.t
-        input#signup-confirm type='password' name='confirm'
+        &password#signup-confirm name='confirm'
         br
         label for='signup-email' = :email.t
-        input#signup-email type='text' name='email'
+        &text#signup-email name='email'
         br
         .indent
           button type='submit' = :signup.t

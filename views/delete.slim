@@ -3,7 +3,7 @@ h1= title
 form action=build_path(page.path) method='post'
   .box
     = flash_messages
-    input type='hidden' name='_method' value='delete'
+    &hidden name='_method' value='delete'
     label for='submit' = :really_delete.t
     button#submit name='submit' type='submit' accesskey='d' = :delete.t
     button type='button' accesskey='c' onclick='history.back()' = :cancel.t
