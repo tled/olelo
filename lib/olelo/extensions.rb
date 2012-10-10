@@ -185,23 +185,21 @@ class String
   # Faster blank?
   alias blank? empty?
 
-  if ''.respond_to?(:encoding)
-    # Try to force encoding
-    #
-    # Force encoding of string and revert
-    # to original encoding if string has no valid encoding
-    #
-    # @param [Encoding, String] enc New encoding
-    # @return self
-    #
-    def try_encoding(enc)
-      old_enc = encoding
-      if old_enc != enc
-        force_encoding(enc)
-        force_encoding(old_enc) if !valid_encoding?
-      end
-      self
+  # Try to force encoding
+  #
+  # Force encoding of string and revert
+  # to original encoding if string has no valid encoding
+  #
+  # @param [Encoding, String] enc New encoding
+  # @return self
+  #
+  def try_encoding(enc)
+    old_enc = encoding
+    if old_enc != enc
+      force_encoding(enc)
+      force_encoding(old_enc) if !valid_encoding?
     end
+    self
   end
 
   # Strips left whitespaces of every line

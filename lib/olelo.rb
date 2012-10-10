@@ -16,7 +16,6 @@ end
 require 'olelo/html_safe'
 require 'slim'
 
-require 'olelo/compatibility'
 require 'olelo/extensions'
 require 'olelo/util'
 require 'olelo/locale'
@@ -36,7 +35,5 @@ require 'olelo/patch'
 require 'olelo/initializer'
 require 'olelo/application'
 
-raise "Your Ruby version is too old (1.8.7 is required)" if RUBY_VERSION < '1.8.7'
+raise "Your Ruby version is too old (1.9.2 is required)" if RUBY_VERSION < '1.9.2'
 
-# Ruby 1.9.1 uses different constant name resolution (reverted in 1.9.2 to 1.8.7 behaviour)
-raise "Ruby 1.9.0 and 1.9.1 are unsupported" if RUBY_VERSION == '1.9.0' || RUBY_VERSION == '1.9.1'

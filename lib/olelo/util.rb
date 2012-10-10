@@ -70,34 +70,19 @@ module Olelo
     end
 
     # Like CGI.unescape but does not unescape +
-    if ''.respond_to? :encoding
-      def unescape(s)
-        s = s.to_s
-        enc = s.encoding
-        s.gsub(/((?:%[0-9a-fA-F]{2})+)/) do
-          [$1.delete('%')].pack('H*').force_encoding(enc)
-        end
-      end
-    else
-      def unescape(s)
-        s.to_s.gsub(/((?:%[0-9a-fA-F]{2})+)/) do
-          [$1.delete('%')].pack('H*')
-        end
+    def unescape(s)
+      s = s.to_s
+      enc = s.encoding
+      s.gsub(/((?:%[0-9a-fA-F]{2})+)/) do
+        [$1.delete('%')].pack('H*').force_encoding(enc)
       end
     end
 
-    if ''.respond_to? :encoding
-      def unescape_backslash(s)
-        s = s.to_s
-        enc = s.encoding
-        s.gsub(/\\([0-7]{3})/) { $1.to_i(8).chr.force_encoding(enc) }.
-          gsub(/\\x([\da-f]{2})/i) { $1.to_i(16).chr.force_encoding(enc) }
-      end
-    else
-      def unescape_backslash(s)
-        s.to_s.gsub(/\\([0-7]{3})/) { $1.to_i(8).chr }.
-          gsub(/\\x([\da-f]{2})/i) { $1.to_i(16).chr }
-      end
+    def unescape_backslash(s)
+      s = s.to_s
+      enc = s.encoding
+      s.gsub(/\\([0-7]{3})/) { $1.to_i(8).chr.force_encoding(enc) }.
+        gsub(/\\x([\da-f]{2})/i) { $1.to_i(16).chr.force_encoding(enc) }
     end
 
     # Escape html entities in string
@@ -199,10 +184,6 @@ module Olelo
     def truncate(s, max, omission = '...')
       s = s.to_s
       if s.length > max
-        # Ensure that string consists only of full characters
-        if !s.respond_to?(:encoding)
-          max += 1 until max >= s.length || valid_xml_chars?(s[0...max])
-        end
         s[0...max] + omission
       else
         s
@@ -226,41 +207,23 @@ module Olelo
       (0x10000..0x10FFFF)
     ]
 
-    if ''.respond_to?(:encoding)
-      # Check if string contains only characters which are valid in XML
-      #
-      # @see http://www.w3.org/TR/REC-xml/#charsets XML charset
-      # @param [String] s
-      # @return [Boolean]
-      def valid_xml_chars?(s)
-        s = s.to_s
-        if s.encoding == Encoding::UTF_8
-          return false if !s.valid_encoding?
-        else
-          s = s.dup if s.frozen?
-          return false if s.try_encoding(Encoding::UTF_8).encoding != Encoding::UTF_8
-        end
-        s.codepoints do |n|
-          return false if !VALID_XML_CHARS.any? {|v| v === n }
-        end
-        true
+    # Check if string contains only characters which are valid in XML
+    #
+    # @see http://www.w3.org/TR/REC-xml/#charsets XML charset
+    # @param [String] s
+    # @return [Boolean]
+    def valid_xml_chars?(s)
+      s = s.to_s
+      if s.encoding == Encoding::UTF_8
+        return false if !s.valid_encoding?
+      else
+        s = s.dup if s.frozen?
+        return false if s.try_encoding(Encoding::UTF_8).encoding != Encoding::UTF_8
       end
-    else
-      require 'iconv'
-
-      # Check if string contains only characters which are valid in XML
-      #
-      # @see http://www.w3.org/TR/REC-xml/#charsets
-      # @param [String] s
-      # @return [Boolean]
-      def valid_xml_chars?(s)
-        s = s.to_s
-        Iconv.conv('utf-8', 'utf-8', s)
-        s.unpack('U*').all? {|n| VALID_XML_CHARS.any? {|v| v === n } }
-      rescue
-        false
+      s.codepoints do |n|
+        return false if !VALID_XML_CHARS.any? {|v| v === n }
       end
+      true
     end
-
   end
 end
