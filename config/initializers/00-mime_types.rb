@@ -13,16 +13,6 @@ MimeMagic.add('text/x-markdown',
               :parents => 'text/plain',
               :comment => 'Markdown Text File')
 
-MimeMagic.add('text/x-markdown.maruku',
-              :extensions => %w(maruku),
-              :parents => 'text/x-markdown',
-              :comment => 'Markdown Text File (Maruku Variant)')
-
-MimeMagic.add('text/x-markdown.kramdown',
-              :extensions => %w(kramdown),
-              :parents => 'text/x-markdown',
-              :comment => 'Markdown Text File (Kramdown Variant)')
-
 MimeMagic.add('text/x-textile',
               :extensions => 'textile',
               :parents => 'text/plain',

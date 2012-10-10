@@ -1,6 +1,11 @@
 description 'Tilt filter'
 require 'tilt'
 
-Filter.create :tilt do |context, content|
-
+class TiltFilter < Filter
+  def filter(context, content)
+    Tilt[name].new { content }.render
+  end
 end
+
+Filter.register :markdown, TiltFilter
+Filter.register :textile, TiltFilter
