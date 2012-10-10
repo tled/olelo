@@ -35,23 +35,21 @@ module Olelo
 
     attr_reader :path, :tree_version
 
-    @current_transaction = {}
-
     def initialize(path, tree_version = nil, parent = nil)
       @path, @tree_version, @parent = path.to_s.cleanpath.freeze, tree_version, parent
       Page.check_path(@path)
     end
 
     def self.transaction(&block)
-      raise 'Transaction already running' if @current_transaction[Thread.current.object_id]
-      @current_transaction[Thread.current.object_id] = []
+      raise 'Transaction already running' if Thread.current[:olelo_tx]
+      Thread.current[:olelo_tx] = []
       repository.transaction(&block)
     ensure
-      @current_transaction.delete(Thread.current.object_id)
+      Thread.current[:olelo_tx] = nil
     end
 
     def self.current_transaction
-      @current_transaction[Thread.current.object_id] || raise('No transaction running')
+      Thread.current[:olelo_tx] || raise('No transaction running')
     end
 
     def self.commit(comment)

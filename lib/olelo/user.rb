@@ -77,19 +77,13 @@ module Olelo
       end
     end
 
-    @user = {}
-
     class<< self
       def current
-        @user[Thread.current.object_id]
+        Thread.current[:olelo_user]
       end
 
       def current=(user)
-        if user
-          @user[Thread.current.object_id] = user
-        else
-          @user.delete(Thread.current.object_id)
-        end
+        Thread.current[:olelo_user] = user
       end
 
       def logged_in?

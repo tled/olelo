@@ -60,11 +60,8 @@ module Olelo
     include Util
     extend Factory
 
-    class << self
-      attr_writer :instance
-      def instance
-        @instance ||= self[Config['repository.type']].new(Config['repository'][Config['repository.type']])
-      end
+    def self.instance
+      Thread.current[:olelo_repository] ||= self[Config['repository.type']].new(Config['repository'][Config['repository.type']])
     end
 
     # Wrap block in transaction
