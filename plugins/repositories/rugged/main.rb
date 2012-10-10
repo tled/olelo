@@ -37,7 +37,7 @@ class RuggedRepository < Repository
   def path_exists?(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    path.blank? ? true : commit.tree[path] != nil
+    lookup(commit.tree, path) != nil
   end
 
   def get_version(version = nil)
@@ -88,28 +88,24 @@ class RuggedRepository < Repository
   def get_children(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    if path.blank?
-      commit.tree
-    else
-      return [] unless ref = commit.tree[path]
-      @git.lookup(ref[:oid])
-    end.map {|e| e[:name] }.reject {|name| reserved_name?(name) }
+    object = lookup(commit.tree, path)
+    Rugged::Tree === object ? object.map {|e| e[:name] }.reject {|name| reserved_name?(name) } : []
   end
 
   def get_content(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    path += CONTENT_EXT if path.blank? || commit.tree[path][:type] == :tree
-    return '' unless ref = commit.tree[path]
-    @git.lookup(ref[:oid]).content
+    object = lookup(commit.tree, path)
+    object = lookup(object, CONTENT_EXT) if Rugged::Tree === object
+    Rugged::Blob === object ? object.content : ''
   end
 
   def get_attributes(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     path += ATTRIBUTE_EXT
-    return {} unless ref = commit.tree[path]
-    YAML.load(@git.lookup(ref[:oid]).content)
+    object = lookup(commit.tree, path)
+    object ? YAML.load(object.content) : {}
   end
 
   def diff(path, from, to)
@@ -121,6 +117,14 @@ class RuggedRepository < Repository
   end
 
   private
+
+  def lookup(tree, path)
+    return tree if path.blank?
+    path.split('/').inject(tree) do |t, part|
+      return nil unless Rugged::Tree === t && ref = t[part]
+      @git.lookup(ref[:oid])
+    end
+  end
 
   def reserved_name?(name)
     name.ends_with?(ATTRIBUTE_EXT) || name.ends_with?(CONTENT_EXT)
