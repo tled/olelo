@@ -155,7 +155,7 @@ antispam:
 
 repository:
   # Specify type of repository
-  type:          rugged
+  type:           git
 
   # Configuration git repository type. Uncomment this!
   # Path is to a bare (!) git repository.
