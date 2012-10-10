@@ -116,9 +116,9 @@ Page.attributes do
 end
 
 class ::Olelo::Application
-  hook :render do |name, xml, layout|
-    if layout && xml =~ /\\\[|\\\(|\\begin\{/ && page && (page.attributes['math'] || Config['math_renderer']) == 'mathjax'
-      xml.sub!('</body>', %{<script src="#{build_path 'static/mathjax/MathJax.js'}" type="text/javascript"/></body>})
+  hook :script do
+    if page && (page.attributes['math'] || Config['math_renderer']) == 'mathjax'
+      %{<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"/>}
     end
   end
 
