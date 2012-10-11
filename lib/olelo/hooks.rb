@@ -7,7 +7,7 @@ module Olelo
     def handle_error(error)
       type = error.class
       while type
-        self.class.error_handler[type].to_a.sort_by(&:first).each {|x| send(x.last, error) }
+        self.class.error_handler[type].to_a.each {|prio,method| method.bind(self).call(error) }
         type = type.superclass
       end
     end
@@ -21,7 +21,8 @@ module Olelo
         handler = (error_handler[error] ||= [])
         method = "ERROR #{error} #{handler.size}"
         define_method(method, &block)
-        handler << [priority, method]
+        handler << [priority, instance_method(method)]
+        handler.sort_by!(&:first)
       end
     end
   end
@@ -65,7 +66,7 @@ module Olelo
     def invoke_hook(name, *args)
       hooks = self.class.hooks[name.to_sym]
       raise "#{self.class} has no hook '#{name}'" if !hooks
-      hooks.map {|prio,method| send(method, *args) }
+      hooks.map {|prio,method| method.bind(self).(*args) }
     end
 
     # Extends class with hook functionality
@@ -105,7 +106,7 @@ module Olelo
         raise "#{self} has no hook '#{name}'" if !list
         method = "HOOK #{name} #{list.size}"
         define_method(method, &block)
-        list << [priority, method]
+        list << [priority, instance_method(method)]
         list.sort_by!(&:first)
       end
 

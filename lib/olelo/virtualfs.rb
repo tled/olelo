@@ -141,18 +141,18 @@ module Olelo
       end
 
       %w(read mtime open size mime).each do |method|
-        class_eval do
-          define_method(method) do |*args|
+        class_eval %{
+          def #{method}(*args)
             result = nil
             @fs.any? do |fs|
               begin
-                result = fs.send(method, *args)
+                result = fs.#{method}(*args)
               rescue
               end
-            end || raise(IOError, "#{method}(#{args.map(&:inspect).join(', ')}) failed")
+            end || raise(IOError, "#{method}(\#{args.map(&:inspect).join(', ')}) failed")
             result
           end
-        end
+        }
       end
 
     end
