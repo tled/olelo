@@ -19,7 +19,7 @@ html.no-js lang=Olelo::Config['locale'].sub('_', '-') class={page && !page.head?
         form action=build_path(:search) method='get'
           div
             label.hidden for='pattern' = :search.t
-            &text id='pattern' name='pattern' value={params[:pattern] || :search.t} class={!params[:pattern] && 'placeholder'}
+            &text id='pattern' name='pattern' value={params[:pattern]} placeholder=:search.t
     #menu
       ul
         = breadcrumbs(page)
