@@ -66,17 +66,20 @@ class RuggedRepository < Repository
       end
     end
 
-    succ, newer = nil, nil
-    walker.reset
-    walker.sorting(Rugged::SORT_TOPO)
-    walker.push(@git.head.target)
-    walker.each do |c|
-      if path.blank? || c.tree[path] || c.tree[path + CONTENT_EXT] || c.tree[path + ATTRIBUTE_EXT]
-        if c == commits[0]
-          succ = newer
-          break
+    succ = nil
+    if version != @git.head.target
+      newer = nil
+      walker.reset
+      walker.sorting(Rugged::SORT_TOPO)
+      walker.push(@git.head.target)
+      walker.each do |c|
+        if path.blank? || c.tree[path] || c.tree[path + CONTENT_EXT] || c.tree[path + ATTRIBUTE_EXT]
+          if c == commits[0]
+            succ = newer
+            break
+          end
+          newer = c
         end
-        newer = c
       end
     end
 
