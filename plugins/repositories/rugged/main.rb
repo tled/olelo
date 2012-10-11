@@ -37,7 +37,7 @@ class RuggedRepository < Repository
   def path_exists?(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    lookup(commit.tree, path) != nil
+    has_path?(commit.tree, path)
   end
 
   def get_version(version = nil)
@@ -47,11 +47,24 @@ class RuggedRepository < Repository
   end
 
   def get_history(path, skip = nil, limit = nil)
-    raise NotImplementedError
+    commits = []
+    walker = Rugged::Walker.new(@git)
+    walker.sorting(Rugged::SORT_TOPO)
+    walker.push(@git.head.target)
+    walker.each do |c|
+      if has_path?(c.tree, path)
+        if skip > 0
+          skip -= 1
+        else
+          commits << c
+          break if limit && commits.size >= limit
+        end
+      end
+    end
+    commits.map {|c| commit_to_version(c) }
   end
 
   def get_path_version(path, version)
-    #raise NotImplementedError
     version ||= @git.head.target
     version = version.to_s
 
@@ -60,7 +73,7 @@ class RuggedRepository < Repository
     walker.sorting(Rugged::SORT_TOPO)
     walker.push(version)
     walker.each do |c|
-      if path.blank? || c.tree[path] || c.tree[path + CONTENT_EXT] || c.tree[path + ATTRIBUTE_EXT]
+      if has_path?(c.tree, path)
         commits << c
         break if commits.size == 2
       end
@@ -73,7 +86,7 @@ class RuggedRepository < Repository
       walker.sorting(Rugged::SORT_TOPO)
       walker.push(@git.head.target)
       walker.each do |c|
-        if path.blank? || c.tree[path] || c.tree[path + CONTENT_EXT] || c.tree[path + ATTRIBUTE_EXT]
+        if has_path?(c.tree, path)
           if c == commits[0]
             succ = newer
             break
@@ -91,15 +104,15 @@ class RuggedRepository < Repository
   def get_children(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    object = lookup(commit.tree, path)
+    object = object_by_path(commit.tree, path)
     Rugged::Tree === object ? object.map {|e| e[:name] }.reject {|name| reserved_name?(name) } : []
   end
 
   def get_content(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    object = lookup(commit.tree, path)
-    object = lookup(object, CONTENT_EXT) if Rugged::Tree === object
+    object = object_by_path(commit.tree, path)
+    object = object_by_path(object, CONTENT_EXT) if Rugged::Tree === object
     Rugged::Blob === object ? object.content : ''
   end
 
@@ -107,7 +120,7 @@ class RuggedRepository < Repository
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     path += ATTRIBUTE_EXT
-    object = lookup(commit.tree, path)
+    object = object_by_path(commit.tree, path)
     object ? YAML.load(object.content) : {}
   end
 
@@ -121,12 +134,19 @@ class RuggedRepository < Repository
 
   private
 
-  def lookup(tree, path)
+  def has_path?(tree, path)
+    return true if path.blank?
+    (tree.path(path) rescue nil) ||
+      (tree.path(path + ATTRIBUTE_EXT) rescue nil) ||
+      (tree.path(path + CONTENT_EXT) rescue nil)
+  end
+
+  def object_by_path(tree, path)
     return tree if path.blank?
-    path.split('/').inject(tree) do |t, part|
-      return nil unless Rugged::Tree === t && ref = t[part]
-      @git.lookup(ref[:oid])
-    end
+    ref = tree.path(path)
+    @git.lookup(ref[:oid])
+  rescue Rugged::IndexerError
+    nil
   end
 
   def reserved_name?(name)
