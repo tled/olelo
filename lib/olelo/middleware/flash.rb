@@ -3,11 +3,9 @@ module Olelo
     class Flash
       # Implements bracket accessors for storing and retrieving flash entries.
       class FlashHash
-        def initialize(session, options = {})
+        def initialize(session)
           @session = session
           raise 'No session available' if !session
-          [*options[:accessors]].compact.each {|a| def_accessor(a) }
-          [*options[:set_accessors]].compact.each {|a| def_set_accessor(a) }
         end
 
         # Remove an entry from the session and return its value. Cache result in
@@ -67,39 +65,32 @@ module Olelo
         def values
           @session[:olelo_flash] ||= {}
         end
+      end
 
-        # Generate accessor methods for the given entry key
-        def def_accessor(key)
+      def initialize(app, options = {})
+        @app = app
+        @hash = Class.new(FlashHash)
+        [*options[:accessors]].compact.each do |key|
           key = key.to_sym
-          raise ArgumentError.new('Invalid entry type: %s' % key) if respond_to?(key)
-          metaclass.class_eval do
+          @hash.class_eval do
             define_method(key) {|*a| a.size > 0 ? (self[key] = a[0]) : self[key] }
             define_method("#{key}=") {|val| self[key] = val }
             define_method("#{key}!") {|val| cache[key] = val }
           end
         end
-
-        # Generate set accessor method for the given entry key
-        def def_set_accessor(key)
+        [*options[:set_accessors]].compact.each do |key|
           key = key.to_sym
-          raise ArgumentError.new('Invalid entry type: %s' % key) if respond_to?(key)
-          metaclass.class_eval do
+          @hash.class_eval do
             define_method(key) {|*val| val.size > 0 ? (self[key] ||= Set.new).merge(val) : self[key] }
             define_method("#{key}!") {|*val| val.size > 0 ? (cache[key] ||= Set.new).merge(val) : cache[key] }
           end
         end
       end
 
-      def initialize(app, options = {})
-        @app, @options = app, options
-      end
-
       def call(env)
         session = env['rack.session']
-        env['olelo.flash'] ||= FlashHash.new(session, @options)
-        result = @app.call(env)
-        session.delete(:olelo_flash) if session[:olelo_flash].blank?
-        result
+        env['olelo.flash'] ||= @hash.new(session)
+        @app.call(env)
       end
     end
   end
