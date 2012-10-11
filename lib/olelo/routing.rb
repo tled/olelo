@@ -117,11 +117,11 @@ module Olelo
     def route!
       path = unescape(request.path_info)
       method = request.request_method
-      self.class.router[method].find(path) do |name, params|
+      self.class.router[method].find(path) do |name, params, function|
         @params = @original_params.merge(params)
         catch(:pass) do
           with_hooks(:action, method.downcase.to_sym, name) do
-            halt send("#{method} #{name}")
+            halt function.bind(self).call
           end
         end
       end if self.class.router[method]
@@ -145,20 +145,21 @@ module Olelo
       end
 
       def find(path)
-        each do |name, pattern, keys|
+        each do |name, pattern, keys, function|
           if match = pattern.match(path)
             params = {}
             keys.zip(match.captures.to_a).each {|k, v| params[k] = v if !v.blank? }
-            yield(name, params)
+            yield(name, params, function)
           end
         end
       end
 
       def each(&block)
-        (@routes ||= @head + @tail).each(&block)
+        @head.each(&block)
+        @tail.each(&block)
       end
 
-      def add(path, patterns = {})
+      def add(function, path, patterns = {})
         tail = patterns.delete(:tail)
         pattern = Regexp.escape(path)
         SYNTAX.each_pair {|k,v| pattern.gsub!(k, v) }
@@ -167,8 +168,15 @@ module Olelo
           keys << $1
           patterns.key?($1) ? "(#{patterns[$1]})" : "([^/?&#\.]+)"
         end
-        (tail ? @tail : @head) << [path, /^#{pattern}$/, keys]
-        @routes = nil
+        pattern = /^#{pattern}$/
+
+        if i = @head.index {|x| x.first == path }
+          @head[i] = [path, pattern, keys, function]
+        elsif i = @tail.index {|x| x.first == path }
+          @tail[i] = [path, pattern, keys, function]
+        else
+          (tail ? @tail : @head) << [path, pattern, keys, function]
+        end
       end
     end
 
@@ -207,8 +215,8 @@ module Olelo
           redefine_method(name, &block)
         else
           define_method(name, &block)
-          (router[method] ||= Router.new).add(path, self.patterns.merge(patterns))
         end
+        (router[method] ||= Router.new).add(instance_method(name), path, self.patterns.merge(patterns))
       end
     end
   end

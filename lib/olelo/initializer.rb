@@ -54,11 +54,11 @@ module Olelo
 
     def init_routes
       Application.reserved_paths = Application.router.map do |method, router|
-        router.head.map {|name, pattern, keys| pattern }
+        router.head.map {|name, pattern, keys, function| pattern }
       end.flatten
       Application.router.each do |method, router|
         Olelo.logger.debug method
-        router.each do |name, pattern, keys|
+        router.each do |name, pattern, keys, function|
           Olelo.logger.debug "#{name} -> #{pattern.inspect}"
         end
       end if Olelo.logger.debug?
