@@ -73,7 +73,7 @@ class BlahtexImageRenderer < MathRenderer
   def render(code, display)
     content = Shell.blahtex('--png', '--png-directory', Config['blahtex_directory']).run(code.strip)
     if content =~ %r{<md5>(.*)</md5>}m
-      path = build_path "_/tag/math/blahtex/#{$1}.png"
+      path = build_path "_/blahtex/#{$1}.png"
       %{<img src="#{escape_html path}" alt="#{escape_html code}" class="math #{display}"/>}
     elsif content.include?('error') && content =~ %r{<message>(.*)</message>}
       raise $1
@@ -122,7 +122,7 @@ class ::Olelo::Application
     end
   end
 
-  get '/_/tag/math/blahtex/:name', :name => /[\w\.]+/ do
+  get '/_/blahtex/:name', :name => /[\w\.]+/ do
     begin
       response['Content-Type'] = 'image/png'
       file = File.join(Config['blahtex_directory'], params[:name])
