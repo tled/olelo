@@ -5,20 +5,15 @@ class MathRenderer
   include Util
   extend Factory
 
-  def self.setup
-    registry.each do |name, klass|
-      begin
-        registry[name] = klass.new
-      rescue Exception => ex
-        registry.delete(name)
-        Olelo.logger.warn "Failed to initialize math renderer #{name}: #{ex.message}"
-      end
-    end
+  def self.instance
+    @instance ||= create(Config['math_renderer']) || create('latex')
   end
-end
 
-setup do
-  MathRenderer.setup
+  def self.create(name)
+    registry[name].new
+  rescue Exception => ex
+    Olelo.logger.warn "Failed to initialize math renderer #{name}: #{ex.message}"
+  end
 end
 
 class RitexRenderer < MathRenderer
@@ -102,22 +97,12 @@ end
 
 Tag.define :math, :optional => :display do |context, attrs, code|
   raise('Limits exceeded') if code.size > 10240
-  renderer = context.page.attributes['math'] || Config['math_renderer']
-  (MathRenderer[renderer] || MathRenderer['latex']).render(code, attrs['display'] == 'block' ? 'block' : 'inline')
-end
-
-Page.attributes do
-  enum :math do
-    MathRenderer.registry.keys.inject({}) do |hash, m|
-      hash[m] = Locale.translate("math_#{m}")
-      hash
-    end
-  end
+  MathRenderer.instance.render(code, attrs['display'] == 'block' ? 'block' : 'inline')
 end
 
 class ::Olelo::Application
   hook :script do
-    if page && (page.attributes['math'] || Config['math_renderer']) == 'mathjax'
+    if page && Config['math_renderer'] == 'mathjax'
       %{<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"/>}
     end
   end
