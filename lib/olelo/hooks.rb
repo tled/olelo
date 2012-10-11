@@ -65,7 +65,7 @@ module Olelo
     def invoke_hook(name, *args)
       hooks = self.class.hooks[name.to_sym]
       raise "#{self.class} has no hook '#{name}'" if !hooks
-      hooks.sort_by(&:first).map {|x| send(x.last, *args) }
+      hooks.map {|prio,method| send(method, *args) }
     end
 
     # Extends class with hook functionality
@@ -106,6 +106,7 @@ module Olelo
         method = "HOOK #{name} #{list.size}"
         define_method(method, &block)
         list << [priority, method]
+        list.sort_by!(&:first)
       end
 
       # Register before hook
