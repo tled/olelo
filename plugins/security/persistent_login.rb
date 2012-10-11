@@ -1,21 +1,20 @@
 description  'Persistent login'
-dependencies 'utils/store'
 require 'securerandom'
 
 class ::Olelo::Application
   TOKEN_NAME = 'olelo.token'
   TOKEN_LIFETIME = 24*60*60*365
 
-  def login_tokens
-    @login_tokens ||= Store.create(Config['tokens_store'])
+  def persistent_salt
+    @persistent_salt ||= SecureRandom.hex
   end
 
   hook :auto_login do
     if !User.current
       token = request.cookies[TOKEN_NAME]
       if token
-        user = login_tokens[token]
-        User.current = User.find(user) if user
+        user, hash = token.split('-', 2)
+        User.current = User.find(user) if sha256(user + persistent_salt) == hash
       end
     end
   end
@@ -28,13 +27,10 @@ class ::Olelo::Application
   after :action do |method, path|
     if path == '/login'
       if User.logged_in? && params[:persistent]
-        token = SecureRandom.hex
+        token = "#{User.current.name}-#{sha256(User.current.name + persistent_salt)}"
         response.set_cookie(TOKEN_NAME, :value => token, :expires => Time.now + TOKEN_LIFETIME)
-        login_tokens[token] = User.current.name
       end
     elsif path == '/logout'
-      token = request.cookies[TOKEN_NAME]
-      login_tokens.delete(token)
       response.delete_cookie(TOKEN_NAME)
     end
   end
