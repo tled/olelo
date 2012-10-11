@@ -38,6 +38,8 @@ module Pygments
         $1.split(', ').each {|s| @patterns[s] = format.first }
       end
     end
+  rescue Exception => ex
+    Olelo.logger.warn 'pygmentize not found'
   end
 end
 

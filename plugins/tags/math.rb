@@ -31,7 +31,6 @@ end
 class ItexRenderer < MathRenderer
   def initialize
     `itex2MML --version`
-    raise 'itex2MML not found on path' if $?.exitstatus != 0
   end
 
   def render(code, display)
@@ -44,7 +43,6 @@ end
 class BlahtexMLRenderer < MathRenderer
   def initialize
     `blahtex`
-    raise 'blahtex not found on path' if $?.exitstatus != 0
   end
 
   def render(code, display)
@@ -61,7 +59,6 @@ class BlahtexImageRenderer < MathRenderer
 
   def initialize
     `blahtex`
-    raise 'blahtex not found on path' if $?.exitstatus != 0
     FileUtils.mkpath(Config['blahtex_directory'])
   end
 
