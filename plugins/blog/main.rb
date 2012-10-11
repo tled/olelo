@@ -2,8 +2,9 @@ description    'Blog aspect'
 dependencies   'tags', 'utils/assets', 'utils/xml'
 export_scripts '*.css'
 
-Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[0-2])' do
-  reroute :get, "/#{params[:path]}", :year => params[:year], :month => params[:month], :aspect => 'blog'
+Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
+  params[:aspect] = 'blog'
+  send('GET /')
 end
 
 Tags::Tag.define 'menu', :optional => :path, :description => 'Show blog menu', :dynamic => true do |context, attrs, content|

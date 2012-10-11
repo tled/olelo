@@ -55,22 +55,11 @@ module Olelo
 
     # Redirect to uri
     #
-    # @param [String] uri Target uri
+    # @param uri Target uri
     # @return [void]
     # @api public
     def redirect(uri)
       throw :redirect, uri
-    end
-
-    # Reroute to path
-    #
-    # @param [String] method Target method
-    # @param [String] path Target path
-    # @param [Hash] params Params
-    # @return [void]
-    # @api public
-    def reroute(method, path, params = {})
-      throw :reroute, [method, path, params]
     end
 
     # Pass to next matching route
@@ -99,9 +88,7 @@ module Olelo
     def perform!
       result = catch(:halt) do
         uri = catch(:redirect) do
-          with_hooks(:routing) do
-            nested_route!(request.request_method, unescape(request.path_info))
-          end
+          with_hooks(:routing) { route! }
         end
         response.redirect uri
         nil
@@ -127,21 +114,11 @@ module Olelo
       end
     end
 
-    def nested_route!(method, path, params = {})
-      while method
-        method = method.to_s.upcase
-        result = catch(:reroute) do
-          route!(method, path, params)
-          nil
-        end
-        method, path, params = result
-      end
-    end
-
-    def route!(method, path, params)
-      orig_params = @original_params.merge(params)
+    def route!
+      path = unescape(request.path_info)
+      method = request.request_method
       self.class.router[method].find(path) do |name, params|
-        @params = orig_params.merge(params)
+        @params = @original_params.merge(params)
         catch(:pass) do
           with_hooks(:action, method.downcase.to_sym, name) do
             halt send("#{method} #{name}")
