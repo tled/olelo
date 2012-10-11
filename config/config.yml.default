@@ -95,14 +95,12 @@ mime:
   # Use creole as last resort.
   # You can configure the wiki default mime type here!
   # Use text/x-creole for Creole Wikitext, text/x-markdown for Markdown,
-  # text/x-maruku for Markdown/Maruku, text/x-textile for Textile, text/x-orgmode for Emacs Org Mode
+  # text/x-textile for Textile, text/x-orgmode for Emacs Org Mode
   - text/x-creole
 
 mime_suggestions:
   - text/x-creole
   - text/x-markdown
-  - text/x-markdown.maruku
-  - text/x-markdown.kramdown
   - text/x-textile
   - text/x-orgmode
 
