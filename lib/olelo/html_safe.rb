@@ -13,6 +13,10 @@ class String
     def html_safe
       self
     end
+
+    def to_s
+      self
+    end
   end
 
   def html_safe?
