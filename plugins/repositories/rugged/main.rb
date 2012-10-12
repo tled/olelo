@@ -4,6 +4,140 @@ class RuggedRepository < Repository
   CONTENT_EXT  = '.content'
   ATTRIBUTE_EXT = '.attributes'
 
+  class Blob
+    def initialize(git, content)
+      @git = git
+      @content = content
+    end
+
+    def type
+      :blob
+    end
+
+    def filemode
+      0100644
+    end
+
+    def save
+      Rugged::Blob.create(@git, content)
+    end
+  end
+
+  class Ref
+    attr_reader :filemode, :type
+
+    def initialize(git, entry)
+      @oid = entry[:oid]
+      @filemode = entry[:filemode]
+      @type = entry[:type]
+    end
+
+    def save
+      @oid
+    end
+
+    def lookup
+      if type == :tree
+        Tree.new(@git, @oid)
+      else
+        self
+      end
+    end
+  end
+
+  class Tree
+    def initialize(git, oid)
+      @git = git
+      @entries = {}
+      @oid = oid
+      if oid
+        tree = @git.lookup(oid)
+        raise 'Not a tree' unless Rugged::Tree === tree
+        tree.each {|entry| @entries[entry[:name]] = Ref.new(@git, entry) }
+      end
+    end
+
+    def empty?
+      @entries.empty?
+    end
+
+    def type
+      :tree
+    end
+
+    def filemode
+      0040000
+    end
+
+    def get(name)
+      child = @entries[name]
+      Ref === child ? @entries[name] = child.lookup : child
+    end
+
+    def [](path)
+      name, path = path.split('/', 2)
+      child = get(name)
+      if path
+        raise 'Find child in blob' unless child.type == :tree
+        child[path]
+      else
+        child
+      end
+    end
+
+    def []=(path, object)
+      @oid = nil
+      name, path = path.split('/', 2)
+      child = get(name)
+      if path
+        child = @entries[name] = Tree.new(@git) unless child
+        if child.type == :tree
+          child[path] = object
+        else
+          raise 'Parent not found'
+        end
+      else
+        @entries[name] = object
+      end
+    end
+
+    def move(path, destination)
+      self[destination] = delete(path)
+    end
+
+    def delete(path)
+      @oid = nil
+      name, path = path.split('/', 2)
+      child = get(name)
+      if path
+        if child.type == :tree
+          child.delete(path)
+        else
+          raise 'Object not found'
+        end
+      else
+        raise 'Object not found' unless @entries.delete(name)
+      end
+    end
+
+    def save
+      return @oid if @oid
+      builder = Rugged::TreeBuilder.new
+      @entries.each do |name, entry|
+        builder << { :type => entry.type, :filemode => entry.filemode, :oid => entry.save, :name => name }
+      end
+      builder.write(@git)
+    end
+  end
+
+  class Transaction
+    def initialize(git)
+      @git = git
+      @head = @git.head.target
+      @tree = Tree.new(@git, @head.tree)
+    end
+  end
+
   def initialize(config)
     Olelo.logger.info "Opening git repository: #{config[:path]}"
     # Rugged::Repository.init_at('.', config[:bare])
@@ -11,27 +145,70 @@ class RuggedRepository < Repository
   end
 
   def transaction
-    raise NotImplementedError
+    raise 'Transaction already running' if Thread.current[:olelo_rugged_tx]
+    Thread.current[:olelo_rugged_tx] = Transaction.new(@git)
+  ensure
+    Thread.current[:olelo_rugged_tx] = nil
   end
 
   def set_content(path, content)
-    raise NotImplementedError
+    check_path(path)
+    content = content.read if content.respond_to? :read
+    expand_tree(path)
+    if current_tree[path].type == :tree
+      if content.blank?
+        current_tree.delete(path + CONTENT_EXT)
+      else
+        current_tree[path + CONTENT_EXT] = Blob.new(@git, content)
+      end
+      collapse_empty_tree(path)
+    else
+      current_tree[path] = Blob.new(@git, content)
+    end
   end
 
   def set_attributes(path, attributes)
-    raise NotImplementedError
+    check_path(path)
+    attributes = attributes.blank? ? nil : YAML.dump(attributes).sub(/\A\-\-\-\s*\n/s, '')
+    expand_tree(path)
+    if attributes
+      current_tree[path + ATTRIBUTE_EXT] = Blob.new(@git, attributes)
+    else
+      current_tree.delete(path + ATTRIBUTE_EXT)
+    end
   end
 
   def move(path, destination)
-    raise NotImplementedError
+    check_path(destination)
+    current_tree.move(path, destination)
+    current_tree.move(path + CONTENT_EXT, destination + CONTENT_EXT) if current_tree[path + CONTENT_EXT]
+    current_tree.move(path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if current_tree[path + ATTRIBUTE_EXT]
+    collapse_empty_tree(path/'..')
   end
 
   def delete(path)
-    raise NotImplementedError
+    current_tree.delete(path)
+    current_tree.delete(path + CONTENT_EXT) if current_tree[path + CONTENT_EXT]
+    current_tree.delete(path + ATTRIBUTE_EXT) if current_tree[path + ATTRIBUTE_EXT]
+    collapse_empty_tree(path/'..')
   end
 
   def commit(comment)
-    raise NotImplementedError
+    user = User.current
+    raise 'Concurrent transactions' current_transaction.head != @git.head.target
+
+    author = {:email => user.email, :name => user.name, :time => Time.now }
+    commit = Rugged::Commit.create(@git,
+                                   :author => author,
+                                   :message => comment,
+                                   :committer => author,
+                                   :parents => [current_transaction.head],
+                                   :tree => current_tree.save)
+
+    raise 'Concurrent transactions' current_transaction.head != @git.head.target
+    @git.head.target = commit
+
+    commit_to_version(@git.lookup(commit))
   end
 
   def path_exists?(path, version)
@@ -134,6 +311,10 @@ class RuggedRepository < Repository
 
   private
 
+  def check_path(path)
+    raise :reserved_path.t if path.split('/').any? {|name| reserved_name?(name) }
+  end
+
   def has_path?(tree, path)
     return true if path.blank?
     (tree.path(path) rescue nil) ||
@@ -156,6 +337,39 @@ class RuggedRepository < Repository
   def commit_to_version(commit)
     commit && Version.new(commit.oid, User.new(commit.author[:name], commit.author[:email]),
                           Time.at(commit.time), commit.message, commit.parents.map(&:oid), commit.oid == @git.head.target)
+  end
+
+  def current_transaction
+    Thread.current[:olelo_rugged_tx] || raise('No transaction running')
+  end
+
+  def current_tree
+    current_transaction.tree
+  end
+
+  # Convert blob parents to trees
+  # to allow children
+  def expand_tree(path)
+    names = path.split('/')
+    names.pop
+    parent = current_tree
+    names.each do |name|
+      object = parent[name]
+      break if !object
+      if object.type == :blob
+        parent.move(name, name + CONTENT_EXT)
+        break
+      end
+      parent = object
+    end
+  end
+
+  # If a tree consists only of tree/, tree.content and tree.attributes without
+  # children, tree.content can be moved to tree ("collapsing").
+  def collapse_empty_tree(path)
+    if !path.blank? && current_tree[path].empty? && current_tree[path + CONTENT_EXT]
+      current_tree.move(path + CONTENT_EXT, path)
+    end
   end
 end
 
