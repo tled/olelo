@@ -1,22 +1,16 @@
 description 'Git repository backend'
 require 'gitrb'
 
-raise 'Newest gitrb version 0.2.8 is required. Please upgrade!' if !Gitrb.const_defined?('VERSION') || Gitrb::VERSION != '0.2.8'
-
 class GitRepository < Repository
   CONTENT_EXT   = '.content'
   ATTRIBUTE_EXT = '.attributes'
 
+  attr_reader :git
+
   def initialize(config)
     Olelo.logger.info "Opening git repository: #{config[:path]}"
-    @shared_git = Gitrb::Repository.new(:path => config[:path], :create => true,
-                                        :bare => config[:bare], :logger => Olelo.logger)
-    @git = {}
-  end
-
-  # Access the underlying gitrb repository instance
-  def git
-    @git[Thread.current.object_id] ||= @shared_git.dup
+    @git = Gitrb::Repository.new(:path => config[:path], :create => true,
+                                 :bare => config[:bare], :logger => Olelo.logger)
   end
 
   # @override
@@ -152,10 +146,6 @@ class GitRepository < Repository
     version[0..4]
   end
 
-  def cleanup
-    @git.delete(Thread.current.object_id)
-  end
-
   def reserved_name?(name)
     name.ends_with?(ATTRIBUTE_EXT) || name.ends_with?(CONTENT_EXT)
   end
@@ -206,7 +196,3 @@ class GitRepository < Repository
 end
 
 Repository.register :git, GitRepository
-
-Application.after(:request) do
-  Repository.instance.cleanup if GitRepository === Repository.instance
-end
