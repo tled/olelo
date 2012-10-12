@@ -55,6 +55,7 @@ module Olelo
     def self.commit(comment)
       tree_version = repository.commit(comment)
       current_transaction.each {|proc| proc.call(tree_version) }
+      current_transaction.clear
     end
 
     # Throws exceptions if access denied, returns nil if not found
@@ -110,14 +111,14 @@ module Olelo
       Page.check_path(destination)
       raise :already_exists.t(:page => destination) if Page.find(destination)
       with_hooks(:move, destination) { repository.move(path, destination) }
-      after_transaction {|tree_version| update(destination, tree_version) }
+      after_commit {|tree_version| update(destination, tree_version) }
     end
 
     def delete
       raise 'Page is not head' unless head?
       raise 'Page is new' if new?
       with_hooks(:delete) { repository.delete(path) }
-      after_transaction {|tree_version| update(path, nil) }
+      after_commit {|tree_version| update(path, nil) }
     end
 
     def diff(from, to)
@@ -185,7 +186,7 @@ module Olelo
         repository.set_content(path, content)
         repository.set_attributes(path, attributes)
       end
-      after_transaction {|tree_version| update(path, tree_version) }
+      after_commit {|tree_version| update(path, tree_version) }
     end
 
     def mime
@@ -219,7 +220,7 @@ module Olelo
         @content = @saved_content = nil
     end
 
-    def after_transaction(&block)
+    def after_commit(&block)
       Page.current_transaction << block
     end
 
