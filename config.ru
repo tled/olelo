@@ -38,7 +38,7 @@ Olelo::Config.instance.load(ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG'] || ::File.
 Olelo::Config.instance.freeze
 
 FileUtils.mkpath ::File.dirname(Olelo::Config['log.file'])
-logger = ::Logger.new(Olelo::Config['log.file'], 25, 1024000)
+logger = ::Logger.new(Olelo::Config['log.file'], :monthly, 1024000)
 logger.level = ::Logger.const_get(Olelo::Config['log.level'])
 
 use_lint if !Olelo::Config['production']

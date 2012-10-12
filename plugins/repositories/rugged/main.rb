@@ -134,7 +134,7 @@ class RuggedRepository < Repository
     def initialize(git)
       @git = git
       @head = @git.head.target
-      @tree = Tree.new(@git, @head.tree)
+      @tree = Tree.new(@git, @git.lookup(@head).tree_oid)
     end
   end
 
@@ -195,7 +195,7 @@ class RuggedRepository < Repository
 
   def commit(comment)
     user = User.current
-    raise 'Concurrent transactions' current_transaction.head != @git.head.target
+    raise 'Concurrent transactions' if current_transaction.head != @git.head.target
 
     author = {:email => user.email, :name => user.name, :time => Time.now }
     commit = Rugged::Commit.create(@git,
@@ -205,7 +205,7 @@ class RuggedRepository < Repository
                                    :parents => [current_transaction.head],
                                    :tree => current_tree.save)
 
-    raise 'Concurrent transactions' current_transaction.head != @git.head.target
+    raise 'Concurrent transactions' if current_transaction.head != @git.head.target
     @git.head.target = commit
 
     commit_to_version(@git.lookup(commit))
