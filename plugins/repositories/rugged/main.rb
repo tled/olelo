@@ -136,6 +136,22 @@ class RuggedRepository < Repository
       @head = @git.head.target
       @tree = Tree.new(@git, @git.lookup(@head).tree_oid)
     end
+
+    def commit(comment)
+      user = User.current
+      raise 'Concurrent transactions' if @head != @git.head.target
+
+      author = {:email => user.email, :name => user.name, :time => Time.now }
+      commit = Rugged::Commit.create(@git,
+                                     :author => author,
+                                     :message => comment,
+                                     :committer => author,
+                                     :parents => [@head],
+                                     :tree => @tree.save)
+
+      raise 'Concurrent transactions' if @head != @git.head.target
+      @git.head.target = commit
+    end
   end
 
   def initialize(config)
@@ -155,15 +171,15 @@ class RuggedRepository < Repository
     check_path(path)
     content = content.read if content.respond_to? :read
     expand_tree(path)
-    if current_tree[path].type == :tree
+    if work_tree[path].type == :tree
       if content.blank?
-        current_tree.delete(path + CONTENT_EXT)
+        work_tree.delete(path + CONTENT_EXT)
       else
-        current_tree[path + CONTENT_EXT] = Blob.new(@git, content)
+        work_tree[path + CONTENT_EXT] = Blob.new(@git, content)
       end
       collapse_empty_tree(path)
     else
-      current_tree[path] = Blob.new(@git, content)
+      work_tree[path] = Blob.new(@git, content)
     end
   end
 
@@ -172,43 +188,30 @@ class RuggedRepository < Repository
     attributes = attributes.blank? ? nil : YAML.dump(attributes).sub(/\A\-\-\-\s*\n/s, '')
     expand_tree(path)
     if attributes
-      current_tree[path + ATTRIBUTE_EXT] = Blob.new(@git, attributes)
+      work_tree[path + ATTRIBUTE_EXT] = Blob.new(@git, attributes)
     else
-      current_tree.delete(path + ATTRIBUTE_EXT)
+      work_tree.delete(path + ATTRIBUTE_EXT)
     end
   end
 
   def move(path, destination)
     check_path(destination)
-    current_tree.move(path, destination)
-    current_tree.move(path + CONTENT_EXT, destination + CONTENT_EXT) if current_tree[path + CONTENT_EXT]
-    current_tree.move(path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if current_tree[path + ATTRIBUTE_EXT]
+    work_tree.move(path, destination)
+    work_tree.move(path + CONTENT_EXT, destination + CONTENT_EXT) if work_tree[path + CONTENT_EXT]
+    work_tree.move(path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if work_tree[path + ATTRIBUTE_EXT]
     collapse_empty_tree(path/'..')
   end
 
   def delete(path)
-    current_tree.delete(path)
-    current_tree.delete(path + CONTENT_EXT) if current_tree[path + CONTENT_EXT]
-    current_tree.delete(path + ATTRIBUTE_EXT) if current_tree[path + ATTRIBUTE_EXT]
+    work_tree.delete(path)
+    work_tree.delete(path + CONTENT_EXT) if work_tree[path + CONTENT_EXT]
+    work_tree.delete(path + ATTRIBUTE_EXT) if work_tree[path + ATTRIBUTE_EXT]
     collapse_empty_tree(path/'..')
   end
 
   def commit(comment)
-    user = User.current
-    raise 'Concurrent transactions' if current_transaction.head != @git.head.target
-
-    author = {:email => user.email, :name => user.name, :time => Time.now }
-    commit = Rugged::Commit.create(@git,
-                                   :author => author,
-                                   :message => comment,
-                                   :committer => author,
-                                   :parents => [current_transaction.head],
-                                   :tree => current_tree.save)
-
-    raise 'Concurrent transactions' if current_transaction.head != @git.head.target
-    @git.head.target = commit
-
-    commit_to_version(@git.lookup(commit))
+    current_transaction.commit(comment)
+    commit_to_version(@git.last_commit)
   end
 
   def path_exists?(path, version)
@@ -343,7 +346,7 @@ class RuggedRepository < Repository
     Thread.current[:olelo_rugged_tx] || raise('No transaction running')
   end
 
-  def current_tree
+  def work_tree
     current_transaction.tree
   end
 
@@ -352,7 +355,7 @@ class RuggedRepository < Repository
   def expand_tree(path)
     names = path.split('/')
     names.pop
-    parent = current_tree
+    parent = work_tree
     names.each do |name|
       object = parent[name]
       break if !object
@@ -367,8 +370,8 @@ class RuggedRepository < Repository
   # If a tree consists only of tree/, tree.content and tree.attributes without
   # children, tree.content can be moved to tree ("collapsing").
   def collapse_empty_tree(path)
-    if !path.blank? && current_tree[path].empty? && current_tree[path + CONTENT_EXT]
-      current_tree.move(path + CONTENT_EXT, path)
+    if !path.blank? && work_tree[path].empty? && work_tree[path + CONTENT_EXT]
+      work_tree.move(path + CONTENT_EXT, path)
     end
   end
 end
