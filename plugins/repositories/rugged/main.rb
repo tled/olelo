@@ -19,7 +19,7 @@ class RuggedRepository < Repository
     end
 
     def save
-      Rugged::Blob.create(@git, content)
+      Rugged::Blob.create(@git, @content)
     end
   end
 
@@ -46,7 +46,7 @@ class RuggedRepository < Repository
   end
 
   class Tree
-    def initialize(git, oid)
+    def initialize(git, oid = nil)
       @git = git
       @entries = {}
       @oid = oid
@@ -75,9 +75,10 @@ class RuggedRepository < Repository
     end
 
     def [](path)
+      return self if path.blank?
       name, path = path.split('/', 2)
       child = get(name)
-      if path
+      if path && child
         raise 'Find child in blob' unless child.type == :tree
         child[path]
       else
@@ -86,6 +87,7 @@ class RuggedRepository < Repository
     end
 
     def []=(path, object)
+      raise 'Blank path' if path.blank?
       @oid = nil
       name, path = path.split('/', 2)
       child = get(name)
@@ -106,6 +108,7 @@ class RuggedRepository < Repository
     end
 
     def delete(path)
+      raise 'Blank path' if path.blank?
       @oid = nil
       name, path = path.split('/', 2)
       child = get(name)
@@ -122,7 +125,7 @@ class RuggedRepository < Repository
 
     def save
       return @oid if @oid
-      builder = Rugged::TreeBuilder.new
+      builder = Rugged::Tree::Builder.new
       @entries.each do |name, entry|
         builder << { :type => entry.type, :filemode => entry.filemode, :oid => entry.save, :name => name }
       end
@@ -131,6 +134,8 @@ class RuggedRepository < Repository
   end
 
   class Transaction
+    attr_reader :tree
+
     def initialize(git)
       @git = git
       @head = @git.head.target
@@ -163,6 +168,7 @@ class RuggedRepository < Repository
   def transaction
     raise 'Transaction already running' if Thread.current[:olelo_rugged_tx]
     Thread.current[:olelo_rugged_tx] = Transaction.new(@git)
+    yield
   ensure
     Thread.current[:olelo_rugged_tx] = nil
   end
@@ -171,7 +177,8 @@ class RuggedRepository < Repository
     check_path(path)
     content = content.read if content.respond_to? :read
     expand_tree(path)
-    if work_tree[path].type == :tree
+    object = work_tree[path]
+    if object && object.type == :tree
       if content.blank?
         work_tree.delete(path + CONTENT_EXT)
       else
@@ -190,7 +197,7 @@ class RuggedRepository < Repository
     if attributes
       work_tree[path + ATTRIBUTE_EXT] = Blob.new(@git, attributes)
     else
-      work_tree.delete(path + ATTRIBUTE_EXT)
+      work_tree.delete(path + ATTRIBUTE_EXT) if work_tree[path + ATTRIBUTE_EXT]
     end
   end
 
