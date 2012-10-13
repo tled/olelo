@@ -29,7 +29,6 @@ Olelo::Config.instance['cache_store'] = { :type => 'file', 'file.root' => ::File
 Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(path, '.wiki', 'users.yml')
 Olelo::Config.instance['tokens_store'] = { :type => 'pstore', 'pstore.file' => ::File.join(path, '.wiki', 'tokens.pstore') }
 Olelo::Config.instance['repository.git'] = { :path => ::File.join(path, '.wiki', 'repository'), :bare => false }
-Olelo::Config.instance['repository.rugged'] = { :path => ::File.join(path, '.wiki', 'repository'), :bare => false }
 Olelo::Config.instance['log.file'] = ::File.join(path, '.wiki', 'log')
 Olelo::Config.instance['rack.session_secret'] = SecureRandom.hex
 

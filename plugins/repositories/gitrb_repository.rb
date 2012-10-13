@@ -1,11 +1,9 @@
-description 'Git repository backend'
+description 'Git repository backend (Using gitrb library)'
 require 'gitrb'
 
-class GitRepository < Repository
+class GitrbRepository < Repository
   CONTENT_EXT   = '.content'
   ATTRIBUTE_EXT = '.attributes'
-
-  attr_reader :git
 
   def initialize(config)
     Olelo.logger.info "Opening git repository: #{config[:path]}"
@@ -15,14 +13,14 @@ class GitRepository < Repository
 
   # @override
   def transaction(&block)
-    git.transaction(&block)
+    @git.transaction(&block)
   end
 
   # @override
   def commit(comment)
     user = User.current
-    git.commit(comment, user && Gitrb::User.new(user.name, user.email))
-    commit_to_version(git.head)
+    @git.commit(comment, user && Gitrb::User.new(user.name, user.email))
+    commit_to_version(@git.head)
   end
 
   # @override
@@ -33,12 +31,12 @@ class GitRepository < Repository
 
   # @override
   def get_version(version)
-    commit_to_version(version ? (get_commit(version) rescue nil) : git.head)
+    commit_to_version(version ? (get_commit(version) rescue nil) : @git.head)
   end
 
   # @override
   def get_history(path, skip, limit)
-    git.log(:max_count => limit, :skip => skip,
+    @git.log(:max_count => limit, :skip => skip,
             :path => [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT]).map do |c|
       commit_to_version(c)
     end
@@ -46,11 +44,11 @@ class GitRepository < Repository
 
   # @override
   def get_path_version(path, version)
-    commits = git.log(:max_count => 2, :start => version, :path => [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT])
+    commits = @git.log(:max_count => 2, :start => version, :path => [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT])
 
     succ = nil
-    git.git_rev_list('--reverse', '--remove-empty', "#{commits[0]}..", '--', path, path + ATTRIBUTE_EXT, path + CONTENT_EXT) do |io|
-      succ = io.eof? ? nil : get_commit(git.set_encoding(io.readline).strip)
+    @git.git_rev_list('--reverse', '--remove-empty', "#{commits[0]}..", '--', path, path + ATTRIBUTE_EXT, path + CONTENT_EXT) do |io|
+      succ = io.eof? ? nil : get_commit(@git.set_encoding(io.readline).strip)
     end rescue nil # no error because pipe is closed intentionally
 
     # Deleted pages have next version (Issue #11)
@@ -92,16 +90,16 @@ class GitRepository < Repository
     check_path(path)
     content = content.read if content.respond_to? :read
     expand_tree(path)
-    object = git.root[path]
+    object = @git.root[path]
     if object && object.type == :tree
       if content.blank?
-        git.root.delete(path + CONTENT_EXT)
+        @git.root.delete(path + CONTENT_EXT)
       else
-        git.root[path + CONTENT_EXT] = Gitrb::Blob.new(:data => content)
+        @git.root[path + CONTENT_EXT] = Gitrb::Blob.new(:data => content)
       end
       collapse_empty_tree(path)
     else
-      git.root[path] = Gitrb::Blob.new(:data => content)
+      @git.root[path] = Gitrb::Blob.new(:data => content)
     end
   end
 
@@ -111,32 +109,32 @@ class GitRepository < Repository
     attributes = attributes.blank? ? nil : YAML.dump(attributes).sub(/\A\-\-\-\s*\n/s, '')
     expand_tree(path)
     if attributes
-      git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes)
+      @git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes)
     else
-      git.root.delete(path + ATTRIBUTE_EXT)
+      @git.root.delete(path + ATTRIBUTE_EXT)
     end
   end
 
   # @override
   def move(path, destination)
     check_path(destination)
-    git.root.move(path, destination)
-    git.root.move(path + CONTENT_EXT, destination + CONTENT_EXT) if git.root[path + CONTENT_EXT]
-    git.root.move(path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if git.root[path + ATTRIBUTE_EXT]
+    @git.root.move(path, destination)
+    @git.root.move(path + CONTENT_EXT, destination + CONTENT_EXT) if @git.root[path + CONTENT_EXT]
+    @git.root.move(path + ATTRIBUTE_EXT, destination + ATTRIBUTE_EXT) if @git.root[path + ATTRIBUTE_EXT]
     collapse_empty_tree(path/'..')
   end
 
   # @override
   def delete(path)
-    git.root.delete(path)
-    git.root.delete(path + CONTENT_EXT)
-    git.root.delete(path + ATTRIBUTE_EXT)
+    @git.root.delete(path)
+    @git.root.delete(path + CONTENT_EXT)
+    @git.root.delete(path + ATTRIBUTE_EXT)
     collapse_empty_tree(path/'..')
   end
 
   # @override
   def diff(path, from, to)
-    diff = git.diff(:from => from && from.to_s, :to => to.to_s,
+    diff = @git.diff(:from => from && from.to_s, :to => to.to_s,
                     :path => [path, path + CONTENT_EXT, path + ATTRIBUTE_EXT], :detect_renames => true)
     Diff.new(commit_to_version(diff.from), commit_to_version(diff.to), diff.patch)
   end
@@ -150,14 +148,22 @@ class GitRepository < Repository
     name.ends_with?(ATTRIBUTE_EXT) || name.ends_with?(CONTENT_EXT)
   end
 
+  def method_missing(name, *args)
+    if cmd =~ /\Agit_/
+      @git.method_missing(name, *args)
+    else
+      super
+    end
+  end
+
   private
 
   def get_commit(version)
-    git.get_commit(version.to_s)
+    @git.get_commit(version.to_s)
   end
 
   def get_object(path, version)
-    git.get_commit(version.to_s).tree[path]
+    @git.get_commit(version.to_s).tree[path]
   end
 
   def check_path(path)
@@ -166,7 +172,7 @@ class GitRepository < Repository
 
   def commit_to_version(commit)
     commit && Version.new(commit.id, User.new(commit.author.name, commit.author.email),
-                          commit.date, commit.message, commit.parents.map(&:id), commit == git.head)
+                          commit.date, commit.message, commit.parents.map(&:id), commit == @git.head)
   end
 
   # Convert blob parents to trees
@@ -174,7 +180,7 @@ class GitRepository < Repository
   def expand_tree(path)
     names = path.split('/')
     names.pop
-    parent = git.root
+    parent = @git.root
     names.each do |name|
       object = parent[name]
       break if !object
@@ -189,10 +195,10 @@ class GitRepository < Repository
   # If a tree consists only of tree/, tree.content and tree.attributes without
   # children, tree.content can be moved to tree ("collapsing").
   def collapse_empty_tree(path)
-    if !path.blank? && git.root[path].empty? && git.root[path + CONTENT_EXT]
-      git.root.move(path + CONTENT_EXT, path)
+    if !path.blank? && @git.root[path].empty? && @git.root[path + CONTENT_EXT]
+      @git.root.move(path + CONTENT_EXT, path)
     end
   end
 end
 
-Repository.register :git, GitRepository
+Repository.register :gitrb, GitrbRepository

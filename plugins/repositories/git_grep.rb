@@ -5,12 +5,10 @@ class ::Olelo::Application
     @matches = {}
 
     if params[:pattern].to_s.length > 2
-      git = Repository.instance.git
-
-      git.git_grep('-z', '-i', '-I', '-3', '-e', params[:pattern], git.branch) do |io|
+      Repository.instance.git_grep('-z', '-i', '-I', '-3', '-e', params[:pattern], 'master') do |io|
         while !io.eof?
           begin
-            line = git.set_encoding(io.readline)
+            line = io.readline.try_encoding(Encoding::UTF_8)
             line = unescape_backslash(line)
             if line =~ /(.*?)\:([^\0]+)\0(.*)/
               path, match = $2, $3
@@ -25,10 +23,10 @@ class ::Olelo::Application
         end
       end rescue nil # git-grep returns 1 if nothing is found
 
-      git.git_ls_tree('-r', '--name-only', 'HEAD') do |io|
+      Repository.instance.git_ls_tree('-r', '--name-only', 'HEAD') do |io|
         while !io.eof?
           begin
-            line = git.set_encoding(io.readline)
+            line = io.readline.try_encoding(Encoding::UTF_8)
             line = unescape_backslash(line).strip
             if line =~ /#{params[:pattern]}/i && !@matches[line]
               path = line.split('/')

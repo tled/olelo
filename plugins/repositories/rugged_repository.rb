@@ -1,3 +1,4 @@
+description 'Git repository backend (Using rugged library)'
 require 'rugged'
 
 class RuggedRepository < Repository
@@ -319,7 +320,48 @@ class RuggedRepository < Repository
     version[0..4]
   end
 
+  def method_missing(name, *args)
+    cmd = name.to_s
+    if cmd =~ /\Agit_/
+      cmd = $'.tr('_', '-')
+      args = args.flatten.compact.map(&:to_s)
+
+      out = IO.popen('-', 'rb') do |io|
+        if io
+          # Read in binary mode (ascii-8bit) and convert afterwards
+          block_given? ? yield(io) : io.read.try_encoding(Encoding::UTF_8)
+        else
+          # child's stderr goes to stdout
+          STDERR.reopen(STDOUT)
+          ENV['GIT_DIR'] = @git.path
+          exec(self.class.git_path, cmd, *args)
+        end
+      end
+
+      if $?.exitstatus > 0
+        return '' if $?.exitstatus == 1 && out == ''
+        raise "git #{cmd} #{args.inspect} #{out}"
+      end
+
+      out
+    else
+      super
+    end
+  end
+
+  def reserved_name?(name)
+    name.ends_with?(ATTRIBUTE_EXT) || name.ends_with?(CONTENT_EXT)
+  end
+
   private
+
+  def self.git_path
+    @git_path ||= begin
+                    path = `which git`.chomp
+                    raise 'git not found' if $?.exitstatus != 0
+                    path
+                  end
+  end
 
   def check_path(path)
     raise :reserved_path.t if path.split('/').any? {|name| reserved_name?(name) }
@@ -338,10 +380,6 @@ class RuggedRepository < Repository
     @git.lookup(ref[:oid])
   rescue Rugged::IndexerError
     nil
-  end
-
-  def reserved_name?(name)
-    name.ends_with?(ATTRIBUTE_EXT) || name.ends_with?(CONTENT_EXT)
   end
 
   def commit_to_version(commit)
@@ -383,4 +421,5 @@ class RuggedRepository < Repository
   end
 end
 
+Repository.register :git, RuggedRepository
 Repository.register :rugged, RuggedRepository
