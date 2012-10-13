@@ -1,5 +1,4 @@
 require 'rack'
-require 'rack/session/abstract/id'
 require 'socket'
 
 class Rack::Request
@@ -13,15 +12,6 @@ class Rack::Request
     env['HTTP_PRAGMA'] == 'no-cache' || env['HTTP_CACHE_CONTROL'].to_s.include?('no-cache')
   end
 end
-
-# FIXME: Secure random
-# http://rack.lighthouseapp.com/projects/22435-rack/tickets/85-securerandom-for-secure-key-generation
-#require 'securerandom'
-#class Rack::Session::Abstract::ID
-#  def generate_sid
-#    SecureRandom.hex
-#  end
-#end
 
 # Rack::Lint injector
 class Rack::Builder
