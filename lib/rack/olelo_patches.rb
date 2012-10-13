@@ -12,15 +12,6 @@ class Rack::Request
   def no_cache?
     env['HTTP_PRAGMA'] == 'no-cache' || env['HTTP_CACHE_CONTROL'].to_s.include?('no-cache')
   end
-
-  def url_without_path
-    url = scheme + '://' + host
-    if scheme == 'https' && port != 443 ||
-        scheme == 'http' && port != 80
-      url << ":#{port}"
-    end
-    url << '/'
-  end
 end
 
 # FIXME: Secure random

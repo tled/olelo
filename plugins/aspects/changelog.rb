@@ -6,13 +6,13 @@ Aspect.create(:changelog, :cacheable => true, :hidden => true) do
   def call(context, page)
     format = context.params[:format]
 
-    url = context.request.url_without_path
+    url = context.request.base_url
     context.header['Content-Type'] = "application/#{format == 'rss' ? 'rss' : 'atom'}+xml; charset=utf-8"
 
     content = RSS::Maker.make(format == 'rss' ? '2.0' : 'atom') do |feed|
       feed.channel.generator = 'Ōlelo'
       feed.channel.title = Config['title']
-      feed.channel.link = url + page.path
+      feed.channel.link = url + '/' + page.path
       feed.channel.description = Config['title'] + ' Changelog'
       feed.channel.id = url + page.path
       feed.channel.updated = Time.now
@@ -21,7 +21,7 @@ Aspect.create(:changelog, :cacheable => true, :hidden => true) do
       page.history.each do |version|
         i = feed.items.new_item
         i.title = version.comment
-        i.link = url + 'changes'/version
+        i.link = url + '/changes'/version
         i.date = version.date
         i.dc_creator = version.author.name
       end

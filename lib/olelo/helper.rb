@@ -260,9 +260,9 @@ module Olelo
           %{<script src="#{escape_html path}" type="text/javascript"/>}
         end
       base_path = if page && page.root?
-        url = request.url_without_path
-        url << 'version'/page.tree_version << '/' if !page.head?
-        %{<base href="#{escape_html url}"/>}.html_safe
+        url = request.base_url
+        url << '/version'/page.tree_version if !page.head?
+        %{<base href="#{escape_html url}/"/>}.html_safe
       end
       [base_path, @@theme_link, @@script_link, *invoke_hook(:head)].join.html_safe
     end
