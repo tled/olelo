@@ -24,7 +24,7 @@ class RuggedRepository < Repository
     end
   end
 
-  class Ref
+  class Reference
     attr_reader :filemode, :type
 
     def initialize(git, entry)
@@ -54,7 +54,7 @@ class RuggedRepository < Repository
       if oid
         tree = @git.lookup(oid)
         raise 'Not a tree' unless Rugged::Tree === tree
-        tree.each {|entry| @entries[entry[:name]] = Ref.new(@git, entry) }
+        tree.each {|entry| @entries[entry[:name]] = Reference.new(@git, entry) }
       end
     end
 
@@ -72,7 +72,7 @@ class RuggedRepository < Repository
 
     def get(name)
       child = @entries[name]
-      Ref === child ? @entries[name] = child.lookup : child
+      Reference === child ? @entries[name] = child.lookup : child
     end
 
     def [](path)
@@ -313,7 +313,11 @@ class RuggedRepository < Repository
   end
 
   def diff(path, from, to)
-    raise NotImplementedError
+    commit_from = from && @git.lookup(from.to_s)
+    commit_to = @git.lookup(to.to_s)
+    raise 'Not a commit' unless (!commit_from || Rugged::Commit === commit_from) && Rugged::Commit === commit_to
+    diff = git_diff_tree('--root', '--full-index', '-u', '-M', commit_from ? commit_from.oid : nil, commit_to.oid, '--', path, path + CONTENT_EXT, path + ATTRIBUTE_EXT)
+    Diff.new(commit_to_version(commit_from), commit_to_version(commit_to), diff)
   end
 
   def short_version(version)
