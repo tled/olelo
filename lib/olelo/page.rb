@@ -27,7 +27,7 @@ module Olelo
 
     # Mime type for empty page
     # @api public
-    EMPTY_MIME = MimeMagic.new('application/x-empty')
+    EMPTY_MIME = MimeMagic.new('inode/x-empty')
 
     # Mime type for directory
     # @api public
