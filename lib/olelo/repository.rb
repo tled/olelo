@@ -67,7 +67,6 @@ module Olelo
     # Wrap block in transaction
     #
     # Every write operation has to be wrapped in a transaction.
-    # Do not load objects outside a transaction and use them inside the transaction.
     #
     # @yield Transaction block
     # @return [void]
