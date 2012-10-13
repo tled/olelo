@@ -60,7 +60,7 @@ class SpamEvaluator
 
   def eval_invalid_encoding
     content = @params[:content].to_s
-    !content.respond_to?(:valid_encoding) || content.valid_encoding? ? 0 : 50
+    content.valid_encoding? ? 0 : 50
   end
 
   def eval_entropy
