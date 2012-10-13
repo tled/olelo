@@ -30,7 +30,7 @@ Installation
 First, you have to install the [Gem][] dependencies via `gem`:
 
     gem install creole
-    gem install gitrb
+    gem install rugged
     gem install mimemagic
     gem install slim
     gem install rack
@@ -38,9 +38,8 @@ First, you have to install the [Gem][] dependencies via `gem`:
 
 ### Optional:
 
-    gem install rdiscount
+    gem install redcarpet
     gem install RedCloth
-    gem install maruku
     gem install rubypants
     gem install evaluator
     gem install org-ruby
@@ -70,11 +69,11 @@ You can specify a different configuration file via the environment variable WIKI
 Dependencies
 ------------
 
-- [nokogiri][]
-- [SLIM][]
-- [gitrb][]
-- [rack][]
-- [mimemagic][]
+- [Nokogiri][]
+- [Slim][]
+- [Rugged][]
+- [Rack][]
+- [MimeMagic][]
 
 ### Optional Dependencies
 
@@ -88,7 +87,7 @@ At least one of these renderers should be installed:
 
 - [creole][] for creole wikitext rendering
   (`creole` Gem from [gemcutter][])
-- [RDiscount][] for Markdown rendering
+- [RedCarpet][] for Markdown rendering
 - [RedCloth][] for Textile rendering
 - [org-ruby][] for org-mode rendering
 
@@ -103,7 +102,7 @@ At least one of these renderers should be installed:
 [nokogiri]:http://nokogiri.org/
 [LaTeX]:www.latex-project.org
 [pygments]:http://pygments.org/
-[RDiscount]:http://github.com/rtomayko/rdiscount
+[RedCarpet]:http://github.com/tanoku/redcarpet
 [RedCloth]:http://redcloth.org/
 [ImageMagick]:http://www.imagemagick.org/
 [gitrb]:http://github.com/minad/gitrb/
