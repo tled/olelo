@@ -4,11 +4,8 @@ path = ::File.expand_path(::File.dirname(__FILE__))
 $: << ::File.join(path, 'lib')
 Dir[::File.join(path, 'deps', '*', 'lib')].each {|x| $: << x }
 
-# Require newest rack
-raise 'Rack 1.2.0 or newer required' if Rack.release < '1.2'
-
 # We want to read all text data as UTF-8
-Encoding.default_external = Encoding::UTF_8 if ''.respond_to? :encoding
+Encoding.default_external = Encoding::UTF_8
 
 require 'fileutils'
 require 'rack/olelo_patches'
@@ -17,6 +14,7 @@ require 'rack/static_cache'
 require 'olelo'
 require 'olelo/middleware/degrade_mime_type'
 require 'olelo/middleware/flash'
+require 'olelo/middleware/force_encoding'
 require 'securerandom'
 
 Olelo::Config.instance['app_path'] = path
@@ -66,11 +64,7 @@ if !Olelo::Config['rack.blacklist'].empty?
   use Olelo::Middleware::Blacklist, :blacklist => Olelo::Config['rack.blacklist']
 end
 
-if ''.respond_to? :encoding
-  require 'olelo/middleware/force_encoding'
-  use Olelo::Middleware::ForceEncoding
-end
-
+use Olelo::Middleware::ForceEncoding
 use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
 use Rack::RelativeRedirect
 

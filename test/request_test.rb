@@ -1,5 +1,6 @@
 require 'helper'
 require 'olelo/middleware/flash'
+require 'olelo/middleware/force_encoding'
 require 'rack/session/pool'
 
 Rack::MockRequest::DEFAULT_ENV['REMOTE_ADDR'] = 'localhorst'
@@ -68,10 +69,7 @@ describe 'requests' do
     logger = Logger.new(File.join(@app_path, 'test.log'))
 
     @app = Rack::Builder.new do
-      if ''.respond_to? :encoding
-        require 'olelo/middleware/force_encoding'
-        use Olelo::Middleware::ForceEncoding
-      end
+      use Olelo::Middleware::ForceEncoding
       use Rack::Session::Pool
       use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
       Olelo::Initializer.initialize(logger)
