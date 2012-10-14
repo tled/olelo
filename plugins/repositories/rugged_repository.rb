@@ -28,6 +28,7 @@ class RuggedRepository < Repository
     attr_reader :filemode, :type
 
     def initialize(git, entry)
+      @git = git
       @oid = entry[:oid]
       @filemode = entry[:filemode]
       @type = entry[:type]
@@ -120,7 +121,9 @@ class RuggedRepository < Repository
           raise 'Object not found'
         end
       else
-        raise 'Object not found' unless @entries.delete(name)
+        entry = @entries.delete(name)
+        raise 'Object not found' unless entry
+        entry
       end
     end
 
@@ -300,7 +303,7 @@ class RuggedRepository < Repository
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     object = object_by_path(commit.tree, path)
-    object = object_by_path(object, CONTENT_EXT) if Rugged::Tree === object
+    object = object_by_path(commit.tree, path + CONTENT_EXT) if Rugged::Tree === object
     Rugged::Blob === object ? object.content : ''
   end
 
