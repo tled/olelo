@@ -7,9 +7,10 @@ module Olelo
 
       def call(env)
         status, header, body = @app.call(env)
-        if header['Content-Type'] =~ %r{application/xhtml\+xml} &&
-            !env['HTTP_ACCEPT'].to_s =~ %r{application/xhtml\+xml}
-          header['Content-Type'] = 'text/html'
+        if env['HTTP_ACCEPT'].to_s !~ %r{application/xhtml\+xml}
+          if header['Content-Type'] =~ %r{\Aapplication/xhtml\+xml(;?.*)\Z}
+            header['Content-Type'] = "text/html#{$1}"
+          end
         end
         [status, header, body]
       end
