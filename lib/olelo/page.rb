@@ -63,7 +63,7 @@ module Olelo
       path = path.to_s.cleanpath
       check_path(path)
       tree_version = repository.get_version(tree_version) unless Version === tree_version
-      Page.new(path, tree_version) if repository.path_exists?(path, tree_version)
+      Page.new(path, tree_version) if tree_version && repository.path_exists?(path, tree_version)
     end
 
     # Throws if not found

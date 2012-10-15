@@ -228,14 +228,16 @@ class RuggedRepository < Repository
   def path_exists?(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    has_path?(commit.tree, path)
+    path.blank? || commit.tree.path(path) != nil rescue nil
   end
 
   def get_version(version = nil)
-    version ||= @git.head.target
-    version = version.to_s
-    commit = @git.lookup(version) rescue nil
-    commit_to_version(commit)
+    if version
+      commit = @git.rev_parse(version.to_s) rescue nil
+      commit_to_version(commit)
+    else
+      commit_to_version(@git.last_commit)
+    end
   end
 
   def get_history(path, skip = nil, limit = nil)
@@ -317,8 +319,8 @@ class RuggedRepository < Repository
   end
 
   def diff(path, from, to)
-    commit_from = from && @git.lookup(from.to_s)
-    commit_to = @git.lookup(to.to_s)
+    commit_from = from && @git.rev_parse(from.to_s)
+    commit_to = @git.rev_parse(to.to_s)
     raise 'Not a commit' unless (!commit_from || Rugged::Commit === commit_from) && Rugged::Commit === commit_to
     diff = git_diff_tree('--root', '--full-index', '-u', '-M', commit_from ? commit_from.oid : nil, commit_to.oid, '--', path, path + CONTENT_EXT, path + ATTRIBUTE_EXT)
     Diff.new(commit_to_version(commit_from), commit_to_version(commit_to), diff)
