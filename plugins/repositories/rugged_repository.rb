@@ -234,7 +234,8 @@ class RuggedRepository < Repository
   def get_version(version = nil)
     version ||= @git.head.target
     version = version.to_s
-    commit_to_version(@git.lookup(version))
+    commit = @git.lookup(version) rescue nil
+    commit_to_version(commit)
   end
 
   def get_history(path, skip = nil, limit = nil)
