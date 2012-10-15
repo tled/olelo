@@ -55,7 +55,7 @@ class RuggedRepository < Repository
       if oid
         tree = @git.lookup(oid)
         raise 'Not a tree' unless Rugged::Tree === tree
-        tree.each {|entry| @entries[entry[:name]] = Reference.new(@git, entry) }
+        tree.each {|entry| @entries[entry[:name].force_encoding(Encoding.default_external)] = Reference.new(@git, entry) }
       end
     end
 
@@ -299,7 +299,7 @@ class RuggedRepository < Repository
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     object = object_by_path(commit.tree, path)
-    Rugged::Tree === object ? object.map {|e| e[:name] }.reject {|name| reserved_name?(name) } : []
+    Rugged::Tree === object ? object.map {|e| e[:name].force_encoding(Encoding.default_external) }.reject {|name| reserved_name?(name) } : []
   end
 
   def get_content(path, version)

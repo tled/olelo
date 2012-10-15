@@ -8,7 +8,7 @@ class ::Olelo::Application
       Repository.instance.git_grep('-z', '-i', '-I', '-3', '-e', params[:pattern], 'master') do |io|
         while !io.eof?
           begin
-            line = io.readline.try_encoding(Encoding.default_external)
+            line = io.readline.force_encoding(Encoding.default_external)
             line = unescape_backslash(line)
             if line =~ /(.*?)\:([^\0]+)\0(.*)/
               path, match = $2, $3
@@ -26,7 +26,7 @@ class ::Olelo::Application
       Repository.instance.git_ls_tree('-r', '--name-only', 'HEAD') do |io|
         while !io.eof?
           begin
-            line = io.readline.try_encoding(Encoding.default_external)
+            line = io.readline.force_encoding(Encoding.default_external)
             line = unescape_backslash(line).strip
             if line =~ /#{params[:pattern]}/i && !@matches[line]
               path = line.split('/')

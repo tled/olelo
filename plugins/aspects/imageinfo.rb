@@ -9,7 +9,7 @@ Aspect.create(:imageinfo, :priority => 1, :layout => true, :cacheable => true, :
     @geometry = "#{identify[1]}x#{identify[2]}"
     begin
       @exif = Shell.exif('-m', '/dev/stdin').run(page.content)
-      @exif.try_encoding(Encoding.default_external)
+      @exif.force_encoding(Encoding.default_external)
       @exif = @exif.split("\n").map {|line| line.split("\t") }
       @exif = nil if !@exif[0] || !@exif[0][1]
     rescue => ex
