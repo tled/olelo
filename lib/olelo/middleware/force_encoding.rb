@@ -1,7 +1,7 @@
 module Olelo
   module Middleware
     class ForceEncoding
-      def initialize(app, encoding = Encoding::UTF_8)
+      def initialize(app, encoding = Encoding.default_external)
         @app, @encoding = app, encoding
       end
 

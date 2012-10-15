@@ -307,7 +307,7 @@ class RuggedRepository < Repository
     raise 'Not a commit' unless Rugged::Commit === commit
     object = object_by_path(commit.tree, path)
     object = object_by_path(commit.tree, path + CONTENT_EXT) if Rugged::Tree === object
-    Rugged::Blob === object ? object.content : ''
+    Rugged::Blob === object ? object.content.try_encoding(Encoding.default_external) : ''
   end
 
   def get_attributes(path, version)
@@ -339,7 +339,7 @@ class RuggedRepository < Repository
       out = IO.popen('-', 'rb') do |io|
         if io
           # Read in binary mode (ascii-8bit) and convert afterwards
-          block_given? ? yield(io) : io.read.try_encoding(Encoding::UTF_8)
+          block_given? ? yield(io) : io.read.try_encoding(Encoding.default_external)
         else
           # child's stderr goes to stdout
           STDERR.reopen(STDOUT)

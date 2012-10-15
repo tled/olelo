@@ -73,7 +73,7 @@ class GitrbRepository < Repository
     if object
       content = object.data
       # Try to force utf-8 encoding and revert to old encoding if this doesn't work
-      content.try_encoding(Encoding::UTF_8)
+      content.try_encoding(Encoding.default_encoding)
     else
       ''
     end

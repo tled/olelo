@@ -44,7 +44,7 @@ class ::Olelo::Application
 
     # Read in binary mode and fix encoding afterwards
     patch = IO.popen("diff -u '#{original.path}' '#{new.path}'", 'rb') {|io| io.read }
-    patch.try_encoding(Encoding::UTF_8)
+    patch.try_encoding(Encoding.default_external)
     changes = PatchParser.parse(patch, PatchFormatter.new).html
     flash.now[:changes] = changes.blank? ? %{<div class="flash">#{:no_changes.t}</div>} : changes
     halt render(request.xhr? ? flash.now[:changes] : :edit)
