@@ -246,7 +246,7 @@ class RuggedRepository < Repository
     walker.sorting(Rugged::SORT_TOPO)
     walker.push(@git.head.target)
     walker.each do |c|
-      if has_path?(c.tree, path)
+      if path_changed?(c, path)
         if skip > 0
           skip -= 1
         else
@@ -267,7 +267,7 @@ class RuggedRepository < Repository
     walker.sorting(Rugged::SORT_TOPO)
     walker.push(version)
     walker.each do |c|
-      if has_path?(c.tree, path)
+      if path_changed?(c, path)
         commits << c
         break if commits.size == 2
       end
@@ -280,7 +280,7 @@ class RuggedRepository < Repository
       walker.sorting(Rugged::SORT_TOPO)
       walker.push(@git.head.target)
       walker.each do |c|
-        if has_path?(c.tree, path)
+        if path_changed?(c, path)
           if c == commits[0]
             succ = newer
             break
@@ -377,11 +377,16 @@ class RuggedRepository < Repository
     raise :reserved_path.t if path.split('/').any? {|name| reserved_name?(name) }
   end
 
-  def has_path?(tree, path)
+  def path_changed?(c, path)
     return true if path.blank?
-    (tree.path(path) rescue nil) ||
-      (tree.path(path + ATTRIBUTE_EXT) rescue nil) ||
-      (tree.path(path + CONTENT_EXT) rescue nil)
+    new = [(c.tree.path(path) rescue nil),
+           (c.tree.path(path + ATTRIBUTE_EXT) rescue nil),
+           (c.tree.path(path + CONTENT_EXT) rescue nil)]
+    (new.first && c.parents.empty?) || c.parents.any? do |parent|
+      new != [(parent.tree.path(path) rescue nil),
+              (parent.tree.path(path + ATTRIBUTE_EXT) rescue nil),
+              (parent.tree.path(path + CONTENT_EXT) rescue nil)]
+    end
   end
 
   def object_by_path(tree, path)
