@@ -202,16 +202,6 @@ class String
     self
   end
 
-  # Strips left whitespaces of every line
-  #
-  # @return [String] Unindented string
-  #
-  def unindent
-    result = ''
-    each_line {|line| result << line.lstrip }
-    result
-  end
-
   # Check if string starts with s
   #
   # @param [String] s

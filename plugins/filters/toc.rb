@@ -36,7 +36,7 @@ Filter.create :toc do |context, content|
       count[level-1] += 1
       headline = child.children.first ? child.children.first.inner_text : ''
       section = ['sec', count[0..level-1], headline.strip.gsub(/[^\w]/, '-')].flatten.join('-').downcase
-      toc << %{<li class="toc#{level-offset+1}"><a href="##{section}">#{headline}</a>}.unindent
+      toc << %{<li class="toc#{level-offset+1}"><a href="##{section}">#{headline}</a>}
       child.inner_html = %{<span class="number" id="#{section}">#{count[0..level-1].join('.')}</span> #{child.inner_html}}
     end
   end

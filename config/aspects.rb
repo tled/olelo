@@ -9,12 +9,13 @@
 #
 ################################################################################
 
-regexp :remove_comments, /<!--.*?-->/m,         ''
-regexp :tag_shortcuts,   /\\\((.*?)\\\)/m,      '<math display="inline">\1</math>',
-                         /\\\[(.*?)\\\]/m,      '<math display="block">\1</math>',
-                         /<<(.*?)(\|(.*?))?>>/, '<include page="\1" \3/>'
-regexp :creole_nowiki,   /\{\{\{.*?\}\}\}/m,    '<notags>\0</notags>'
-regexp :textile_nowiki,  /<pre>.*?<\/pre>/m,    '<notags>\0</notags>'
+regexp :remove_comments, /<!--.*?-->/m,              ''
+regexp :tag_shortcuts,   /\\\((.*?)\\\)/m,           '<math display="inline">\1</math>',
+                         /\\\[(.*?)\\\]/m,           '<math display="block">\1</math>',
+                         /<<(.*?)(\|(.*?))?>>/,      '<include page="\1" \3/>'
+regexp :creole_nowiki,   /\{\{\{.*?\}\}\}/m,         '<notags>\0</notags>'
+regexp :textile_nowiki,  /<pre>.*?<\/pre>/m,         '<notags>\0</notags>'
+regexp :mediawiki_nowiki,  /<nowiki>.*?<\/nowiki>/m, '<notags>\0</notags>'
 
 ################################################################################
 #
@@ -87,6 +88,46 @@ aspect :latex do
   filter do
     remove_comments.tag_shortcuts.creole_nowiki
     tag(:static => true) { creole!.rubypants }
+    toc.interwiki(:map => interwiki_map)
+    html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
+  end
+end
+
+################################################################################
+# Mediawiki aspects configuration
+################################################################################
+
+aspect :page do
+  is_cacheable.needs_layout.has_priority(1)
+  accepts 'text/x-mediawiki'
+  filter do
+    editsection do
+      remove_comments.tag_shortcuts
+      mediawiki_nowiki.tag { mediawiki!.rubypants }
+    end
+    toc.interwiki(:map => interwiki_map).link_classifier
+  end
+end
+
+aspect :s5 do
+  is_cacheable
+  accepts 'text/x-mediawiki'
+  mime 'application/xhtml+xml; charset=utf-8'
+  filter do
+    remove_comments.tag_shortcuts
+    mediawiki_nowiki.tag { mediawiki!.rubypants }
+    toc.interwiki(:map => interwiki_map).link_classifier
+    html_wrapper!.s5!
+  end
+end
+
+aspect :latex do
+  is_cacheable
+  accepts 'text/x-mediawiki'
+  mime 'text/plain; charset=utf-8'
+  filter do
+    remove_comments.tag_shortcuts.mediawiki_nowiki
+    tag(:static => true) { mediawiki!.rubypants }
     toc.interwiki(:map => interwiki_map)
     html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
   end

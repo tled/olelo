@@ -1,4 +1,4 @@
-description  'Enhanced edit form with preview and diff'
+description  'Enhance editor form with preview and diff'
 dependencies 'aspects'
 
 class ::Olelo::Application
