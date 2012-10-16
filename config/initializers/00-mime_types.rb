@@ -8,6 +8,11 @@ MimeMagic.add('text/x-creole',
               :parents => 'text/plain',
               :comment => 'Creole Wiki Text File')
 
+MimeMagic.add('text/x-mediawiki',
+              :extensions => %w(mediawiki),
+              :parents => 'text/plain',
+              :comment => 'MediaWiki Text File')
+
 MimeMagic.add('text/x-markdown',
               :extensions => %w(markdown md mdown mkdn mdown),
               :parents => 'text/plain',
