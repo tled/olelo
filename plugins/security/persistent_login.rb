@@ -16,7 +16,7 @@ class ::Olelo::Application
 
   before :login_buttons do
     %{<input type="checkbox" name="persistent" id="persistent" value="1"/>
-      <label for="persistent">#{escape_html :persistent_login.t}</label><br/>}.unindent
+<label for="persistent">#{escape_html :persistent_login.t}</label><br/>}
   end
 
   after :action do |method, path|

@@ -110,11 +110,11 @@ module Olelo
     def breadcrumbs(page)
       path = page.try(:path) || ''
       li = [%{<li class="first breadcrumb#{path.empty? ? ' last' : ''}">
-              <a accesskey="z" href="#{escape_html build_path(nil, :version => page)}">#{escape_html :root.t}</a></li>}.unindent]
+<a accesskey="z" href="#{escape_html build_path(nil, :version => page)}">#{escape_html :root.t}</a></li>}]
       path.split('/').inject('') do |parent,elem|
         current = parent/elem
         li << %{<li class="breadcrumb#{current == path ? ' last' : ''}">
-                <a href="#{escape_html build_path(current, :version => page)}">#{escape_html elem}</a></li>}.unindent
+<a href="#{escape_html build_path(current, :version => page)}">#{escape_html elem}</a></li>}
         current
       end
       li.join('<li class="breadcrumb">/</li>').html_safe
