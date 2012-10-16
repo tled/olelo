@@ -43,7 +43,6 @@ use Rack::Runtime
 use Rack::ShowExceptions if !Olelo::Config['production']
 
 if Olelo::Config['rack.deflater']
-  logger.info 'Use rack deflater'
   use Rack::Deflater
 end
 
