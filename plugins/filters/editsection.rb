@@ -30,7 +30,7 @@ class EditSection < Filters::NestingFilter
   # [[Section start, section end, Position to insert edit link, section text], ...]
   def find_sections(mime, content)
     case mime.to_s
-    when %r{^text/x-creole$}
+    when %r{^text/x-(creole|mediawiki)$}
       find_sections_creole(content)
     when %r{^text/x-markdown}
       find_sections_atx(content)

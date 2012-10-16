@@ -9,7 +9,7 @@ MimeMagic.add('text/x-creole',
               :comment => 'Creole Wiki Text File')
 
 MimeMagic.add('text/x-mediawiki',
-              :extensions => %w(mediawiki),
+              :extensions => %w(mediawiki mw),
               :parents => 'text/plain',
               :comment => 'MediaWiki Text File')
 
