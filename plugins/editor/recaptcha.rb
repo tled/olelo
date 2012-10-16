@@ -10,7 +10,7 @@ class ::Olelo::Application
   end
 
   hook :script do
-    %{<script type="text/javascript"  src="https://api-secure.recaptcha.net/js/recaptcha_ajax.js"/>
+    %{<script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"/>
 <script type="text/javascript">
   $(function() {
     Recaptcha.create('#{RECAPTCHA_PUBLIC}',
