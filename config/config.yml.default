@@ -111,7 +111,7 @@ mime_suggestions:
 disabled_plugins:
   - security/readonly_wiki
   - security/private_wiki
-  - editor/antispam
+  - editor/recaptcha
 
 ##################################################
 # Rack middleware configurations
@@ -135,10 +135,9 @@ log:
 # Antispam configuration.
 # Specify recaptcha public/private key
 
-antispam:
-  recaptcha:
-    #public:      public key
-    #private:     private key
+recaptcha:
+  #public:      public key
+  #private:     private key
 
 ##################################################
 # Repository configuration
