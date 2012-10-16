@@ -40,6 +40,8 @@ $(function() {
             success: function(data) {
 		$('#' + button.data('target')).html(data);
 		button.removeClass('loading');
+		if (window.MathJax)
+		    MathJax.Hub.Queue(['Typeset',MathJax.Hub,button.data('target')]);
             }});
 	return false;
     });
