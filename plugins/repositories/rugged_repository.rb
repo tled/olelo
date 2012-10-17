@@ -255,6 +255,7 @@ class RuggedRepository < Repository
   end
 
   def get_history(path, skip = nil, limit = nil)
+    skip ||= 0
     commits = []
     walker = Rugged::Walker.new(@git)
     walker.sorting(Rugged::SORT_TOPO)
