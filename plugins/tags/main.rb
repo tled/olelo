@@ -158,8 +158,8 @@ class Tag < Filters::NestingFilter
     # Find the plugin which provided this tag.
     plugin = Plugin.for(block)
     options.merge!(:name => name.to_s, :plugin => plugin, :autoclose => block.arity == 2,
-                   :optional => Set.new([*options[:optional]].compact.flatten.map(&:to_s)),
-                   :requires => Set.new([*options[:requires]].compact.flatten.map(&:to_s)))
+                   :optional => Set.new([*options[:optional]].compact.flatten),
+                   :requires => Set.new([*options[:requires]].compact.flatten))
     options[:description] ||= plugin.description
     options[:namespace] ||= plugin.path.split('/').last
     tag = TagInfo.new(options)

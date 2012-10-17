@@ -92,7 +92,7 @@ class LaTeXRenderer < MathRenderer
   register 'mathjax', LaTeXRenderer
 end
 
-Tag.define :math, :optional => :display do |context, attrs, code|
+Tag.define :math, :optional => 'display' do |context, attrs, code|
   raise('Limits exceeded') if code.size > 10240
   MathRenderer.instance.render(code, attrs['display'] == 'block' ? 'block' : 'inline')
 end

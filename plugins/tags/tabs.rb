@@ -13,7 +13,7 @@ Tag.define :tabs do |context, attrs, content|
   %{<ul class="tabs">#{li.join}</ul>} + content
 end
 
-Tag.define :tab, :requires => :name do |context, attrs, content|
+Tag.define :tab, :requires => 'name' do |context, attrs, content|
   raise '<tab> can only be used in <tabs>' if !context[:tabs]
   context[:tabs] << attrs['name']
   %{<div class="tab" id="tab-#{context[:tabs_prefix]}-#{context[:tabs].size - 1}">#{subfilter(context, content)}</div>}

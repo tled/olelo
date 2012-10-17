@@ -1,6 +1,6 @@
 description  'Footnote support'
 
-Tag.define :ref, :optional => :name, :description => 'Create footnote' do |context, attrs, content|
+Tag.define :ref, :optional => 'name', :description => 'Create footnote' do |context, attrs, content|
   footnotes = context[:footnotes] ||= []
   hash = context[:footnotes_hash] ||= {}
   name = attrs['name']
