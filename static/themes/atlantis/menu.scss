@@ -16,6 +16,7 @@
 #menu {
   background: $main_bg;
   height: 1.6em;
+  line-height: 1.6em;
   border-top: $border;
   border-bottom: $border;
   ul {
@@ -42,29 +43,6 @@
       line-height: 1.6em;
       border-right: $border;
       color: $dark_color;
-      &.noborder {
-        padding: 0 1em;
-        border: none;
-      }
-      &.breadcrumb {
-        border: none;
-        a {
-          padding: 0 0.3em;
-	}
-        &.first a {
-          padding-left: 1em;
-          text-indent: -999px;
-          display: block;
-          width: 16px;
-          background: url(images/actions/home.png) no-repeat 1em 0.1em;
-        }
-        &.last {
-          border-right: $border;
-          a {
-            padding-right: 1em;
-	  }
-	}
-      }
       a {
         display: block;
         text-decoration: none;
@@ -93,6 +71,28 @@
       }
       &:hover>ul {
         display: block;
+      }
+    }
+  }
+  .breadcrumbs {
+    margin-right: 1em;
+    > li {
+      border: none;
+      a {
+        padding: 0 0.3em;
+      }
+      &:first-child a {
+        padding-left: 1em;
+        text-indent: -999px;
+        display: block;
+        width: 16px;
+        background: url(images/actions/home.png) no-repeat 1em 0.1em;
+      }
+      &:last-child {
+        border-right: $border;
+        a {
+          padding-right: 1em;
+        }
       }
     }
   }

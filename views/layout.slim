@@ -21,11 +21,9 @@ html.no-js lang=Olelo::Config['locale'].sub('_', '-') class={page && !page.head?
             label.hidden for='pattern' = :search.t
             &text id='pattern' name='pattern' value={params[:pattern]} placeholder=:search.t
     #menu
-      ul
-        = breadcrumbs(page)
-        - if page && !page.head?
-          li.noborder
-            = date page.version.date
+      = breadcrumbs(page)
+      - if page && !page.head?
+        = date page.version.date
       = menu :actions
     #container
       #sidebar == include_page(Olelo::Config['sidebar_page'])
