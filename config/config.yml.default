@@ -122,8 +122,6 @@ rack:
   #session_secret: 'Change the secret! Use random string!'
   # Use the deflater to compress data (Rack::Deflater)
   deflater:      true
-  # Specify a list of blacklisted ips which cannot post data
-  blacklist:     []
 
 ##################################################
 # Logging configuration

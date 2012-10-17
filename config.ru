@@ -71,11 +71,6 @@ end
 use Rack::MethodOverride
 use Rack::CommonLogger, LoggerOutput.new(logger)
 
-if !Olelo::Config['rack.blacklist'].empty?
-  require 'olelo/middleware/blacklist'
-  use Olelo::Middleware::Blacklist, :blacklist => Olelo::Config['rack.blacklist']
-end
-
 use Olelo::Middleware::ForceEncoding
 use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
 use Rack::RelativeRedirect
