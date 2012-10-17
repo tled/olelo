@@ -31,7 +31,7 @@ class YamlfileService < User::Service
       store[user.name] = {
         'email' => user.email,
         'password' => crypt(password),
-	'groups' => user.groups
+	'groups' => user.groups.to_a
       }
     end
   end
@@ -41,7 +41,7 @@ class YamlfileService < User::Service
     @store.transaction do |store|
       raise NameError, "User #{user.name} not found" if !store[user.name]
       store[user.name]['email'] = user.email
-      store[user.name]['groups'] = user.groups
+      store[user.name]['groups'] = user.groups.to_a
     end
   end
 

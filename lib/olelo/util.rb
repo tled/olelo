@@ -119,7 +119,9 @@ module Olelo
     # @return [String] md5 hash of string
     #
     def md5(s)
-      Digest::MD5.hexdigest(s)
+      s = Digest::MD5.hexdigest(s)
+      s.force_encoding(Encoding::ASCII)
+      s
     end
 
     # Compute sha256 hash of string
@@ -128,7 +130,9 @@ module Olelo
     # @return [String] sha256 hash of string
     #
     def sha256(s)
-      Digest::SHA256.hexdigest(s)
+      s = Digest::SHA256.hexdigest(s)
+      s.force_encoding(Encoding::ASCII)
+      s
     end
 
     # Build query from parameter hash

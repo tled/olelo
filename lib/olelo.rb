@@ -36,4 +36,4 @@ require 'olelo/plugin'
 require 'olelo/patch'
 require 'olelo/initializer'
 require 'olelo/application'
-
+require 'olelo/version'

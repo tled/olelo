@@ -27,35 +27,29 @@ A lot of the features are implemented as plugins.
 Installation
 ------------
 
-First, you have to install the [Gem][] dependencies via `gem`:
+The best way to install olelo is via `gem`:
 
-    gem install creole
-    gem install rugged -v 0.17.0b6 # IMPORTANT: NEWEST BETA!
-    gem install mimemagic
-    gem install slim
-    gem install rack
-    gem install unicorn
+    $ gem install olelo
 
-### Optional:
+If you run olelo from source you can use Bundler to install the dependencies.
 
-    gem install redcarpet
-    gem install RedCloth
-    gem install rubypants
-    gem install evaluator
-    gem install org-ruby
-    gem install yajl-ruby
-    gem install nokogiri
+    $ bundle install
 
-Then, run the program using the command in the application directory:
+Running
+-------
 
-    unicorn
+If you installed via gem, go to a git repository via command line and execute:
+
+    $ olelo
+
+If you installed from source you can run the rackup configuration from the olelo application directory:
+
+    $ unicorn
 
 Point your web browser at <http://localhost:8080>.
 
-Git-Wiki automatically creates a repository in the directory `./.wiki`.
 For production purposes, I recommend that you deploy the wiki with Unicorn.
 I tested other webservers like thin, rainbows, webrick and mongrel.
-Git-Wiki works with all of them thanks to rack.
 
 Configuration
 -------------

@@ -36,6 +36,9 @@ ul.tabs
   h2 Runtime
   table
     tr
+      td &#332;lelo version:
+      td= Olelo::VERSION
+    tr
       td Ruby version:
       td= RUBY_VERSION
     tr
