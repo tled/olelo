@@ -4,18 +4,10 @@ dependencies 'utils/image_magick'
 Aspect.create(:imageinfo, :priority => 1, :layout => true, :cacheable => true, :accepts => %r{^image/}) do
   def call(context, page)
     @page = page
-    identify = ImageMagick.identify('-format', '%m %h %w', '-').run(page.content).split(' ')
+    identify = ImageMagick.identify('-format', "%m\n%h\n%w\n%[EXIF:*]", '-').run(page.content).split("\n")
     @type = identify[0]
     @geometry = "#{identify[1]}x#{identify[2]}"
-    begin
-      @exif = Shell.exif('-m', '/dev/stdin').run(page.content)
-      @exif.force_encoding(Encoding.default_external)
-      @exif = @exif.split("\n").map {|line| line.split("\t") }
-      @exif = nil if !@exif[0] || !@exif[0][1]
-    rescue => ex
-      Olelo.logger.warn "Exif data could not be read: #{ex.message}"
-      @exif = nil
-    end
+    @exif = identify[3..-1].to_a.map {|line| line.sub(/^exif:/, '').split('=', 2) }
     render :info
   end
 end
@@ -50,7 +42,7 @@ table
       tr
         td= :version.t
         td.version= @page.version
-- if @exif
+- unless @exif.empty?
   h3= :exif.t
   table
     thead
