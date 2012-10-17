@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'rack'
+Rack::Server.start(:Port => 8080,
+                   :config => ::File.expand_path(::File.join(__FILE__, '..', '..', 'config.ru')))
