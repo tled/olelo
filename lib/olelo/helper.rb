@@ -135,7 +135,10 @@ module Olelo
         path = 'version'/version/path if version && (options.delete(:force_version) || !version.head?)
       end
 
-      path += '?' + build_query(options) if !options.empty?
+      unless options.empty?
+        query = build_query(options)
+        path += '?' + query unless query.empty?
+      end
       '/' + (Config['base_path'] / path)
     end
 
