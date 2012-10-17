@@ -30,7 +30,7 @@ Installation
 First, you have to install the [Gem][] dependencies via `gem`:
 
     gem install creole
-    gem install rugged
+    gem install rugged -v 0.17.0b6 # IMPORTANT: NEWEST BETA!
     gem install mimemagic
     gem install slim
     gem install rack
