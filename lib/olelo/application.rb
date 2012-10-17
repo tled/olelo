@@ -52,11 +52,11 @@ module Olelo
     hook :menu do |menu|
       if menu.name == :actions && page && !page.new?
         menu.item(:view, :href => build_path(page.path), :accesskey => 'v')
-        edit_menu = menu.item(:edit, :href => build_path(page, :action => :edit), :accesskey => 'e')
-        edit_menu.item(:new, :href => build_path(page, :action => :new), :accesskey => 'n')
+        edit_menu = menu.item(:edit, :href => build_path(page, :action => :edit), :accesskey => 'e', :rel => 'nofollow')
+        edit_menu.item(:new, :href => build_path(page, :action => :new), :accesskey => 'n', :rel => 'nofollow')
         if !page.root?
-          edit_menu.item(:move, :href => build_path(page, :action => :move))
-          edit_menu.item(:delete, :href => build_path(page, :action => :delete))
+          edit_menu.item(:move, :href => build_path(page, :action => :move), :rel => 'nofollow')
+          edit_menu.item(:delete, :href => build_path(page, :action => :delete), :rel => 'nofollow')
         end
         history_menu = menu.item(:history, :href => build_path(page, :action => :history), :accesskey => 'h')
 

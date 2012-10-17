@@ -10,11 +10,11 @@ html.no-js lang=Olelo::Config['locale'].sub('_', '-') class={page && !page.head?
         a href=Olelo::Config['base_path'] = Olelo::Config['title']
       #info
         - if Olelo::User.logged_in?
-          a href=build_path(:profile) = Olelo::User.current.name
+          a rel="nofollow" href=build_path(:profile) = Olelo::User.current.name
           ' |
-          a href=build_path(:logout) = :logout.t
+          a rel="nofollow" href=build_path(:logout) = :logout.t
         - else
-          a href=build_path(:login) = :login.t
+          a rel="nofollow" href=build_path(:login) = :login.t
       #search
         form action=build_path(:search) method='get'
           div
