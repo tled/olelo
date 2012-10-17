@@ -150,14 +150,6 @@ class Hash
 end
 
 class Object
-  # Metaclass of object
-  #
-  # @return [Class]
-  #
-  def metaclass
-    (class << self; self; end)
-  end
-
   # Returns true if object is empty or false
   #
   # @return [Boolean]
