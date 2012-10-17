@@ -1,8 +1,7 @@
 #!/usr/bin/env rackup
 
-path = ::File.expand_path(::File.dirname(__FILE__))
-$: << ::File.join(path, 'lib')
-Dir[::File.join(path, 'deps', '*', 'lib')].each {|x| $: << x }
+app_path = ::File.expand_path(::File.dirname(__FILE__))
+$: << ::File.join(app_path, 'lib')
 
 # We want to read all text data as UTF-8
 Encoding.default_external = Encoding::UTF_8
@@ -17,20 +16,34 @@ require 'olelo/middleware/flash'
 require 'olelo/middleware/force_encoding'
 require 'securerandom'
 
-Olelo::Config.instance['app_path'] = path
-Olelo::Config.instance['config_path'] = ::File.join(path, 'config')
-Olelo::Config.instance['initializers_path'] = ::File.join(path, 'config', 'initializers')
-Olelo::Config.instance['plugins_path'] = ::File.join(path, 'plugins')
-Olelo::Config.instance['views_path'] = ::File.join(path, 'views')
-Olelo::Config.instance['themes_path'] = ::File.join(path, 'static', 'themes')
-Olelo::Config.instance['cache_store'] = { :type => 'file', 'file.root' => ::File.join(path, '.wiki', 'cache') }
-Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(path, '.wiki', 'users.yml')
-Olelo::Config.instance['repository.git'] = { :path => ::File.join(path, '.wiki', 'repository'), :bare => false }
-Olelo::Config.instance['log.file'] = ::File.join(path, '.wiki', 'log')
+Olelo::Config.instance['app_path'] = app_path
+Olelo::Config.instance['config_path'] = ::File.join(app_path, 'config')
+Olelo::Config.instance['initializers_path'] = ::File.join(app_path, 'config', 'initializers')
+Olelo::Config.instance['plugins_path'] = ::File.join(app_path, 'plugins')
+Olelo::Config.instance['views_path'] = ::File.join(app_path, 'views')
+Olelo::Config.instance['themes_path'] = ::File.join(app_path, 'static', 'themes')
 Olelo::Config.instance['rack.session_secret'] = SecureRandom.hex
+Olelo::Config.instance.load!(::File.join(app_path, 'config', 'config.yml.default'))
 
-Olelo::Config.instance.load!(::File.join(path, 'config', 'config.yml.default'))
-Olelo::Config.instance.load(ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG'] || ::File.join(path, 'config', 'config.yml'))
+if Dir.pwd == app_path
+  puts "Serving from Olelo application directory #{app_path}"
+  data_path = File.join(app_path, '.wiki')
+  Olelo::Config.instance['repository.git'] = { :path => ::File.join(data_path, 'repository'), :bare => false }
+  Olelo::Config.instance['cache_store'] = { :type => 'file', 'file.root' => ::File.join(data_path, 'cache') }
+  Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(data_path, 'users.yml')
+  Olelo::Config.instance['log.file'] = ::File.join(data_path, 'log')
+elsif File.directory?(::File.join(Dir.pwd, '.git'))
+  puts "Serving out of repository #{Dir.pwd}"
+  data_path = File.join(Dir.pwd, '.wiki')
+  Olelo::Config.instance['repository.git'] = { :path => Dir.pwd, :bare => false }
+  Olelo::Config.instance['cache_store'] = { :type => 'file', 'file.root' => ::File.join(data_path, 'cache') }
+  Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(data_path, 'users.yml')
+  Olelo::Config.instance['log.file'] = ::File.join(data_path, 'log')
+else
+  puts 'No default data storage location defined, please create your own configuration!'
+end
+
+Olelo::Config.instance.load(ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG'] || ::File.join(app_path, 'config', 'config.yml'))
 Olelo::Config.instance.freeze
 
 FileUtils.mkpath ::File.dirname(Olelo::Config['log.file'])
@@ -46,7 +59,7 @@ if Olelo::Config['rack.deflater']
   use Rack::Deflater
 end
 
-use Rack::StaticCache, :urls => ['/static'], :root => path
+use Rack::StaticCache, :urls => ['/static'], :root => app_path
 use Rack::Session::Cookie, :key => 'olelo.session', :secret => Olelo::Config['rack.session_secret']
 use Olelo::Middleware::DegradeMimeType
 
