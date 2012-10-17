@@ -1,5 +1,6 @@
 description 'Git repository backend (Using rugged library)'
 require 'rugged'
+require 'fileutils'
 
 class RuggedRepository < Repository
   CONTENT_EXT  = '.content'
@@ -142,14 +143,14 @@ class RuggedRepository < Repository
 
     def initialize(git)
       @git = git
-      @head = @git.head.target
-      @tree = Tree.new(@git, @git.lookup(@head).tree_oid)
+      @head = current_head
+      @tree = Tree.new(@git, @head && @git.lookup(@head).tree_oid)
     end
 
     def commit(comment)
-      user = User.current
-      raise 'Concurrent transactions' if @head != @git.head.target
+      raise 'Concurrent transactions' if @head != current_head
 
+      user = User.current
       author = {:email => user.email, :name => user.name, :time => Time.now }
       commit = Rugged::Commit.create(@git,
                                      :author => author,
@@ -158,15 +159,28 @@ class RuggedRepository < Repository
                                      :parents => [@head],
                                      :tree => @tree.save)
 
-      raise 'Concurrent transactions' if @head != @git.head.target
-      @git.head.target = commit
+      raise 'Concurrent transactions' if @head != current_head
+      if current_head
+        @git.head.target = commit
+      else
+        Rugged::Reference.create(@git, "refs/heads/master", commit)
+      end
+    end
+
+    private
+
+    def current_head
+      @git.head.target rescue nil
     end
   end
 
   def initialize(config)
-    Olelo.logger.info "Opening git repository: #{config[:path]}"
-    # Rugged::Repository.init_at('.', config[:bare])
     @git = Rugged::Repository.new(config[:path])
+    Olelo.logger.info "Opening git repository: #{config[:path]}"
+  rescue Rugged::OSError
+    Olelo.logger.info "Creating git repository: #{config[:path]}"
+    FileUtils.mkpath(config[:path])
+    @git = Rugged::Repository.init_at(config[:path], config[:bare])
   end
 
   def transaction
@@ -236,7 +250,7 @@ class RuggedRepository < Repository
       commit = @git.rev_parse(version.to_s) rescue nil
       commit_to_version(commit)
     else
-      commit_to_version(@git.last_commit)
+      commit_to_version(@git.last_commit) rescue nil
     end
   end
 
