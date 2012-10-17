@@ -136,7 +136,12 @@ module Olelo
 
     get '/changes/:version(/:path)' do
       @page = Page.find!(params[:path])
-      @diff = page.diff(nil, params[:version])
+      begin
+        @diff = page.diff(nil, params[:version])
+      rescue => ex
+        Olelo.logger.debug ex
+        raise NotFound
+      end
       @version = @diff.to
       cache_control :version => @version
       render :changes
@@ -179,7 +184,12 @@ module Olelo
     get '/compare/:versions(/:path)', :versions => '(?:\w+)\.{2,3}(?:\w+)' do
       @page = Page.find!(params[:path])
       versions = params[:versions].split(/\.{2,3}/)
-      @diff = page.diff(versions.first, versions.last)
+      begin
+        @diff = page.diff(versions.first, versions.last)
+      rescue => ex
+        Olelo.logger.debug ex
+        raise NotFound
+      end
       render :compare
     end
 

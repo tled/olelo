@@ -1,9 +1,5 @@
 module Olelo
   class NotFound < NameError
-    def initialize(id)
-      super(:not_found.t(:id => id), id)
-    end
-
     def status
       :not_found
     end
