@@ -105,6 +105,16 @@ ul.button-bar, ul.pagination {
   }
 }
 
+dt {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+dd {
+  margin: 0;
+  padding: 0 0 0.5em 0;
+}
+
 table {
   border-collapse: separate;
   border-spacing: 0px;
