@@ -3,6 +3,7 @@ dependencies 'aspects'
 
 def self.exported_variables(page)
   vars = {
+    'base_path'             => Config['base_path'],
     'page_name'             => page.name,
     'page_new'              => page.new?,
     'page_modified'         => page.modified?,

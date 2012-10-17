@@ -20,6 +20,6 @@ $('#sidebar').wrapInner('<div id="sidebar-menu"/>').prepend('<div id="sidebar-tr
 $('#menu > ul:first').prepend('<li class="selected" id="sidebar-tab-menu"><a href="#sidebar-menu">' + $.t('menu') +
                               '</a></li><li id="sidebar-tab-tree"><a href="#sidebar-tree">' + $.t('tree') + '</a></li>');
 $('#sidebar-tab-menu, #sidebar-tab-tree').tabWidget({store: 'sidebar-tab'});
-$('#treeview').treeView({stateStore: 'treeview-state', cacheStore: 'treeview-cache', ajax: function(path, success, error) {
+$('#treeview').treeView({stateStore: 'treeview-state', cacheStore: 'treeview-cache', root: Olelo.base_path, ajax: function(path, success, error) {
     $.ajax({url: path, data: { aspect: 'treeview.json' }, success: success, error: error, dataType: 'json'});
 }});

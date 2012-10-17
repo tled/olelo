@@ -1,5 +1,5 @@
 description    'Tree Viewer'
-dependencies   'aspects', 'utils/assets'
+dependencies   'aspects', 'utils/assets', 'misc/variables'
 export_scripts '*.js', '*.css'
 export_assets  'images/*'
 
