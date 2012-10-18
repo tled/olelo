@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors           = ['Daniel Mendler']
   s.email             = ['mail@daniel-mendler.de']
   s.summary           = 'Olelo is a git-based wiki.'
-  s.summary           = 'Olelo is a git-based wiki which supports many markup languages, tags, embedded TeX and much more. It can be extended through plugins.'
+  s.description       = 'Olelo is a git-based wiki which supports many markup languages, tags, embedded TeX and much more. It can be extended through plugins.'
   s.homepage          = 'http://gitwiki.org/'
   s.rubyforge_project = s.name
 
