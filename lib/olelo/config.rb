@@ -7,7 +7,7 @@ module Olelo
     def initialize(base = nil)
       @hash = {}
       @base = base.freeze
-   end
+    end
 
     def [](key)
       key = key.to_s

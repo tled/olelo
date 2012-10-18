@@ -9,7 +9,6 @@ class Interwiki < Filter
 
   def filter(context, content)
     content.gsub!(@regexp) do
-      wiki, page = $1, $2
       %{href="#{escape_html @map[$1]}#{$2}"}
     end
     content

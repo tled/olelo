@@ -98,8 +98,8 @@ module Olelo
         if Module === obj
           names = obj.name.split('::')
           mod = Object
-          names.map {|name| mod = mod.const_get(name) }.reverse.each do |mod|
-            return mod if Plugin === mod
+          names.map {|name| mod = mod.const_get(name) }.reverse.each do |m|
+            return m if Plugin === m
           end
         elsif Proc === obj
           return obj.binding.eval('PLUGIN')
@@ -114,6 +114,7 @@ module Olelo
     attr_reader? :started
 
     def initialize(path, file)
+      @setup = nil
       @path, @file = path, file
       @started = false
       @dependencies = Set.new

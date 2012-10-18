@@ -36,10 +36,10 @@ Aspects::Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => tru
     @page_count = articles.size / per_page + 1
     articles = articles[((@page_nr - 1) * per_page) ... (@page_nr * per_page)].to_a
 
-    @articles = articles.map do |page|
+    @articles = articles.map do |article|
       begin
-        subctx = context.subcontext(:page => page, :params => {:included => true})
-        content = Aspects::Aspect.find!(page, :layout => true).call(subctx, page)
+        subctx = context.subcontext(:page => article, :params => {:included => true})
+        content = Aspects::Aspect.find!(article, :layout => true).call(subctx, article)
         if !context.params[:full]
           paragraphs = XML::Fragment(content).xpath('p')
           content = ''
@@ -51,7 +51,7 @@ Aspects::Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => tru
       rescue Aspects::Aspect::NotAvailable => ex
         %{<span class="error">#{escape_html ex.message}</span>}
       end
-      [page, content]
+      [article, content]
     end
     render :blog, :locals => {:full => context.params[:full]}
   end

@@ -9,7 +9,7 @@ Aspects::Aspect.create(:gallery, :priority => 3, :layout => true, :hidden => tru
     per_page = @per_row * 4
     @page_nr = [context.params[:page].to_i, 1].max
     @page = page
-    @images = @page.children.select {|page| page.mime.image? }
+    @images = @page.children.select {|p| p.mime.image? }
     @page_count = @images.size / per_page + 1
     @images = @images[((@page_nr - 1) * per_page) ... (@page_nr * per_page)].to_a
     render :gallery

@@ -42,7 +42,7 @@ module Olelo
     def validate
       check do |errors|
         errors << :invalid_email.t if email !~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
-        errors << :invalid_name.t  if name !~ /[\w\.\-\+_]+/
+        errors << :invalid_name.t  if name !~ /[\w\.\-\+]+/
       end
     end
 

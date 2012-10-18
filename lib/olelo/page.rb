@@ -132,7 +132,7 @@ module Olelo
 
     def name
       i = path.rindex('/')
-      name = i ? path[i+1..-1] : path
+      i ? path[i+1..-1] : path
     end
 
     def title
