@@ -88,7 +88,6 @@ class GitrbRepository < Repository
   # @override
   def set_content(path, content)
     check_path(path)
-    content = content.read if content.respond_to? :read
     expand_tree(path)
     object = @git.root[path]
     if object && object.type == :tree

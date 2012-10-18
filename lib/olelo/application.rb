@@ -237,8 +237,11 @@ module Olelo
 
     def post_upload
       raise 'No file' if !params[:file]
-      raise :version_conflict.t if !page.new? && page.version.to_s != params[:version]
-      page.content = params[:file][:tempfile]
+      page.content = params[:file][:tempfile].read
+      check do |errors|
+        errors << :version_conflict.t if !page.new? && page.version.to_s != params[:version]
+        errors << :no_changes.t if !page.modified?
+      end
       page.save
       Page.commit(:page_uploaded.t(:page => page.title))
     end

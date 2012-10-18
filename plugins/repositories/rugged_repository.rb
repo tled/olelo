@@ -193,7 +193,6 @@ class RuggedRepository < Repository
 
   def set_content(path, content)
     check_path(path)
-    content = content.read if content.respond_to? :read
     expand_tree(path)
     object = work_tree[path]
     if object && object.type == :tree
