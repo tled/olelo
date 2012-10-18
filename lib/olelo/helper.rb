@@ -246,10 +246,6 @@ module Olelo
       include_or_define_block(:title,  content, &block)
     end
 
-    def script
-      invoke_hook(:script).join.html_safe
-    end
-
     def head
       @@theme_link ||=
         begin

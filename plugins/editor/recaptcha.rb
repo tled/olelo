@@ -5,7 +5,7 @@ RECAPTCHA_PUBLIC = Config['recaptcha.public']
 RECAPTCHA_PRIVATE = Config['recaptcha.private']
 
 class ::Olelo::Application
-  hook :script do
+  hook :head do
     %{<script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"/>
 <script type="text/javascript">
   $(function() {

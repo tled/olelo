@@ -10,7 +10,7 @@ class ::Olelo::Application
 
   attr_reader? :disable_assets
 
-  hook :script, 1 do
+  hook :head, 1 do
     js = Application.scripts['js']
     if js && !disable_assets?
       path = build_path "_/assets/assets.js?#{js.first.to_i}"

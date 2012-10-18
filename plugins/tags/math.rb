@@ -98,7 +98,7 @@ Tag.define :math, :optional => 'display' do |context, attrs, code|
 end
 
 class ::Olelo::Application
-  hook :script do
+  hook :head do
     if page && Config['math_renderer'] == 'mathjax'
       %{<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"/>}
     end
