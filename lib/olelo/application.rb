@@ -11,7 +11,8 @@ module Olelo
     attr_reader :page
     attr_setter :on_error
 
-    has_around_hooks :request, :routing, :action, :title, :footer, :login_buttons, :edit_buttons
+    has_around_hooks :request, :routing, :action, :title, :footer, :login_buttons,
+                     :edit_buttons, :attributes_buttons, :upload_buttons
     has_hooks :auto_login, :render, :menu, :head, :script
 
     class<< self
@@ -270,7 +271,7 @@ module Olelo
     end
 
     post '/(:path)', :tail => true do
-      action, @close = params[:action].to_s.split('-')
+      action, @close = params[:action].to_s.split('-', 2)
       if respond_to? "post_#{action}"
         on_error :edit
         Page.transaction do

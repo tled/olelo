@@ -5,10 +5,6 @@ RECAPTCHA_PUBLIC = Config['recaptcha.public']
 RECAPTCHA_PRIVATE = Config['recaptcha.private']
 
 class ::Olelo::Application
-  before :edit_buttons do
-    %{<br/><label for="recaptcha">#{:captcha.t}</label><br/><div id="recaptcha"></div><br/>} if flash[:show_captcha]
-  end
-
   hook :script do
     %{<script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"/>
 <script type="text/javascript">
@@ -22,13 +18,21 @@ class ::Olelo::Application
 </script>} if flash[:show_captcha]
   end
 
-  redefine_method :post_edit do
-    if captcha_valid?
-      super()
-    else
-      flash.info! :enter_captcha.t
-      flash.now[:show_captcha] = true
-      halt render(:edit)
+  %w(edit attributes upload).each do |action|
+    before "#{action}_buttons" do
+      if flash[:show_captcha] && action?(action)
+        %{<br/><div id="recaptcha"></div><br/>}
+      end
+    end
+
+    redefine_method "post_#{action}" do
+      if captcha_valid?
+        super()
+      else
+        flash.info! :enter_captcha.t
+        flash.now[:show_captcha] = true
+        halt render(:edit)
+      end
     end
   end
 

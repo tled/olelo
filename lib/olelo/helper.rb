@@ -232,7 +232,7 @@ module Olelo
 
     def action?(action)
       if params[:action]
-        params[:action].split('-').include?(action.to_s)
+        params[:action].split('-', 2).first == action.to_s
       else
         unescape(request.path_info).starts_with?("/#{action}")
       end
