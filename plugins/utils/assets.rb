@@ -11,19 +11,19 @@ class ::Olelo::Application
   attr_reader? :disable_assets
 
   hook :head, 1 do
+    return if disable_assets?
     js = Application.scripts['js']
-    if js && !disable_assets?
-      path = build_path "_/assets/assets.js?#{js.first.to_i}"
-      %{<script src="#{escape_html path}" type="text/javascript"/>}
-    end
-  end
-
-  hook :head, 1 do
     css = Application.scripts['css']
-    if css && !disable_assets?
+    result = ''
+    if css
       path = build_path "_/assets/assets.css?#{css.first.to_i}"
-      %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
+      result << %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
     end
+    if js
+      path = build_path "_/assets/assets.js?#{js.first.to_i}"
+      result << %{<script src="#{escape_html path}" type="text/javascript"/>}
+    end
+    result
   end
 
   get "/_/assets/assets.:type", :type => 'js|css' do
