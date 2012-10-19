@@ -94,23 +94,26 @@ module Olelo
         nil
       end
 
-      return if !result
-      if result.respond_to?(:to_str)
+      case result
+      when nil, false
+      when String
         response.body = [result]
-      elsif result.respond_to?(:to_ary)
-        result = result.to_ary
-        if result.length == 2 && Symbol === result.first
-          response.status = Rack::Utils.status_code(result.first)
-          response.body = result.last
+      when Fixnum, Symbol
+        response.status = Rack::Utils.status_code(result)
+      when Array
+        if Symbol === result.first || Fixnum === result.first
+          response.status = Rack::Utils.status_code(result.shift)
+          response.body = result.pop
+          response.headers.merge!(result.first) if result.first
         else
           response.body = result
         end
-      elsif result.respond_to?(:each)
-        response.body = result
-      elsif Symbol === result
-        response.status = Rack::Utils.status_code(result)
       else
-        raise TypeError, "#{result.inspect} not supported"
+        if result.respond_to?(:each)
+          response.body = result
+        else
+          raise TypeError, "#{result.inspect} not supported"
+        end
       end
     end
 

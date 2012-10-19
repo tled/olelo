@@ -12,16 +12,12 @@ module Olelo
       raise NotImplementedError
     end
 
-    def open(name)
-      [read(name)]
+    def real_path(name)
+      nil
     end
 
     def size(name)
       read(name).bytesize
-    end
-
-    def mime(name)
-      MimeMagic.by_path(name) || MimeMagic.new('application/octet-stream')
     end
 
     class VirtualFile
@@ -35,8 +31,8 @@ module Olelo
         fs.read(name)
       end
 
-      def open
-        fs.open(name)
+      def real_path
+        fs.real_path(name)
       end
 
       def mtime
@@ -45,10 +41,6 @@ module Olelo
 
       def size
         @size ||= fs.size(name)
-      end
-
-      def mime
-        @fs.mime(name)
       end
     end
 
@@ -59,31 +51,31 @@ module Olelo
 
       # @override
       def read(name)
-        File.read(File.join(@dir, name))
+        File.read(real_path(name))
       end
 
       # @override
       def glob(*names)
         names.map do |name|
-          Dir[File.join(@dir, name)].select {|f| File.file?(f) }
+          Dir[real_path(name)].select {|f| File.file?(f) }
         end.flatten.each do |f|
           yield(VirtualFile.new(self, f[@dir.length+1..-1]))
         end
       end
 
       # @override
-      def open(name)
-        BlockFile.open(File.join(@dir, name), 'rb')
+      def real_path(name)
+        File.join(@dir, name)
       end
 
       # @override
       def mtime(name)
-        File.mtime(File.join(@dir, name))
+        File.mtime(real_path(name))
       end
 
       # @override
       def size(name)
-        File.stat(File.join(@dir, name)).size
+        File.stat(real_path(name)).size
       end
     end
 
@@ -140,7 +132,7 @@ module Olelo
         @fs.each {|fs| fs.glob(*names, &block) }
       end
 
-      %w(read mtime open size mime).each do |method|
+      %w(read mtime real_path size).each do |method|
         class_eval %{
           def #{method}(*args)
             result = nil

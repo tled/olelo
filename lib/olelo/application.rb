@@ -259,7 +259,7 @@ module Olelo
 
     def show_page
       @menu_versions = true
-      halt render(:show, :locals => {:content => page.try(:content)})
+      render(:show, :locals => {:content => page.try(:content)})
     end
 
     get '/version/:version(/:path)|/(:path)', :tail => true do

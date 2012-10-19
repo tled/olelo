@@ -171,7 +171,7 @@ class ::Olelo::Application
     self.response.header.merge!(header)
 
     @menu_versions = true
-    halt(layout ? render(:show, :locals => {:content => content}) : content)
+    layout ? render(:show, :locals => {:content => content}) : content
   rescue Aspect::NotAvailable => ex
     cache_control :no_cache => true
     redirect build_path(page.path) if params[:path].to_s.ends_with? '/'

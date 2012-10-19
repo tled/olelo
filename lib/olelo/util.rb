@@ -33,17 +33,6 @@ module Olelo
     end
   end
 
-  class BlockFile < ::File
-    alias to_path path
-
-    def each
-      rewind
-      while part = read(8192)
-        yield part
-      end
-    end
-  end
-
   module Util
     def self.included(base)
       base.extend(Util)

@@ -104,12 +104,11 @@ class ::Olelo::Application
     end
   end
 
-  get '/_/blahtex/:name', :name => /[\w\.]+/ do
+  get '/_/blahtex/:name', :name => /\w+\.\w+/ do
     begin
-      response['Content-Type'] = 'image/png'
-      file = File.join(Config['blahtex_directory'], params[:name])
-      response['Content-Length'] ||= File.stat(file).size.to_s
-      halt BlockFile.open(file, 'rb')
+      file = Rack::File.new(nil)
+      file.path = File.join(Config['blahtex_directory'], params[:name])
+      file.serving(env)
     rescue => ex
       ImageMagick.label(ex.message)
     end

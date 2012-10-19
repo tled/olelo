@@ -39,10 +39,16 @@ class ::Olelo::Application
 
   get "/_/assets/:name", :name => '.*' do
     if asset = Application.assets[params[:name]]
-      cache_control :last_modified => asset.mtime, :max_age => :static
-      response['Content-Type'] = asset.mime.to_s
-      response['Content-Length'] = asset.size.to_s
-      halt asset.open
+      if path = asset.real_path
+        file = Rack::File.new(nil)
+        file.path = path
+        file.serving(env)
+      else
+        cache_control :last_modified => asset.mtime, :max_age => :static
+        response['Content-Type'] = (MimeMagic.by_path(asset.name) || 'application/octet-stream').to_s
+        response['Content-Length'] = asset.size.to_s
+        asset.read
+      end
     else
       :not_found
     end
