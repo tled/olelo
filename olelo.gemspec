@@ -21,11 +21,14 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('slim', ['~> 1.3.3'])
   s.add_runtime_dependency('creole', ['~> 0.4.2'])
   s.add_runtime_dependency('nokogiri', ['~> 1.5.5'])
-  s.add_runtime_dependency('mimemagic', ['~> 0.1.9'])
+  s.add_runtime_dependency('mimemagic', ['~> 0.2.0'])
   s.add_runtime_dependency('rack', ['~> 1.4.1'])
-  s.add_runtime_dependency('redcarpet', ['~> 2.1.1'])
+  s.add_runtime_dependency('redcarpet', ['~> 2.2.1'])
   s.add_runtime_dependency('rugged', ['~> 0.17.0b6'])
+  s.add_runtime_dependency('evaluator', ['~> 0.1.6'])
 
   s.add_development_dependency('rake', ['>= 0.8.7'])
   s.add_development_dependency('sass', ['>= 3.1.0'])
+  s.add_development_dependency('bacon', ['~> 1.1.0'])
+  s.add_development_dependency('rack-test', ['~> 0.6.2'])
 end
