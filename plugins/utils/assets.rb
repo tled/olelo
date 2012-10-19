@@ -10,7 +10,7 @@ class ::Olelo::Application
 
   attr_reader? :disable_assets
 
-  hook :head, 1 do
+  hook :head, 2 do
     return if disable_assets?
     js = Application.scripts['js']
     css = Application.scripts['css']
