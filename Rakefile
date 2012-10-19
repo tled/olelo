@@ -75,8 +75,8 @@ end
 
 desc 'Generate documentation'
 namespace :doc do
-  task :gen    do; system("yard doc -o doc/api -e lib/yard/addons.rb --backtrace 'lib/**/*.rb' 'plugins/**/*.rb'"); end
-  task :server do; system('yard server --reload -e lib/yard/addons.rb --backtrace'); end
+  task :gen    do; system("yard doc -o doc/api 'lib/**/*.rb' 'plugins/**/*.rb'"); end
+  task :server do; system('yard server --reload'); end
   task :check  do; system("yardcheck 'lib/**/*.rb' 'plugins/**/*.rb'"); end
 end
 
