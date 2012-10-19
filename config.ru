@@ -50,7 +50,21 @@ FileUtils.mkpath ::File.dirname(Olelo::Config['log.file'])
 logger = ::Logger.new(Olelo::Config['log.file'], :monthly, 10240000)
 logger.level = ::Logger.const_get(Olelo::Config['log.level'])
 
-use_lint if !Olelo::Config['production']
+# Doesn't work currently, rack issue #241
+# if !Olelo::Config['production']
+#   # Rack::Lint injector
+#   module UseLint
+#     def use(middleware, *args, &block)
+#       super Rack::Lint if middleware != Rack::Lint
+#       super
+#     end
+#     def run(app)
+#       use Rack::Lint
+#       super
+#     end
+#   end
+#   class << self; include UseLint; end
+# end
 
 use Rack::Runtime
 use Rack::ShowExceptions if !Olelo::Config['production']
@@ -70,7 +84,6 @@ end
 
 use Rack::MethodOverride
 use Rack::CommonLogger, LoggerOutput.new(logger)
-
 use Olelo::Middleware::ForceEncoding
 use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
 use Rack::RelativeRedirect

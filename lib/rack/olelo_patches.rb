@@ -12,22 +12,3 @@ class Rack::Request
     env['HTTP_PRAGMA'] == 'no-cache' || env['HTTP_CACHE_CONTROL'].to_s.include?('no-cache')
   end
 end
-
-# Rack::Lint injector
-class Rack::Builder
-  module UseLint
-    def use(middleware, *args, &block)
-      super Rack::Lint if middleware != Rack::Lint
-      super
-    end
-
-    def run(app)
-      use Rack::Lint
-      super
-    end
-  end
-
-  def use_lint
-    class << self; include UseLint; end
-  end
-end
