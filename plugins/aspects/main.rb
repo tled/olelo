@@ -60,6 +60,10 @@ class Aspect
       super(:aspect_not_available.t(:aspect => name, :page => page.path,
                                     :type => "#{page.mime.comment} (#{page.mime})"))
     end
+
+    def status
+      :bad_request
+    end
   end
 
   # Constructor for aspect
