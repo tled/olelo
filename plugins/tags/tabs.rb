@@ -1,4 +1,4 @@
-description 'Tabs'
+description 'Wiki syntax tag for tabs'
 
 Tag.define :tabs do |context, attrs, content|
   tabs = context[:tabs] = []

@@ -1,4 +1,4 @@
-description  'Scripting tags'
+description  'Wiki syntax tags for scripting'
 require 'evaluator'
 
 Tag.define :value, :requires => 'of', :immediate => true, :description => 'Print value' do |context, attrs|

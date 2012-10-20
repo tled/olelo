@@ -1,4 +1,4 @@
-description 'reCAPTCHA support to avoid spamming'
+description 'Adds a reCAPTCHA to the editor to avoid spamming'
 require 'net/http'
 
 RECAPTCHA_PUBLIC = Config['recaptcha.public']

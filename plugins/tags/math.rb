@@ -1,4 +1,4 @@
-description  'Math tag for LaTeX rendering'
+description  'Wiki tags for TeX math rendering'
 dependencies 'utils/image_magick'
 
 class MathRenderer
