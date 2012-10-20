@@ -31,7 +31,7 @@ class ::Olelo::Application
       else
         flash.info! :enter_captcha.t
         flash.now[:show_captcha] = true
-        render(:edit)
+        halt render(:edit)
       end
     end
   end
