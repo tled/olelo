@@ -1,0 +1,122 @@
+= Ōlelo Wiki
+
+Ōlelo is a wiki that stores pages in a [[http://git-scm.org/|Git]] repository, supports many markup styles and has an extensible, hackable architecture!
+If you want to see a demo installation go to <http://www.gitwiki.org/>.
+
+== Features
+
+Ōlelo implements a plugin system. A lot of the features are implemented as plugins and can be activated or deactivated as you wish.
+
+Core features:
+* Edit, move or delete pages
+* Page attribute editor
+* Support for hierarchical wikis (directory structure)
+* File upload
+* History, commit and diff view
+
+Features, implemented by plugins:
+* Support for many markup languages (Creole, Markdown, Textile, ...)
+* RSS/Atom changelog for whole wiki or pages
+* Section editing for Creole and Markdown markup
+* Embedded LaTeX formulas (Rendered as image or using [[http://mathjax.org/|MathJax]]
+* Syntax highlighted embedded code blocks
+* Image resizing, SVG to PNG/JPEG conversion
+* Auto-generated table of contents
+* Wiki syntax can be extended with tags
+* Editor preview
+* View pages as S5 presentation
+* Privacy features: Access control lists, Private wiki which needs login, readonly wiki
+
+== Quick start
+
+The best way to install Ōlelo is via 'gem'.
+
+{{{
+$ gem install olelo
+}}}
+
+Go to a git repository via command line and start the Ōlelo webserver.
+
+{{{
+$ olelo
+}}}
+
+== Installation from source
+
+Installation from source is especially useful if you want to do development or use the newest features.
+
+Clone the git repository:
+
+{{{
+git clone git://github.com/minad/olelo.git
+}}}
+
+Now change to the Ōlelo source directory and use Bundler to install the dependencies.
+
+{{{
+$ cd olelo
+$ bundle install
+}}}
+
+Start the Ōlelo webserver from the Ōlelo source directory.
+
+{{{
+$ bin/olelo
+}}}
+
+== Deployment
+
+For production purposes, I recommend that you deploy the wiki with [[http://unicorn.bogomips.org|Unicorn]]. You should use the rackup configuration from the Ōlelo source or gem directory.
+
+{{{
+$ unicorn path-to/config.ru
+}}}
+
+== Configuration
+
+For deployment you might want to tweak some settings. Ōlelo reads the files config/config.yml.default and config/config.yml in that order.
+So just copy the default configuration config/config.yml.default to config/config.yml and make your modifications. If you installed Ōlelo
+as gem this is not a good idea since you don't want to fiddle in the gem directory. For this purpose exists the environment variable OLELO_CONFIG which
+can point to the configuration file that you want to use.
+
+{{{
+export OLELO_CONFIG=/home/olelo/olelo_config.yml
+}}}
+
+You can also use the OLELO_CONFIG environment variable if you want to run multiple Ōlelo instances with different configurations.
+
+== Dependencies
+
+If you use Bundler or installed Ōlelo as gem you don't really have to care about the dependencies. The standard installation provides the core dependencies and a good selection of optional dependencies.
+
+Core dependencies:
+* [[http://www.git-scm.com|Git]]
+* [[http://slim-lang.com/|Slim template language]]
+* [[http://libgit2.github.com/|Rugged git library]]
+* [[http://rack.github.com/|Rack]]
+* [[https://github.com/minad/mimemagic/|MimeMagic]]
+
+Some dependencies are optional, for example depending on the markup you want to use.
+* [[https://github.com/minad/creole|Creole markup library]]
+* [[https://github.com/vmg/redcarpet|Redcarpet Markdown library]]
+* [[http://redcloth.org/|RedCloth Textile markup library]]
+* [[http://www.imagemagick.org/|ImageMagick for image resizing]]
+* [[http://nokogiri.org/|Nokogiri for auto-generated table of contents]]
+* [[http://pygments.org/|Pygments for syntax highlighting of code blocks]]
+
+== Authors
+
+Git-Wiki was originally developed by Simon Rozet. The development of Ōlelo to its current state was done by Daniel Mendler and contributors.
+The current code base doesn't have much in common with the original Git-Wiki proof-of-concept.
+
+Contributors:
+* Alex Eagle
+* Alex Wall
+* Hrvoje
+* Luca Greco
+* Pavel Suchmann
+* Raffael Schmid
+
+== License
+
+Ōlelo is released under the MIT license.
