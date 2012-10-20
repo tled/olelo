@@ -1,7 +1,7 @@
 = Ōlelo Wiki
 
 Ōlelo is a wiki that stores pages in a [[http://git-scm.org/|Git]] repository, supports many markup styles and has an extensible, hackable architecture!
-If you want to see a demo installation go to <http://www.gitwiki.org/>.
+If you want to see a demo installation go to http://www.gitwiki.org/.
 
 == Features
 
@@ -40,6 +40,8 @@ Go to a git repository via command line and start the Ōlelo webserver.
 {{{
 $ olelo
 }}}
+
+Point your web browser at http://localhost:8080/.
 
 == Installation from source
 
