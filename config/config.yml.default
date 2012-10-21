@@ -113,6 +113,7 @@ disabled_plugins:
   - security/readonly_wiki
   - security/private_wiki
   - editor/recaptcha
+  - editor/ace
 
 ##################################################
 # Rack middleware configurations
