@@ -8,7 +8,7 @@ class ::Olelo::Application
     if !User.current
       token = request.cookies[TOKEN_NAME]
       if token
-        user, hash = token.split('-', 2)
+        hash, user = token.split('-', 2)
         User.current = User.find(user) if sha256(user + Config['rack.session_secret']) == hash
       end
     end
@@ -22,7 +22,7 @@ class ::Olelo::Application
   after :action do |method, path|
     if path == '/login'
       if User.logged_in? && params[:persistent]
-        token = "#{User.current.name}-#{sha256(User.current.name + Config['rack.session_secret'])}"
+        token = "#{sha256(User.current.name + Config['rack.session_secret'])}-#{User.current.name}"
         response.set_cookie(TOKEN_NAME, :value => token, :expires => Time.now + TOKEN_LIFETIME)
       end
     elsif path == '/logout'
