@@ -50,34 +50,12 @@ module Olelo
       include Util
       extend Factory
 
-      class NotSupportedError < AuthenticationError
-        def initialize(name)
-          super(:auth_unsupported.t(:name => name))
-        end
-      end
-
       def find(name)
         raise NotImplementedError
       end
 
       def authenticate(name, password)
         raise NotImplementedError
-      end
-
-      def supports?(method)
-        false
-      end
-
-      def signup(user, password)
-        raise NotSupportedError(:signup)
-      end
-
-      def update(user)
-        raise NotSupportedError(:update)
-      end
-
-      def change_password(user, oldpassword, password)
-        raise NotSupportedError(:change_password)
       end
     end
 
@@ -124,7 +102,7 @@ module Olelo
       end
 
       def supports?(method)
-        service.supports?(method)
+        service.respond_to?(method)
       end
 
       def signup(name, password, confirm, email)
