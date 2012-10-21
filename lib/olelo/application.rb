@@ -109,7 +109,7 @@ module Olelo
     post '/signup' do
       on_error :login
       raise 'Sign-up is disabled' if !Config['authentication.enable_signup']
-      User.current = User.create(params[:user], params[:password],
+      User.current = User.signup(params[:user], params[:password],
                                  params[:confirm], params[:email])
       redirect build_path('/')
     end
@@ -127,9 +127,13 @@ module Olelo
     post '/profile' do
       raise 'Anonymous users do not have a profile.' if !User.logged_in?
       on_error :profile
-      User.current.modify do |u|
-        u.change_password(params[:oldpassword], params[:password], params[:confirm]) if !params[:password].blank?
-        u.email = params[:email]
+      if User.supports?(:change_password) && !params[:password].blank?
+        User.current.change_password(params[:oldpassword], params[:password], params[:confirm])
+      end
+      if User.supports?(:update)
+        User.current.update do |u|
+          u.email = params[:email]
+        end
       end
       flash.info! :changes_saved.t
       render :profile

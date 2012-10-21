@@ -25,7 +25,7 @@ class YamlfileService < User::Service
   end
 
   # @override
-  def create(user, password)
+  def signup(user, password)
     @store.transaction do |store|
       raise :user_already_exists.t(:name => user.name) if store[user.name]
       store[user.name] = {

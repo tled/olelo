@@ -15,7 +15,7 @@ p
         = render_block :login_buttons do
           button&submit= :login.t
       br
-  - if Olelo::Config['authentication.enable_signup']
+  - if Olelo::Config['authentication.enable_signup'] && User.supports?(:signup)
     form action=build_path(:signup) method='post'
       #tab-signup.tab.fieldset
         h2= :signup.t

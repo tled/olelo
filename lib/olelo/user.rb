@@ -29,7 +29,7 @@ module Olelo
       User.service.change_password(self, oldpassword, password)
     end
 
-    def modify(&block)
+    def update(&block)
       copy = dup
       block.call(copy)
       validate
@@ -64,16 +64,20 @@ module Olelo
         raise NotImplementedError
       end
 
-      def create(user, password)
-        raise NotSupportedError('create')
+      def supports?(method)
+        false
+      end
+
+      def signup(user, password)
+        raise NotSupportedError(:signup)
       end
 
       def update(user)
-        raise NotSupportedError('update')
+        raise NotSupportedError(:update)
       end
 
       def change_password(user, oldpassword, password)
-        raise NotSupportedError('change_password')
+        raise NotSupportedError(:change_password)
       end
     end
 
@@ -119,11 +123,15 @@ module Olelo
         service.authenticate(name, password).tap {|user| user.groups << 'user' }
       end
 
-      def create(name, password, confirm, email)
+      def supports?(method)
+        service.supports?(method)
+      end
+
+      def signup(name, password, confirm, email)
         validate_password(password, confirm)
         user = new(name, email, %w(user))
         user.validate
-        service.create(user, password)
+        service.signup(user, password)
         user
       end
     end
