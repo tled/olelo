@@ -9,13 +9,15 @@
 #
 ################################################################################
 
-regexp :remove_comments, /<!--.*?-->/m,              ''
-regexp :tag_shortcuts,   /\\\((.*?)\\\)/m,           '<math display="inline">\1</math>',
-                         /\\\[(.*?)\\\]/m,           '<math display="block">\1</math>',
-                         /<<(.*?)(\|(.*?))?>>/,      '<include page="\1" \3/>'
-regexp :creole_nowiki,   /\{\{\{.*?\}\}\}/m,         '<notags>\0</notags>'
-regexp :textile_nowiki,  /<pre>.*?<\/pre>/m,         '<notags>\0</notags>'
-regexp :mediawiki_nowiki,  /<nowiki>.*?<\/nowiki>/m, '<notags>\0</notags>'
+regexp :remove_comments, /<!--.*?-->/m,                 ''
+regexp :tag_shortcuts,   /\\\((.*?)\\\)/m,              '<math display="inline">\1</math>',
+                         /\\\[(.*?)\\\]/m,              '<math display="block">\1</math>',
+                         /<<(.*?)(\|(.*?))?>>/,         '<include page="\1" \3/>',
+                         /^~~~\s*(\w+)\s*$(.*?)^~~~$/m, '<code lang="\1">\2</code>',
+                         /^```\s*(\w+)\s*$(.*?)^```$/m, '<code lang="\1">\2</code>'
+regexp :creole_nowiki,   /\{\{\{.*?\}\}\}/m,            '<notags>\0</notags>'
+regexp :textile_nowiki,  /<pre>.*?<\/pre>/m,            '<notags>\0</notags>'
+regexp :mediawiki_nowiki,  /<nowiki>.*?<\/nowiki>/m,    '<notags>\0</notags>'
 
 ################################################################################
 #
