@@ -85,8 +85,8 @@ module Olelo
 
       def anonymous(request)
         ip = request.ip || 'unknown-ip'
-        name = request.remote_host ? "#{request.remote_host} (#{ip})" : ip
-        new(name, "anonymous@#{ip}")
+        host = request.ip && Socket.gethostbyaddr(request.ip.split('.').map(&:to_i).pack('C*')).first rescue nil
+        new(host ? "#{host} (#{ip})" : ip, "anonymous@#{ip}")
       end
 
       def find!(name)

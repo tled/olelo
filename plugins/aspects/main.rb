@@ -146,7 +146,7 @@ end
 # Plug-in the aspect subsystem
 module ::Olelo::PageHelper
   def render_page(page)
-    Cache.cache("include-#{page.path}-#{page.version.cache_id}", :update => request.no_cache?, :defer => true) do |context|
+    Cache.cache("include-#{page.path}-#{page.version.cache_id}", :update => no_cache?, :defer => true) do |context|
       begin
         context = Context.new(:page => page, :params => {:included => true})
         Aspect.find!(page, :layout => true).call(context, page)
@@ -163,7 +163,7 @@ class ::Olelo::Application
     params[:aspect] ||= 'subpages' if params[:path].to_s.ends_with? '/'
     @selected_aspect, layout, header, content =
     Cache.cache("aspect-#{page.path}-#{page.version.cache_id}-#{build_query(params)}",
-                :update => request.no_cache?, :defer => true) do |cache|
+                :update => no_cache?, :defer => true) do |cache|
       aspect = Aspect.find!(page, :name => params[:aspect])
       cache.disable! if !aspect.cacheable?
       context = Context.new(:page => page, :params => params, :request => request)
@@ -187,7 +187,7 @@ class ::Olelo::Application
   hook :menu do |menu|
     if menu.name == :actions && view_menu = menu[:view]
       Cache.cache("aspect-menu-#{page.path}-#{page.version.cache_id}-#{@selected_aspect}",
-                              :update => request.no_cache?, :defer => true) do
+                              :update => no_cache?, :defer => true) do
         aspects = Aspect.find_all(page).select {|a| !a.hidden? || a.name == @selected_aspect || a.name == page.attributes['aspect'] }.map do |a|
           [Locale.translate("aspect_#{a.name}", :fallback => titlecase(a.name)), a]
         end.sort_by(&:first)

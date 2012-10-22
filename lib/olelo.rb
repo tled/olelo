@@ -8,6 +8,7 @@ require 'open3'
 require 'set'
 require 'yaml'
 require 'mimemagic'
+require 'socket'
 
 begin
   require 'yajl/json_gem'

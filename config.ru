@@ -7,7 +7,6 @@ $: << ::File.join(app_path, 'lib')
 Encoding.default_external = Encoding::UTF_8
 
 require 'fileutils'
-require 'rack/olelo_patches'
 require 'rack/relative_redirect'
 require 'rack/static_cache'
 require 'olelo'
