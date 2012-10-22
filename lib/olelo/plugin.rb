@@ -130,11 +130,11 @@ module Olelo
 
         (0...names.length).inject(Plugin) do |mod, i|
           elem = names[i].split('_').map(&:capitalize).join
-          if mod.local_const_defined?(elem)
+          if mod.const_defined?(elem, false)
             mod.const_get(elem)
           else
             child = i == names.length - 1 ? self : Module.new
-            child.module_eval { include mod } if mod != Plugin
+            child.module_eval { include mod } if mod != Plugin # Include parent module
             mod.const_set(elem, child)
           end
         end
