@@ -42,7 +42,12 @@ else
   puts 'No default data storage location defined, please create your own configuration!'
 end
 
-Olelo::Config.instance.load(ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG'] || ::File.join(app_path, 'config', 'config.yml'))
+if config = ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG']
+  Olelo::Config.instance.load!(config)
+else
+  Olelo::Config.instance.load(::File.join(app_path, 'config', 'config.yml'))
+end
+
 Olelo::Config.instance.freeze
 
 FileUtils.mkpath ::File.dirname(Olelo::Config['log.file'])

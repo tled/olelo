@@ -1,5 +1,58 @@
 #!/usr/bin/env ruby
 
 require 'rack'
-Rack::Server.start(:Port => 8080,
-                   :config => ::File.expand_path(::File.join(__FILE__, '..', '..', 'config.ru')))
+require 'optparse'
+
+help = %{Usage: olelo [OPTIONS] [PATH]
+
+        PATH                         The path to the git repository to serve from (default .).
+
+Options:
+}
+
+options = {
+  :port => 8080,
+  :host => '0.0.0.0'
+}
+
+app_path = File.expand_path(File.join(__FILE__, '..', '..'))
+
+opts = OptionParser.new do |opts|
+  opts.banner = help
+
+  opts.on('-p', '--port [PORT]', 'Bind port (default 8080).') do |port|
+    options[:port] = port.to_i
+  end
+
+  opts.on('-o', '--host [HOST]', 'Hostname or IP address to listen on (default 0.0.0.0).') do |host|
+    options[:host] = host
+  end
+
+  opts.on('-c', '--config [CONFIG]', 'Path to the Olelo configuration, sets the $OLELO_CONFIG environment variable.') do |config|
+    ENV['OLELO_CONFIG'] = File.expand_path(config)
+  end
+
+  opts.on('-v', '--version', 'Display current version.') do
+    require File.join(app_path, 'lib', 'olelo', 'version.rb')
+    puts "Olelo #{Olelo::VERSION}"
+    exit
+  end
+
+  opts.on_tail('-h', '--help', 'Show this message') do
+    puts opts
+    exit
+  end
+end
+opts.parse!(ARGV)
+
+if ARGV.size == 1
+  Dir.chdir(ARGV.first)
+elsif ARGV.size > 1
+  puts "Too many arguments: #{ARGV.join(' ')}"
+  puts opts
+  exit
+end
+
+Rack::Server.start(:Port => options[:port],
+                   :Host => options[:host],
+                   :config => File.join(app_path, 'config.ru'))
