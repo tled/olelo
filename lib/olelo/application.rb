@@ -15,11 +15,12 @@ module Olelo
                      :edit_buttons, :attributes_buttons, :upload_buttons
     has_hooks :auto_login, :render, :menu, :head, :script
 
-    class<< self
-      attr_accessor :reserved_paths
-      def reserved_path?(path)
-        path = '/' + path.cleanpath
-        reserved_paths.any? {|pattern| path =~ pattern }
+    def self.reserved_path?(path)
+      path = '/' + path.cleanpath
+      router.any? do |method, r|
+        r.any? do |name,pattern,keys,function|
+          name != '/(:path)' && pattern.match(path)
+        end
       end
     end
 
@@ -266,15 +267,20 @@ module Olelo
       render(:show, :locals => {:content => page.try(:content)})
     end
 
-    get '/version/:version(/:path)|/(:path)', :tail => true do
+    get '/(:path)', :tail => true do
       begin
-        @page = Page.find!(params[:path], params[:version])
+        @page = Page.find!(params[:path])
         cache_control :version => page.version
         show_page
       rescue NotFound
-        redirect build_path(params[:path], :action => :new) if params[:version].blank?
-        raise
+        redirect build_path(params[:path], :action => :new)
       end
+    end
+
+    get '/version/:version(/:path)' do
+      @page = Page.find!(params[:path], params[:version])
+      cache_control :version => page.version
+      show_page
     end
 
     post '/(:path)', :tail => true do

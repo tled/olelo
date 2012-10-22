@@ -15,7 +15,7 @@ module Olelo
       init_locale
       init_templates
       init_plugins
-      init_routes
+      show_routes if Olelo.logger.debug?
       init_scripts
     end
 
@@ -41,7 +41,7 @@ module Olelo
     end
 
     def init_plugins
-      # Load locales for loaded plugins
+      # Load locales provided by plugins
       Plugin.after(:load) { Locale.load(File.join(File.dirname(file), 'locale.yml')) }
 
       # Configure plugin system
@@ -52,16 +52,13 @@ module Olelo
       Plugin.start
     end
 
-    def init_routes
-      Application.reserved_paths = Application.router.map do |method, router|
-        router.head.map {|name, pattern, keys, function| pattern }
-      end.flatten
+    def show_routes
       Application.router.each do |method, router|
         Olelo.logger.debug method
         router.each do |name, pattern, keys, function|
           Olelo.logger.debug "#{name} -> #{pattern.inspect}"
         end
-      end if Olelo.logger.debug?
+      end
     end
 
     def init_scripts
