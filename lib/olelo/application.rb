@@ -17,9 +17,10 @@ module Olelo
 
     def self.reserved_path?(path)
       path = '/' + path.cleanpath
+      path.starts_with?('/static') ||
       router.any? do |method, r|
         r.any? do |name,pattern,keys,function|
-          name != '/(:path)' && pattern.match(path)
+          name !~ /^\/\(?:path\)?$/ && pattern.match(path)
         end
       end
     end
