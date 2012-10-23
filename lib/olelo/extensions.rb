@@ -157,14 +157,7 @@ class Object
   end
 end
 
-class NilClass;   def blank?; true;  end; end
-class FalseClass; def blank?; true;  end; end
-class TrueClass;  def blank?; false; end; end
-
 class String
-  # Faster blank?
-  alias blank? empty?
-
   # Try to force encoding
   #
   # Force encoding of string and revert
