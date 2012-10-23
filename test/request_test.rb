@@ -18,47 +18,47 @@ describe 'requests' do
     @app_path = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
     default_config = {
-      :title             => 'Olelo',
-      :app_path          => @app_path,
-      :plugins_path      => File.join(@app_path, 'plugins'),
-      :config_path       => File.join(@app_path, 'config'),
-      :initializers_path => File.join(@app_path, 'config', 'initializers'),
-      :views_path        => File.join(@app_path, 'views'),
-      :themes_path       => File.join(@app_path, 'static', 'themes'),
-      :theme             => 'atlantis',
-      :cache_store       => {
-        :type => 'file',
-        :file => {
-          :root => File.join(@test_path, 'cache')
+      title:              'Olelo',
+      app_path:           @app_path,
+      plugins_path:       File.join(@app_path, 'plugins'),
+      config_path:        File.join(@app_path, 'config'),
+      initializers_path: File.join(@app_path, 'config', 'initializers'),
+      views_path:         File.join(@app_path, 'views'),
+      themes_path:        File.join(@app_path, 'static', 'themes'),
+      theme:              'atlantis',
+      cache_store:        {
+        type: 'file',
+        file: {
+          root: File.join(@test_path, 'cache')
         }
       },
-      :base_path         => '/',
-      :production        => true,
-      :locale	         => 'en_US',
-      :sidebar_page      => 'Sidebar',
-      :authentication => {
-        :service  => :yamlfile,
-        :enable_signup => true,
-        :yamlfile => {
-          :store  => File.join(@test_path, 'users.yml'),
+      base_path:          '/',
+      production:         true,
+      locale:             'en_US',
+      sidebar_page:       'Sidebar',
+      authentication: {
+        service:   :yamlfile,
+        enable_signup: true,
+        yamlfile: {
+          store:   File.join(@test_path, 'users.yml'),
         },
       },
-      :mime => [
+      mime: [
                 'extension',
                 'content',
                 'text/x-creole',
                ],
-      :mime_suggestions => [],
-      :disabled_plugins => [
+      mime_suggestions: [],
+      disabled_plugins: [
                             'security/readonly_wiki',
 			    'security/private_wiki',
                             'editor/antispam',
                            ],
-      :repository => {
-        :type  => 'git',
-        :git => {
-          :path => File.join(@test_path, 'repository'),
-          :bare => true,
+      repository: {
+        type:   'git',
+        git: {
+          path: File.join(@test_path, 'repository'),
+          bare: true,
         },
       }
     }
@@ -71,7 +71,7 @@ describe 'requests' do
     @app = Rack::Builder.new do
       use Olelo::Middleware::ForceEncoding
       use Rack::Session::Pool
-      use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
+      use Olelo::Middleware::Flash, set_accessors: %w(error warn info)
       Olelo::Initializer.initialize(logger)
       run Olelo::Application.new
     end

@@ -26,9 +26,9 @@ class ::Olelo::Application
     result
   end
 
-  get "/_/assets/assets.:type", :type => 'js|css' do
+  get "/_/assets/assets.:type", type: 'js|css' do
     if script = Application.scripts[params[:type]]
-      cache_control :last_modified => script.first, :max_age => :static
+      cache_control last_modified: script.first, max_age: :static
       response['Content-Type'] = MimeMagic.by_extension(params[:type]).to_s
       response['Content-Length'] = script.last.bytesize.to_s
       script.last
@@ -37,14 +37,14 @@ class ::Olelo::Application
     end
   end
 
-  get "/_/assets/:name", :name => '.*' do
+  get "/_/assets/:name", name: '.*' do
     if asset = Application.assets[params[:name]]
       if path = asset.real_path
         file = Rack::File.new(nil)
         file.path = path
         file.serving(env)
       else
-        cache_control :last_modified => asset.mtime, :max_age => :static
+        cache_control last_modified: asset.mtime, max_age: :static
         response['Content-Type'] = (MimeMagic.by_path(asset.name) || 'application/octet-stream').to_s
         response['Content-Length'] = asset.size.to_s
         asset.read

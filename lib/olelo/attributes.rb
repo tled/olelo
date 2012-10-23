@@ -19,12 +19,12 @@ module Olelo
       end
 
       def label
-        @label ||= Locale.translate(key, :fallback => titlecase(name))
+        @label ||= Locale.translate(key, fallback: titlecase(name))
       end
 
       def label_tag
         type = self.class.name.split('::').last.downcase
-        title = Locale.translate("type_#{type}", :fallback => titlecase(type))
+        title = Locale.translate("type_#{type}", fallback: titlecase(type))
         %{<label for="#{key}" title="#{escape_html title}">#{escape_html label}</label>}
       end
 
@@ -149,7 +149,7 @@ module Olelo
       end
 
       def label
-        @label ||= name.blank? ? '' : Locale.translate("group_#{path}", :fallback => titlecase(name))
+        @label ||= name.blank? ? '' : Locale.translate("group_#{path}", fallback: titlecase(name))
       end
 
       # Build form for this group

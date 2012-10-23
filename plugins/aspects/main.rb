@@ -4,7 +4,7 @@ dependencies 'utils/cache'
 Page.attributes do
   enum :aspect do
     Aspect.aspects.keys.inject({}) do |hash, name|
-      hash[name] = Locale.translate("aspect_#{name}", :fallback => titlecase(name))
+      hash[name] = Locale.translate("aspect_#{name}", fallback: titlecase(name))
       hash
     end
   end
@@ -39,11 +39,11 @@ class Context
   end
 
   def subcontext(options = {})
-    Context.new(:page    => options[:page] || page,
-                :private => private.merge(options[:private] || {}),
-                :params  => params.merge(options[:params] || {}),
-                :request => request,
-                :header  => header)
+    Context.new(page:    options[:page] || page,
+                private: private.merge(options[:private] || {}),
+                params:  params.merge(options[:params] || {}),
+                request: request,
+                header:  header)
   end
 end
 
@@ -57,8 +57,8 @@ class Aspect
 
   class NotAvailable < NameError
     def initialize(name, page)
-      super(:aspect_not_available.t(:aspect => name, :page => page.path,
-                                    :type => "#{page.mime.comment} (#{page.mime})"))
+      super(:aspect_not_available.t(aspect: name, page: page.path,
+                                    type: "#{page.mime.comment} (#{page.mime})"))
     end
 
     def status
@@ -146,10 +146,10 @@ end
 # Plug-in the aspect subsystem
 module ::Olelo::PageHelper
   def render_page(page)
-    Cache.cache("include-#{page.path}-#{page.version.cache_id}", :update => no_cache?, :defer => true) do |context|
+    Cache.cache("include-#{page.path}-#{page.version.cache_id}", update: no_cache?, defer: true) do |context|
       begin
-        context = Context.new(:page => page, :params => {:included => true})
-        Aspect.find!(page, :layout => true).call(context, page)
+        context = Context.new(page: page, params: {included: true})
+        Aspect.find!(page, layout: true).call(context, page)
       rescue Aspect::NotAvailable => ex
         %{<span class="error">#{escape_html ex.message}</span>}
       end
@@ -163,10 +163,10 @@ class ::Olelo::Application
     params[:aspect] ||= 'subpages' if params[:path].to_s.ends_with? '/'
     @selected_aspect, layout, header, content =
     Cache.cache("aspect-#{page.path}-#{page.version.cache_id}-#{build_query(params)}",
-                :update => no_cache?, :defer => true) do |cache|
-      aspect = Aspect.find!(page, :name => params[:aspect])
+                update: no_cache?, defer: true) do |cache|
+      aspect = Aspect.find!(page, name: params[:aspect])
       cache.disable! if !aspect.cacheable?
-      context = Context.new(:page => page, :params => params, :request => request)
+      context = Context.new(page: page, params: params, request: request)
       result = aspect.call(context, page)
       context.header['Content-Type'] ||= aspect.mime.to_s if aspect.mime
       context.header['Content-Type'] ||= page.mime.to_s if !aspect.layout?
@@ -175,27 +175,27 @@ class ::Olelo::Application
     self.response.header.merge!(header)
 
     @menu_versions = true
-    layout ? render(:show, :locals => {:content => content}) : content
+    layout ? render(:show, locals: {content: content}) : content
   rescue Aspect::NotAvailable => ex
-    cache_control :no_cache => true
+    cache_control no_cache: true
     redirect build_path(page.path) if params[:path].to_s.ends_with? '/'
     raise if params[:aspect]
     flash.error ex.message
-    redirect build_path(page, :action => :edit)
+    redirect build_path(page, action: :edit)
   end
 
   hook :menu do |menu|
     if menu.name == :actions && view_menu = menu[:view]
       Cache.cache("aspect-menu-#{page.path}-#{page.version.cache_id}-#{@selected_aspect}",
-                              :update => no_cache?, :defer => true) do
+                              update: no_cache?, defer: true) do
         aspects = Aspect.find_all(page).select {|a| !a.hidden? || a.name == @selected_aspect || a.name == page.attributes['aspect'] }.map do |a|
-          [Locale.translate("aspect_#{a.name}", :fallback => titlecase(a.name)), a]
+          [Locale.translate("aspect_#{a.name}", fallback: titlecase(a.name)), a]
         end.sort_by(&:first)
         aspects.select {|label, a| a.layout? }.map do |label, a|
-          MenuItem.new(a.name, :label => label, :href => build_path(page, :aspect => a.name), :class => a.name == @selected_aspect ? 'selected' : nil)
+          MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: a.name == @selected_aspect ? 'selected' : nil)
         end +
         aspects.reject {|label, a| a.layout? }.map do |label, a|
-          MenuItem.new(a.name, :label => label, :href => build_path(page, :aspect => a.name), :class => 'download')
+          MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: 'download')
         end
       end.each {|item| view_menu << item }
     end

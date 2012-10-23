@@ -1,8 +1,8 @@
-- title "#{:compare.t(:name => page.title)}: #{@diff.from.short} -> #{@diff.to.short}"
+- title "#{:compare.t(name: page.title)}: #{@diff.from.short} -> #{@diff.to.short}"
 h1
-  = :compare.t(:name => page.title)
+  = :compare.t(name: page.title)
   | :
-  a.version href=build_path(page, :version => @diff.from) = @diff.from.short
+  a.version href=build_path(page, version: @diff.from) = @diff.from.short
   | &#8594;
-  a.version href=build_path(page, :version => @diff.to) = @diff.to.short
+  a.version href=build_path(page, version: @diff.to) = @diff.to.short
 = format_diff(@diff)

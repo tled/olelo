@@ -33,5 +33,5 @@ class OleloCreole < ::Creole::Parser
 end
 
 Filter.create :creole do |context, content|
-  OleloCreole.new(content, :extensions => true, :no_escape => true).to_html
+  OleloCreole.new(content, extensions: true, no_escape: true).to_html
 end

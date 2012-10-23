@@ -48,7 +48,7 @@ describe 'Olelo::Util' do
   end
 
   it 'should have #build_query' do
-    Olelo::Util.build_query(:a => 1, :b => [1, 2, 3]).should.equal 'a=1&b=1&b=2&b=3'
+    Olelo::Util.build_query(a: 1, b: [1, 2, 3]).should.equal 'a=1&b=1&b=2&b=3'
   end
 
   it 'should have #truncate' do

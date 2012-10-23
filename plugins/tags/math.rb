@@ -92,7 +92,7 @@ class LaTeXRenderer < MathRenderer
   register 'mathjax', LaTeXRenderer
 end
 
-Tag.define :math, :optional => 'display' do |context, attrs, code|
+Tag.define :math, optional: 'display' do |context, attrs, code|
   raise('Limits exceeded') if code.size > 10240
   MathRenderer.instance.render(code, attrs['display'] == 'block' ? 'block' : 'inline')
 end
@@ -104,7 +104,7 @@ class ::Olelo::Application
     end
   end
 
-  get '/_/blahtex/:name', :name => /\w+\.\w+/ do
+  get '/_/blahtex/:name', name: /\w+\.\w+/ do
     begin
       file = Rack::File.new(nil)
       file.path = File.join(Config['blahtex_directory'], params[:name])

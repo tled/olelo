@@ -7,7 +7,7 @@ module Olelo
     include Routing
     include ApplicationHelper
 
-    patterns :path => Page::PATH_PATTERN
+    patterns path: Page::PATH_PATTERN
     attr_reader :page
     attr_setter :on_error
 
@@ -54,23 +54,23 @@ module Olelo
 
     hook :menu do |menu|
       if menu.name == :actions && page && !page.new?
-        menu.item(:view, :href => build_path(page.path), :accesskey => 'v')
-        edit_menu = menu.item(:edit, :href => build_path(page, :action => :edit), :accesskey => 'e', :rel => 'nofollow')
-        edit_menu.item(:new, :href => build_path(page, :action => :new), :accesskey => 'n', :rel => 'nofollow')
+        menu.item(:view, href: build_path(page.path), accesskey: 'v')
+        edit_menu = menu.item(:edit, href: build_path(page, action: :edit), accesskey: 'e', rel: 'nofollow')
+        edit_menu.item(:new, href: build_path(page, action: :new), accesskey: 'n', rel: 'nofollow')
         if !page.root?
-          edit_menu.item(:move, :href => build_path(page, :action => :move), :rel => 'nofollow')
-          edit_menu.item(:delete, :href => build_path(page, :action => :delete), :rel => 'nofollow')
+          edit_menu.item(:move, href: build_path(page, action: :move), rel: 'nofollow')
+          edit_menu.item(:delete, href: build_path(page, action: :delete), rel: 'nofollow')
         end
-        history_menu = menu.item(:history, :href => build_path(page, :action => :history), :accesskey => 'h')
+        history_menu = menu.item(:history, href: build_path(page, action: :history), accesskey: 'h')
 
         if @menu_versions
           head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
           if page.previous_version || head || page.next_version
-            history_menu.item(:older, :href => build_path(page, original_params.merge(:version => page.previous_version)),
-                              :accesskey => 'o') if page.previous_version
-            history_menu.item(:head, :href => build_path(page.path, original_params), :accesskey => 'c') if head
-            history_menu.item(:newer, :href => build_path(page, original_params.merge(:version => page.next_version)),
-                              :accesskey => 'n') if page.next_version
+            history_menu.item(:older, href: build_path(page, original_params.merge(version: page.previous_version)),
+                              accesskey: 'o') if page.previous_version
+            history_menu.item(:head, href: build_path(page.path, original_params), accesskey: 'c') if head
+            history_menu.item(:newer, href: build_path(page, original_params.merge(version: page.next_version)),
+                              accesskey: 'n') if page.next_version
           end
         end
       end
@@ -79,8 +79,8 @@ module Olelo
     # Handle 404s
     error NotFound do |error|
       Olelo.logger.debug(error)
-      cache_control :no_cache => true
-      halt render(:not_found, :locals => {:error => error})
+      cache_control no_cache: true
+      halt render(:not_found, locals: {error: error})
     end
 
     error StandardError do |error|
@@ -94,8 +94,8 @@ module Olelo
     # Show wiki error page
     error Exception do |error|
       Olelo.logger.error(error)
-      cache_control :no_cache => true
-      halt render(:error, :locals => {:error => error})
+      cache_control no_cache: true
+      halt render(:error, locals: {error: error})
     end
 
     get '/login' do
@@ -150,7 +150,7 @@ module Olelo
         raise NotFound
       end
       @version = @diff.to
-      cache_control :version => @version
+      cache_control version: @version
       render :changes
     end
 
@@ -162,7 +162,7 @@ module Olelo
       @history = page.history((@page_nr - 1) * per_page, limit)
       @page_count = @page_nr + @history.length / per_page
       @history = @history[0...per_page]
-      cache_control :version => page.version
+      cache_control version: page.version
       render :history
     end
 
@@ -183,12 +183,12 @@ module Olelo
         destination = params[:destination].cleanpath
         raise :reserved_path.t if self.class.reserved_path?(destination)
         page.move(destination)
-        Page.commit(:page_moved.t(:page => page.path, :destination => destination))
+        Page.commit(:page_moved.t(page: page.path, destination: destination))
         redirect build_path(page.path)
       end
     end
 
-    get '/compare/:versions(/:path)', :versions => '(?:\w+)\.{2,3}(?:\w+)' do
+    get '/compare/:versions(/:path)', versions: '(?:\w+)\.{2,3}(?:\w+)' do
       @page = Page.find!(params[:path])
       versions = params[:versions].split(/\.{2,3}/)
       begin
@@ -202,7 +202,7 @@ module Olelo
 
     get '/compare(/:path)' do
       versions = params[:versions] || []
-      redirect build_path(params[:path], :action => versions.size < 2 ? :history : "compare/#{versions.first}...#{versions.last}")
+      redirect build_path(params[:path], action: versions.size < 2 ? :history : "compare/#{versions.first}...#{versions.last}")
     end
 
     get '/edit(/:path)' do
@@ -220,7 +220,7 @@ module Olelo
     def post_edit
       raise 'No content' if !params[:content]
       params[:content].gsub!("\r\n", "\n")
-      message = :page_edited.t(:page => page.title)
+      message = :page_edited.t(page: page.title)
       message << " - #{params[:comment]}" if !params[:comment].blank?
 
       page.content = if params[:pos]
@@ -249,7 +249,7 @@ module Olelo
         errors << :no_changes.t if !page.modified?
       end
       page.save
-      Page.commit(:page_uploaded.t(:page => page.title))
+      Page.commit(:page_uploaded.t(page: page.title))
     end
 
     def post_attributes
@@ -260,31 +260,31 @@ module Olelo
         errors << :no_changes.t if !page.modified?
       end
       page.save
-      Page.commit(:attributes_edited.t(:page => page.title))
+      Page.commit(:attributes_edited.t(page: page.title))
     end
 
     def show_page
       @menu_versions = true
-      render(:show, :locals => {:content => page.try(:content)})
+      render(:show, locals: {content: page.try(:content)})
     end
 
-    get '/(:path)', :tail => true do
+    get '/(:path)', tail: true do
       begin
         @page = Page.find!(params[:path])
-        cache_control :version => page.version
+        cache_control version: page.version
         show_page
       rescue NotFound
-        redirect build_path(params[:path], :action => :new)
+        redirect build_path(params[:path], action: :new)
       end
     end
 
     get '/version/:version(/:path)' do
       @page = Page.find!(params[:path], params[:version])
-      cache_control :version => page.version
+      cache_control version: page.version
       show_page
     end
 
-    post '/(:path)', :tail => true do
+    post '/(:path)', tail: true do
       action, @close = params[:action].to_s.split('-', 2)
       if respond_to? "post_#{action}"
         on_error :edit
@@ -306,12 +306,12 @@ module Olelo
       end
     end
 
-    delete '/:path', :tail => true do
+    delete '/:path', tail: true do
       Page.transaction do
         @page = Page.find!(params[:path])
           on_error :delete
         page.delete
-        Page.commit(:page_deleted.t(:page => page.path))
+        Page.commit(:page_deleted.t(page: page.path))
         render :deleted
       end
     end

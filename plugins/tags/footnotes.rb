@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 description  'Footnote support'
 
-Tag.define :ref, :optional => 'name', :description => 'Create footnote' do |context, attrs, content|
+Tag.define :ref, optional: 'name', description: 'Create footnote' do |context, attrs, content|
   footnotes = context[:footnotes] ||= []
   hash = context[:footnotes_hash] ||= {}
   name = attrs['name']
@@ -19,9 +20,9 @@ Tag.define :ref, :optional => 'name', :description => 'Create footnote' do |cont
   %{<a class="ref" id="ref#{ref_id}" href="#note#{note_id}">[#{note_id}]</a>}
 end
 
-Tag.define :references, :description => 'Print all footnotes' do |context, attrs|
+Tag.define :references, description: 'Print all footnotes' do |context, attrs|
   footnotes = context[:footnotes]
-  render :footnotes, :locals => {:footnotes => footnotes} if footnotes
+  render :footnotes, locals: {footnotes: footnotes} if footnotes
 end
 
 __END__

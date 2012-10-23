@@ -27,7 +27,7 @@ describe 'Olelo::Templates' do
   end
 
   it 'should have #render' do
-    render(:test, :locals => {:text => 'Hello, World!'}).should.equal "<h1>Hello, World!</h1>"
+    render(:test, locals: {text: 'Hello, World!'}).should.equal "<h1>Hello, World!</h1>"
     Olelo::Templates.cache.size.should.equal 1
   end
 end

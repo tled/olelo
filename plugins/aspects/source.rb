@@ -1,6 +1,6 @@
 description 'Source aspect'
 
-Aspect.create(:source, :priority => 3, :layout => true, :cacheable => true) do
+Aspect.create(:source, priority: 3, layout: true, cacheable: true) do
   def accepts?(page); page.mime.text?; end
   def call(context, page); "<pre>#{escape_html page.content}</pre>"; end
 end

@@ -1,4 +1,4 @@
-- title :changes_of.t(:page => page.title)
+- title :changes_of.t(page: page.title)
 h1= title
 table
   tbody
@@ -18,5 +18,5 @@ table
       td= :parents.t
       td.version
         - @version.parents.each do |parent|
-          a href=build_path(parent, :action => :changes) = Olelo::Version.short(parent)
+          a href=build_path(parent, action: :changes) = Olelo::Version.short(parent)
 = format_diff(@diff)

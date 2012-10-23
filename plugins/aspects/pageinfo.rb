@@ -1,6 +1,6 @@
 description 'Page information aspect'
 
-Aspect.create(:pageinfo, :priority => 4, :layout => true, :cacheable => true) do
+Aspect.create(:pageinfo, priority: 4, layout: true, cacheable: true) do
   def call(context, page)
     @page = page
     render :info
@@ -34,4 +34,4 @@ table
       tr
         td= :download.t
         td
-          a href=build_path(@page, :aspect => 'download') = :download.t
+          a href=build_path(@page, aspect: 'download') = :download.t

@@ -133,7 +133,7 @@ class Store
 
       def initialize(config)
         require 'memcached'
-        @server = ::Memcached.new(config[:server], :prefix_key => (config[:prefix] rescue nil))
+        @server = ::Memcached.new(config[:server], prefix_key: (config[:prefix] rescue nil))
       end
 
       # @override
@@ -177,7 +177,7 @@ class Store
 
       def initialize(config)
         require 'dalli'
-        @server = ::Dalli::Client.new(config[:server], :namespace => (config[:prefix] rescue nil))
+        @server = ::Dalli::Client.new(config[:server], namespace: (config[:prefix] rescue nil))
       end
 
       # @override

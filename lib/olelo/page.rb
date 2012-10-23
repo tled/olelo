@@ -109,7 +109,7 @@ module Olelo
       raise 'Page is new' if new?
       destination = destination.to_s.cleanpath
       Page.check_path(destination)
-      raise :already_exists.t(:page => destination) if Page.find(destination)
+      raise :already_exists.t(page: destination) if Page.find(destination)
       with_hooks(:move, destination) { repository.move(path, destination) }
       after_commit {|tree_version| update(destination, tree_version) }
     end
@@ -181,7 +181,7 @@ module Olelo
 
     def save
       raise 'Page is not head' unless head?
-      raise :already_exists.t(:page => path) if new? && Page.find(path)
+      raise :already_exists.t(page: path) if new? && Page.find(path)
       with_hooks(:save) do
         repository.set_content(path, content)
         repository.set_attributes(path, attributes)

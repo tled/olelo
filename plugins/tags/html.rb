@@ -1,16 +1,16 @@
 description 'Safe html tags'
 
 HTML_TAGS = [
-  [:a, {:optional => %w(href title)}],
-  [:img, {:autoclose => true, :optional => %w(src alt title)}],
-  [:br, {:autoclose => true}],
+  [:a, {optional: %w(href title)}],
+  [:img, {autoclose: true, optional: %w(src alt title)}],
+  [:br, {autoclose: true}],
   [:i],
   [:u],
   [:b],
   [:pre],
   [:kbd],
   # provided by syntax highlighter
-  # [:code, :optional => %w(lang)]
+  # [:code, optional: %w(lang)]
   [:cite],
   [:strong],
   [:em],
@@ -20,9 +20,9 @@ HTML_TAGS = [
   [:del],
   [:table],
   [:tr],
-  [:td, {:optional => %w(colspan rowspan)}],
+  [:td, {optional: %w(colspan rowspan)}],
   [:th],
-  [:ol, {:optional => %w(start)}],
+  [:ol, {optional: %w(start)}],
   [:ul],
   [:li],
   [:p],
@@ -32,11 +32,11 @@ HTML_TAGS = [
   [:h4],
   [:h5],
   [:h6],
-  [:blockquote, {:optional => %w(cite)}],
-  [:div, {:optional => %w(style)}],
-  [:span, {:optional => %w(style)}],
-  [:video, {:optional => %w(autoplay controls height width loop preload src poster)}],
-  [:audio, {:optional => %w(autoplay controls loop preload src)}]
+  [:blockquote, {optional: %w(cite)}],
+  [:div, {optional: %w(style)}],
+  [:span, {optional: %w(style)}],
+  [:video, {optional: %w(autoplay controls height width loop preload src poster)}],
+  [:audio, {optional: %w(autoplay controls loop preload src)}]
 ]
 
 HTML_TAGS.each do |name, options|

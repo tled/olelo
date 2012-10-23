@@ -16,7 +16,7 @@ end
 
 class S5 < XSLT
   def configure(options)
-    super(options.merge(:stylesheet => 's5/s5.xsl'))
+    super(options.merge(stylesheet: 's5/s5.xsl'))
   end
 
   def params(context)

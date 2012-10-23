@@ -1,7 +1,7 @@
 description 'Document browser aspect'
 dependencies 'utils/shell'
 
-Aspect.create(:documentbrowser, :priority => 1, :layout => true, :cacheable => true, :accepts => %r{^application/pdf$|postscript$}) do
+Aspect.create(:documentbrowser, priority: 1, layout: true, cacheable: true, accepts: %r{^application/pdf$|postscript$}) do
   def count_pages
     content = @page.content
     page_count = 0
@@ -25,10 +25,10 @@ end
 __END__
 
 @@ browser.slim
-= pagination(@page, @page_count, @page_nr, :aspect => 'documentbrowser')
+= pagination(@page, @page_count, @page_nr, aspect: 'documentbrowser')
 p
-  img src=build_path(@page, :aspect => 'image', :geometry => '480x>', :trim => 1, :page => @page_nr)
-= pagination(@page, @page_count, @page_nr, :aspect => 'documentbrowser')
+  img src=build_path(@page, aspect: 'image', geometry: '480x>', trim: 1, page: @page_nr)
+= pagination(@page, @page_count, @page_nr, aspect: 'documentbrowser')
 h3= :information.t
 table
   tbody
@@ -54,4 +54,4 @@ table
     tr
       td= :download.t
       td
-        a href=build_path(@page, :aspect => 'download') = :download.t
+        a href=build_path(@page, aspect: 'download') = :download.t

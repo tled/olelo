@@ -7,8 +7,8 @@ class GitrbRepository < Repository
 
   def initialize(config)
     Olelo.logger.info "Opening git repository: #{config[:path]}"
-    @git = Gitrb::Repository.new(:path => config[:path], :create => true,
-                                 :bare => config[:bare], :logger => Olelo.logger)
+    @git = Gitrb::Repository.new(path: config[:path], create: true,
+                                 bare: config[:bare], logger: Olelo.logger)
   end
 
   # @override
@@ -36,15 +36,15 @@ class GitrbRepository < Repository
 
   # @override
   def get_history(path, skip, limit)
-    @git.log(:max_count => limit, :skip => skip,
-            :path => [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT]).map do |c|
+    @git.log(max_count:  limit, skip: skip,
+            path: [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT]).map do |c|
       commit_to_version(c)
     end
   end
 
   # @override
   def get_path_version(path, version)
-    commits = @git.log(:max_count => 2, :start => version, :path => [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT])
+    commits = @git.log(max_count:  2, start: version, path: [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT])
 
     succ = nil
     @git.git_rev_list('--reverse', '--remove-empty', "#{commits[0]}..", '--', path, path + ATTRIBUTE_EXT, path + CONTENT_EXT) do |io|
@@ -94,11 +94,11 @@ class GitrbRepository < Repository
       if content.blank?
         @git.root.delete(path + CONTENT_EXT)
       else
-        @git.root[path + CONTENT_EXT] = Gitrb::Blob.new(:data => content)
+        @git.root[path + CONTENT_EXT] = Gitrb::Blob.new(data: content)
       end
       collapse_empty_tree(path)
     else
-      @git.root[path] = Gitrb::Blob.new(:data => content)
+      @git.root[path] = Gitrb::Blob.new(data: content)
     end
   end
 
@@ -108,7 +108,7 @@ class GitrbRepository < Repository
     attributes = attributes.blank? ? nil : YAML.dump(attributes).sub(/\A\-\-\-\s*\n/s, '')
     expand_tree(path)
     if attributes
-      @git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(:data => attributes)
+      @git.root[path + ATTRIBUTE_EXT] = Gitrb::Blob.new(data: attributes)
     else
       @git.root.delete(path + ATTRIBUTE_EXT)
     end
@@ -133,8 +133,8 @@ class GitrbRepository < Repository
 
   # @override
   def diff(path, from, to)
-    diff = @git.diff(:from => from && from.to_s, :to => to.to_s,
-                    :path => [path, path + CONTENT_EXT, path + ATTRIBUTE_EXT], :detect_renames => true)
+    diff = @git.diff(from: from && from.to_s, to: to.to_s,
+                    path: [path, path + CONTENT_EXT, path + ATTRIBUTE_EXT], detect_renames:  true)
     Diff.new(commit_to_version(diff.from), commit_to_version(diff.to), diff.patch)
   end
 

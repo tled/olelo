@@ -10,8 +10,8 @@ class PortalService < User::Service
   # @override
   def authenticate(name, password)
     xml = open(@url,
-               :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE,
-               :http_basic_authentication => [name, password]).read
+               ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,
+               http_basic_authentication: [name, password]).read
     # User data is exposed via REST/XML-API
     doc = Nokogiri::XML(xml)
     email = (doc/'person/email').text

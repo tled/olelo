@@ -23,7 +23,7 @@ class ::Olelo::Application
     if path == '/login'
       if User.logged_in? && params[:persistent]
         token = "#{sha256(User.current.name + Config['rack.session_secret'])}-#{User.current.name}"
-        response.set_cookie(TOKEN_NAME, :value => token, :expires => Time.now + TOKEN_LIFETIME)
+        response.set_cookie(TOKEN_NAME, value: token, expires: Time.now + TOKEN_LIFETIME)
       end
     elsif path == '/logout'
       response.delete_cookie(TOKEN_NAME)

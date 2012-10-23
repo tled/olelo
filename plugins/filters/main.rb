@@ -59,7 +59,7 @@ class Filter
 
   # Create regexp filter
   def self.regexp(name, *regexps)
-    create(name, :description => 'Regular expression filter') do |context, content|
+    create(name, description: 'Regular expression filter') do |context, content|
       regexps.each_slice(2) { |regexp, sub| content.gsub!(regexp, sub) }
       content
     end

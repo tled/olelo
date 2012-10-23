@@ -1,7 +1,7 @@
 - if page.new?
   - title params[:path].blank? ? :new_page.t : "#{:new_page.t}: #{params[:path]}"
 - else
-  - title params[:pos] ? :edit_page_section.t(:page => page.title) : :edit_page.t(:page => page.title)
+  - title params[:pos] ? :edit_page_section.t(page: page.title) : :edit_page.t(page: page.title)
 h1= title
 = tabs :edit, :upload, :attributes
 form action=build_path(page.new? ? nil : page.path) method='post'

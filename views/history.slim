@@ -1,6 +1,6 @@
-- title :history_of.t(:page => page.title)
+- title :history_of.t(page: page.title)
 h1= title
-= pagination(page, @page_count, @page_nr, :action => :history)
+= pagination(page, @page_count, @page_nr, action: :history)
 table#history-table
   thead
     tr
@@ -11,10 +11,10 @@ table#history-table
     - @history.each do |version|
       tr id="version-#{version}"
         td
-          a href=build_path(page, :version => version) = truncate(version.comment, 50)
+          a href=build_path(page, version: version) = truncate(version.comment, 50)
           |  (
-          a href=build_path(page, :action => 'changes'/version) = :changes.t
+          a href=build_path(page, action: 'changes'/version) = :changes.t
           | )
         td= truncate(version.author.name, 30)
         td= date version.date
-= pagination(page, @page_count, @page_nr, :action => :history)
+= pagination(page, @page_count, @page_nr, action: :history)

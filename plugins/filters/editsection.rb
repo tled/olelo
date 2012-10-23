@@ -56,8 +56,8 @@ class EditSection < Filters::NestingFilter
       content.gsub!(/#{prefix}(\d+)/) do
         i = $1.to_i
         len = sections[i][1] - sections[i][0]
-        path = build_path(page, :action => :edit, :pos => sections[i][0], :len => len, :comment => :section_edited.t(:section => sections[i][3]))
-        %{<a class="editsection" href="#{escape_html path}" title="#{escape_html :edit_section.t(:section => sections[i][3])}">#{escape_html :edit.t}</a>}
+        path = build_path(page, action: :edit, pos: sections[i][0], len: len, comment: :section_edited.t(section: sections[i][3]))
+        %{<a class="editsection" href="#{escape_html path}" title="#{escape_html :edit_section.t(section: sections[i][3])}">#{escape_html :edit.t}</a>}
       end
       content
     end

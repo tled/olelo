@@ -27,15 +27,15 @@ Olelo::Config.instance.load!(::File.join(app_path, 'config', 'config.yml.default
 if Dir.pwd == app_path
   puts "Serving from Olelo application directory #{app_path}"
   data_path = File.join(app_path, '.wiki')
-  Olelo::Config.instance['repository.git'] = { :path => ::File.join(data_path, 'repository'), :bare => false }
-  Olelo::Config.instance['cache_store'] = { :type => 'file', 'file.root' => ::File.join(data_path, 'cache') }
+  Olelo::Config.instance['repository.git'] = { path: ::File.join(data_path, 'repository'), bare: false }
+  Olelo::Config.instance['cache_store'] = { type: 'file', 'file.root' => ::File.join(data_path, 'cache') }
   Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(data_path, 'users.yml')
   Olelo::Config.instance['log.file'] = ::File.join(data_path, 'log')
 elsif File.directory?(::File.join(Dir.pwd, '.git'))
   puts "Serving out of repository #{Dir.pwd}"
   data_path = File.join(Dir.pwd, '.wiki')
-  Olelo::Config.instance['repository.git'] = { :path => Dir.pwd, :bare => false }
-  Olelo::Config.instance['cache_store'] = { :type => 'file', 'file.root' => ::File.join(data_path, 'cache') }
+  Olelo::Config.instance['repository.git'] = { path: Dir.pwd, bare: false }
+  Olelo::Config.instance['cache_store'] = { type: 'file', 'file.root' => ::File.join(data_path, 'cache') }
   Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(data_path, 'users.yml')
   Olelo::Config.instance['log.file'] = ::File.join(data_path, 'log')
 else
@@ -77,8 +77,8 @@ if Olelo::Config['rack.deflater']
   use Rack::Deflater
 end
 
-use Rack::StaticCache, :urls => ['/static'], :root => app_path
-use Rack::Session::Cookie, :key => 'olelo.session', :secret => Olelo::Config['rack.session_secret']
+use Rack::StaticCache, urls: ['/static'], root: app_path
+use Rack::Session::Cookie, key: 'olelo.session', secret: Olelo::Config['rack.session_secret']
 use Olelo::Middleware::DegradeMimeType
 
 class LoggerOutput
@@ -89,7 +89,7 @@ end
 use Rack::MethodOverride
 use Rack::CommonLogger, LoggerOutput.new(logger)
 use Olelo::Middleware::ForceEncoding
-use Olelo::Middleware::Flash, :set_accessors => %w(error warn info)
+use Olelo::Middleware::Flash, set_accessors: %w(error warn info)
 use Rack::RelativeRedirect
 
 Olelo::Initializer.initialize(logger)

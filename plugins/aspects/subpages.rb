@@ -1,6 +1,6 @@
 description 'Subpages aspect'
 
-Aspect.create(:subpages, :priority => 2, :layout => true, :cacheable => true) do
+Aspect.create(:subpages, priority: 2, layout: true, cacheable: true) do
   def accepts?(page); !page.children.empty?; end
   def call(context, page)
     @page_nr = [context.params[:page].to_i, 1].max
@@ -14,7 +14,7 @@ end
 
 __END__
 @@ subpages.slim
-= pagination(@page, @page_count, @page_nr, :aspect => 'subpages')
+= pagination(@page, @page_count, @page_nr, aspect: 'subpages')
 table#subpages-table
   thead
     tr
@@ -37,8 +37,8 @@ table#subpages-table
         td= truncate(child.version.author.name, 30)
         td= truncate(child.version.comment, 30)
         td.actions
-          a.action-edit href=build_path(child, :action => :edit) title=:edit.t = :edit.t
-          a.action-history href=build_path(child, :action => :history) title=:history.t = :history.t
-          a.action-move href=build_path(child, :action => :move) title=:move.t = :move.t
-          a.action-delete href=build_path(child, :action => :delete) title=:delete.t = :delete.t
-= pagination(@page, @page_count, @page_nr, :aspect => 'subpages')
+          a.action-edit href=build_path(child, action: :edit) title=:edit.t = :edit.t
+          a.action-history href=build_path(child, action: :history) title=:history.t = :history.t
+          a.action-move href=build_path(child, action: :move) title=:move.t = :move.t
+          a.action-delete href=build_path(child, action: :delete) title=:delete.t = :delete.t
+= pagination(@page, @page_count, @page_nr, aspect: 'subpages')

@@ -47,9 +47,9 @@ regexp :mediawiki_nowiki,  /<nowiki>.*?<\/nowiki>/m,    '<notags>\0</notags>'
 # end
 #
 # tag filter options:
-#   tag(:enable => 'html:*') Enable only html tags
-#   tag(:disable => %w(html:* scripting:include)) Disable html tags and scripting:include
-#   tag(:disable => 'html:*') Disable only html tags
+#   tag(enable: 'html:*') Enable only html tags
+#   tag(disable: %w(html:* scripting:include)) Disable html tags and scripting:include
+#   tag(disable: 'html:*') Disable only html tags
 #
 ################################################################################
 
@@ -67,7 +67,7 @@ aspect :page do
       remove_comments.tag_shortcuts
       creole_nowiki.tag { creole!.rubypants }
     end
-    toc.interwiki(:map => interwiki_map).link_classifier
+    toc.interwiki(map: interwiki_map).link_classifier
   end
 end
 
@@ -78,7 +78,7 @@ aspect :s5 do
   filter do
     remove_comments.tag_shortcuts
     creole_nowiki.tag { creole!.rubypants }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    toc.interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -89,9 +89,9 @@ aspect :latex do
   mime 'text/plain; charset=utf-8'
   filter do
     remove_comments.tag_shortcuts.creole_nowiki
-    tag(:static => true) { creole!.rubypants }
-    toc.interwiki(:map => interwiki_map)
-    html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
+    tag(static: true) { creole!.rubypants }
+    toc.interwiki(map: interwiki_map)
+    html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
 
@@ -107,7 +107,7 @@ aspect :page do
       remove_comments.tag_shortcuts
       mediawiki_nowiki.tag { mediawiki!.rubypants }
     end
-    toc.interwiki(:map => interwiki_map).link_classifier
+    toc.interwiki(map: interwiki_map).link_classifier
   end
 end
 
@@ -118,7 +118,7 @@ aspect :s5 do
   filter do
     remove_comments.tag_shortcuts
     mediawiki_nowiki.tag { mediawiki!.rubypants }
-    toc.interwiki(:map => interwiki_map).link_classifier
+    toc.interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -129,9 +129,9 @@ aspect :latex do
   mime 'text/plain; charset=utf-8'
   filter do
     remove_comments.tag_shortcuts.mediawiki_nowiki
-    tag(:static => true) { mediawiki!.rubypants }
-    toc.interwiki(:map => interwiki_map)
-    html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
+    tag(static: true) { mediawiki!.rubypants }
+    toc.interwiki(map: interwiki_map)
+    html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
 
@@ -144,9 +144,9 @@ aspect :page do
   accepts 'text/x-textile'
   filter do
     remove_comments.tag_shortcuts.textile_nowiki
-    tag(:disable => 'html:*') { textile!.rubypants }
+    tag(disable: 'html:*') { textile!.rubypants }
     fix_img_tag.toc
-    interwiki(:map => interwiki_map).link_classifier
+    interwiki(map: interwiki_map).link_classifier
   end
 end
 
@@ -156,9 +156,9 @@ aspect :s5 do
   mime 'application/xhtml+xml; charset=utf-8'
   filter do
     remove_comments.tag_shortcuts.textile_nowiki
-    tag(:disable => 'html:*') { textile!.rubypants }
+    tag(disable: 'html:*') { textile!.rubypants }
     fix_img_tag.toc
-    interwiki(:map => interwiki_map).link_classifier
+    interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -169,9 +169,9 @@ aspect :latex do
   mime 'text/plain; charset=utf-8'
   filter do
     remove_comments.tag_shortcuts.textile_nowiki
-    tag(:static => true, :disable => 'html:*') { textile!.rubypants }
-    toc.interwiki(:map => interwiki_map)
-    html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
+    tag(static: true, disable: 'html:*') { textile!.rubypants }
+    toc.interwiki(map: interwiki_map)
+    html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
 
@@ -185,10 +185,10 @@ aspect :page do
   filter do
     editsection do
       remove_comments.tag_shortcuts.markdown_nowiki
-      tag(:disable => 'html:*') { markdown! }
+      tag(disable: 'html:*') { markdown! }
     end
     fix_img_tag.toc
-    interwiki(:map => interwiki_map).link_classifier
+    interwiki(map: interwiki_map).link_classifier
   end
 end
 
@@ -198,9 +198,9 @@ aspect :s5 do
   mime 'application/xhtml+xml; charset=utf-8'
   filter do
     remove_comments.tag_shortcuts.markdown_nowiki
-    tag(:disable => 'html:*') { markdown! }
+    tag(disable: 'html:*') { markdown! }
     fix_img_tag.toc
-    interwiki(:map => interwiki_map).link_classifier
+    interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -211,9 +211,9 @@ aspect :latex do
   mime 'text/plain; charset=utf-8'
   filter do
     remove_comments.tag_shortcuts.markdown_nowiki
-    tag(:static => true, :disable => 'html:*') { markdown! }
-    toc.interwiki(:map => interwiki_map)
-    html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
+    tag(static: true, disable: 'html:*') { markdown! }
+    toc.interwiki(map: interwiki_map)
+    html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
 
@@ -228,7 +228,7 @@ aspect :page do
     remove_comments.tag_shortcuts
     tag { orgmode!.rubypants }
     fix_img_tag.toc
-    interwiki(:map => interwiki_map).link_classifier
+    interwiki(map: interwiki_map).link_classifier
   end
 end
 
@@ -240,7 +240,7 @@ aspect :s5 do
     remove_comments.tag_shortcuts
     tag { orgmode!.rubypants }
     fix_img_tag.toc
-    interwiki(:map => interwiki_map).link_classifier
+    interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -251,8 +251,8 @@ aspect :latex do
   mime 'text/plain; charset=utf-8'
   filter do
     remove_comments.tag_shortcuts
-    tag(:static => true) { orgmode!.rubypants }
-    toc.interwiki(:map => interwiki_map)
-    html_wrapper!.xslt!(:stylesheet => 'xhtml2latex.xsl')
+    tag(static: true) { orgmode!.rubypants }
+    toc.interwiki(map: interwiki_map)
+    html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end

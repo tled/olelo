@@ -1,7 +1,7 @@
 description 'Image information aspect'
 dependencies 'utils/image_magick'
 
-Aspect.create(:imageinfo, :priority => 1, :layout => true, :cacheable => true, :accepts => %r{^image/}) do
+Aspect.create(:imageinfo, priority: 1, layout: true, cacheable: true, accepts: %r{^image/}) do
   def call(context, page)
     @page = page
     identify = ImageMagick.identify('-format', "%m\n%h\n%w\n%[EXIF:*]", '-').run(page.content).split("\n")
@@ -15,8 +15,8 @@ end
 __END__
 @@ info.slim
 p
-  a href=build_path(@page, :aspect => 'image')
-    img src=build_path(@page, :aspect => 'image', :geometry => '640x480>') alt=@page.title
+  a href=build_path(@page, aspect: 'image')
+    img src=build_path(@page, aspect: 'image', geometry: '640x480>') alt=@page.title
 h3= :information.t
 table
   tbody

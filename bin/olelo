@@ -11,8 +11,8 @@ Options:
 }
 
 options = {
-  :port => 8080,
-  :host => '0.0.0.0'
+  port: 8080,
+  host: '0.0.0.0'
 }
 
 app_path = File.expand_path(File.join(__FILE__, '..', '..'))
@@ -53,6 +53,6 @@ elsif ARGV.size > 1
   exit
 end
 
-Rack::Server.start(:Port => options[:port],
-                   :Host => options[:host],
-                   :config => File.join(app_path, 'config.ru'))
+Rack::Server.start(Port: options[:port],
+                   Host: options[:host],
+                   config: File.join(app_path, 'config.ru'))

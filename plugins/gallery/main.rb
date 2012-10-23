@@ -2,7 +2,7 @@ description    'Gallery aspect'
 dependencies   'utils/assets', 'aspects'
 export_scripts '*.css'
 
-Aspects::Aspect.create(:gallery, :priority => 3, :layout => true, :hidden => true, :cacheable => true) do
+Aspects::Aspect.create(:gallery, priority: 3, layout: true, hidden: true, cacheable: true) do
   def accepts?(page); !page.children.empty?; end
   def call(context, page)
     @per_row = 4
@@ -18,13 +18,13 @@ end
 
 __END__
 @@ gallery.slim
-= pagination(@page, @page_count, @page_nr, :aspect => 'gallery')
+= pagination(@page, @page_count, @page_nr, aspect: 'gallery')
 table.gallery
   - @images.each_slice(@per_row) do |row|
     tr
       - row.each do |image|
         ruby:
-          thumb_path = build_path(image, :aspect => 'image', :geometry => '150x150>')
+          thumb_path = build_path(image, aspect: 'image', geometry: '150x150>')
           info_path  = build_path(image)
           description = image.attributes['description'] || image.attributes['title'] || \
             image.name.gsub(/([^\s])[_\-]/, '\1 ')

@@ -157,9 +157,9 @@ class Tag < Filters::NestingFilter
     raise 'Tag must take two or three arguments' if block.arity != 2 && block.arity != 3
     # Find the plugin which provided this tag.
     plugin = Plugin.for(block)
-    options.merge!(:name => name.to_s, :plugin => plugin, :autoclose => block.arity == 2,
-                   :optional => Set.new([*options[:optional]].compact.flatten),
-                   :requires => Set.new([*options[:requires]].compact.flatten))
+    options.merge!(name: name.to_s, plugin: plugin, autoclose: block.arity == 2,
+                   optional: Set.new([*options[:optional]].compact.flatten),
+                   requires: Set.new([*options[:requires]].compact.flatten))
     options[:description] ||= plugin.description
     options[:namespace] ||= plugin.path.split('/').last
     tag = TagInfo.new(options)
@@ -184,7 +184,7 @@ class Tag < Filters::NestingFilter
   #   * :static  - Execute dynamic tags only once
   #
   # Examples:
-  #   :enable => %w(html:* include) Enables all tags in the html namespace and the include tag.
+  #   enable: %w(html:* include) Enables all tags in the html namespace and the include tag.
   def configure(options)
     super
     list = @options[:enable] ? tag_list(*@options[:enable]) : @@tags.keys
@@ -322,7 +322,7 @@ Application.hook :render, 2000 do |name, xml, layout|
       name, attrs, content = Marshal.load(decode64($1))
       raise 'Invalid dynamic tag' unless Hash === attrs && Tag.tags[name] && Tag.tags[name].dynamic
       begin
-        context = Aspects::Context.new(:page => page, :params => params, :request => request, :response => response)
+        context = Aspects::Context.new(page: page, params: params, request: request, response: response)
         if content
           raise 'Invalid dynamic tag' unless String === content
           Tag.tags[name].dynamic.new.call(context, attrs, content).to_s
@@ -338,16 +338,16 @@ Application.hook :render, 2000 do |name, xml, layout|
       ''
     end
   end
-  cache_control(:no_cache => true) if no_cache
+  cache_control(no_cache: true) if no_cache
 end
 
-Filters::Filter.register :tag, Tag, :description => 'Process extension tags'
+Filters::Filter.register :tag, Tag, description: 'Process extension tags'
 
-Tag.define :nowiki, :description => 'Disable tag and wikitext filtering' do |context, attrs, content|
+Tag.define :nowiki, description: 'Disable tag and wikitext filtering' do |context, attrs, content|
   escape_html(content)
 end
 
-Tag.define :notags, :description => 'Disable tag processing', :immediate => true do |context, attrs, content|
+Tag.define :notags, description: 'Disable tag processing', immediate: true do |context, attrs, content|
   content
 end
 

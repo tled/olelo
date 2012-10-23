@@ -132,7 +132,7 @@ class RuggedRepository < Repository
       return @oid if @oid
       builder = Rugged::Tree::Builder.new
       @entries.each do |name, entry|
-        builder << { :type => entry.type, :filemode => entry.filemode, :oid => entry.save, :name => name }
+        builder << { type: entry.type, filemode: entry.filemode, oid: entry.save, name: name }
       end
       builder.write(@git)
     end
@@ -151,13 +151,13 @@ class RuggedRepository < Repository
       raise 'Concurrent transactions' if @head != current_head
 
       user = User.current
-      author = {:email => user.email, :name => user.name, :time => Time.now }
+      author = {email: user.email, name: user.name, time: Time.now }
       commit = Rugged::Commit.create(@git,
-                                     :author => author,
-                                     :message => comment,
-                                     :committer => author,
-                                     :parents => [@head],
-                                     :tree => @tree.save)
+                                     author: author,
+                                     message: comment,
+                                     committer: author,
+                                     parents: [@head],
+                                     tree: @tree.save)
 
       raise 'Concurrent transactions' if @head != current_head
       if current_head

@@ -1,4 +1,4 @@
-task :default => %w(test:spec)
+task default: %w(test:spec)
 
 def shrink_js(t)
   #sh "cat #{t.prerequisites.sort.join(' ')} > #{t.name}"
@@ -36,10 +36,10 @@ file('plugins/editor/markup/script.js' => Dir.glob('plugins/editor/markup/script
 
 namespace :gen do
   desc('Shrink JS files')
-  task :js => %w(static/script.js plugins/treeview/script.js plugins/misc/fancybox/script.js plugins/editor/markup/script.js)
+  task js: %w(static/script.js plugins/treeview/script.js plugins/misc/fancybox/script.js plugins/editor/markup/script.js)
 
   desc('Compile CSS files')
-  task :css => %w(static/themes/atlantis/style.css
+  task css: %w(static/themes/atlantis/style.css
                   plugins/treeview/treeview.css
                   plugins/utils/pygments.css
                   plugins/gallery/gallery.css
@@ -49,12 +49,12 @@ end
 
 namespace :test do
   desc 'Run tests with bacon'
-  task :spec => FileList['test/*_test.rb'] do |t|
+  task spec: FileList['test/*_test.rb'] do |t|
     sh "bacon -q -Ilib:test #{t.prerequisites.join(' ')}"
   end
 
   desc 'Generate test coverage report'
-  task :rcov => FileList['test/*_test.rb'] do |t|
+  task rcov: FileList['test/*_test.rb'] do |t|
     sh "rcov -Ilib:test #{t.prerequisites.join(' ')}"
   end
 end
@@ -89,4 +89,4 @@ namespace :notes do
 end
 
 desc 'Show annotations'
-task :notes => %w(notes:todo notes:fixme notes:hack notes:warning notes:important)
+task notes: %w(notes:todo notes:fixme notes:hack notes:warning notes:important)

@@ -1,4 +1,4 @@
-- title :profile_title.t(:user => Olelo::User.current.name)
+- title :profile_title.t(user: Olelo::User.current.name)
 h1= title
 form action=build_path(:profile) method='post'
   .fieldset

@@ -27,7 +27,7 @@ class YamlfileService < User::Service
   # @override
   def signup(user, password)
     @store.transaction do |store|
-      raise :user_already_exists.t(:name => user.name) if store[user.name]
+      raise :user_already_exists.t(name: user.name) if store[user.name]
       store[user.name] = {
         'email' => user.email,
         'password' => crypt(password),

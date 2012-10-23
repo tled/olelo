@@ -18,13 +18,13 @@ class ::Olelo::Application
     if page.new? || !params[:pos]
       # Whole page edited, assign new content before aspect search
       page.content = params[:content]
-      aspect = Aspects::Aspect.find(page, :layout => true)
+      aspect = Aspects::Aspect.find(page, layout: true)
     else
       # We assume that aspect stays the same if section is edited
-      aspect = Aspects::Aspect.find(page, :layout => true)
+      aspect = Aspects::Aspect.find(page, layout: true)
       page.content = params[:content]
     end
-    context = Aspects::Context.new(:page => page, :request => request, :private => {:preview => true})
+    context = Aspects::Context.new(page: page, request: request, private: {preview: true})
     preview = aspect && aspect.call(context, page)
     flash.now[:preview] = preview ? %{<hr/>#{preview}} : nil
     halt render(request.xhr? ? flash.now[:preview] : :edit)

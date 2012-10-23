@@ -91,7 +91,7 @@ module Olelo
 
     def build_menu
       attrs = options.dup
-      label = attrs.delete(:label) || Locale.translate("menu_#{path.join('_')}", :fallback => titlecase(name))
+      label = attrs.delete(:label) || Locale.translate("menu_#{path.join('_')}", fallback: titlecase(name))
       klass = [*attrs.delete(:class)].flatten.compact
       klass = klass.empty? ? '' : %{class="#{klass.join(' ')}" }
       attrs = attrs.map {|k,v| %{#{k}="#{escape_html v}"} }.join(' ')

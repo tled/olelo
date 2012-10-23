@@ -2,25 +2,25 @@ description    'Blog aspect'
 dependencies   'tags', 'utils/assets', 'utils/xml'
 export_scripts '*.css'
 
-Application.get '(/:path)/:year(/:month)', :year => '20\d{2}', :month => '(?:0[1-9])|(?:1[1-2])' do
+Application.get '(/:path)/:year(/:month)', year: '20\d{2}', month: '(?:0[1-9])|(?:1[1-2])' do
   params[:aspect] = 'blog'
   send('GET /')
 end
 
-Tags::Tag.define 'menu', :optional => 'path', :description => 'Show blog menu', :dynamic => true do |context, attrs, content|
+Tags::Tag.define 'menu', optional: 'path', description: 'Show blog menu', dynamic: true do |context, attrs, content|
   page = Page.find(attrs[:path]) rescue nil
   if page
-    Cache.cache("blog-#{page.path}-#{page.version.cache_id}", :update => no_cache?(context.request.env), :defer => true) do
+    Cache.cache("blog-#{page.path}-#{page.version.cache_id}", update: no_cache?(context.request.env), defer: true) do
       years = {}
       page.children.each do |child|
         (years[child.version.date.year] ||= [])[child.version.date.month] = true
       end
-      render :menu, :locals => {:years => years, :page => page}
+      render :menu, locals: {years: years, page: page}
     end
   end
 end
 
-Aspects::Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => true, :hidden => true) do
+Aspects::Aspect.create(:blog, priority: 3, layout: true, cacheable: true, hidden: true) do
   def accepts?(page); !page.children.empty?; end
   def call(context, page)
     @page = page
@@ -38,8 +38,8 @@ Aspects::Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => tru
 
     @articles = articles.map do |article|
       begin
-        subctx = context.subcontext(:page => article, :params => {:included => true})
-        content = Aspects::Aspect.find!(article, :layout => true).call(subctx, article)
+        subctx = context.subcontext(page: article, params: {included: true})
+        content = Aspects::Aspect.find!(article, layout: true).call(subctx, article)
         if !context.params[:full]
           paragraphs = XML::Fragment(content).xpath('p')
           content = ''
@@ -53,7 +53,7 @@ Aspects::Aspect.create(:blog, :priority => 3, :layout => true, :cacheable => tru
       end
       [article, content]
     end
-    render :blog, :locals => {:full => context.params[:full]}
+    render :blog, locals: {full: context.params[:full]}
   end
 end
 
@@ -68,11 +68,11 @@ __END__
         h2
           a.name href=build_path(page) = page.name
         .date= date page.version.date
-        .author= :written_by.t(:author => page.version.author.name)
+        .author= :written_by.t(author: page.version.author.name)
         .content== content
         - if !full
           a.full href=build_path(page.path) = :full_article.t
-= pagination(@page, @page_count, @page_nr, :aspect => 'blog')
+= pagination(@page, @page_count, @page_nr, aspect: 'blog')
 @@ menu.slim
 table.blog-menu
   - years.keys.sort.each do |year|

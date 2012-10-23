@@ -50,7 +50,7 @@ module Olelo
       if page
         render_page(page)
       else
-        %{<a href="#{escape_html build_path(path, :action => :new)}">#{escape_html :create_page.t(:page => path)}</a>}
+        %{<a href="#{escape_html build_path(path, action: :new)}">#{escape_html :create_page.t(page: path)}</a>}
       end
     end
 
@@ -62,7 +62,7 @@ module Olelo
       return if page_count <= 1
       li = []
       li << if page_nr > 1
-              %{<a href="#{escape_html build_path(path, options.merge(:page => page_nr - 1))}">&#9666;</a>}
+              %{<a href="#{escape_html build_path(path, options.merge(page: page_nr - 1))}">&#9666;</a>}
             else
               %{<span class="disabled">&#9666;</span>}
             end
@@ -76,20 +76,20 @@ module Olelo
       max = max + 2 < page_count ? max : page_count
       min = min > 3 ? min : 1
       if min != 1
-        li << %{<a href="#{escape_html build_path(path, options.merge(:page => 1))}">1</a>} << %{<span class="ellipsis"/>}
+        li << %{<a href="#{escape_html build_path(path, options.merge(page: 1))}">1</a>} << %{<span class="ellipsis"/>}
       end
       (min..max).each do |i|
         li << if i == page_nr
                 %{<span class="current">#{i}</span>}
               else
-                %{<a href="#{escape_html build_path(path, options.merge(:page => i))}">#{i}</a>}
+                %{<a href="#{escape_html build_path(path, options.merge(page: i))}">#{i}</a>}
               end
       end
       if max != page_count
-        li << %{<span class="ellipsis"/>} << %{<a href="#{escape_html build_path(path, options.merge(:page => page_count))}">#{page_count}</a>}
+        li << %{<span class="ellipsis"/>} << %{<a href="#{escape_html build_path(path, options.merge(page: page_count))}">#{page_count}</a>}
       end
       li << if page_nr < page_count
-              %{<a href="#{escape_html build_path(path, options.merge(:page => page_nr + 1))}">&#9656;</a>}
+              %{<a href="#{escape_html build_path(path, options.merge(page: page_nr + 1))}">&#9656;</a>}
             else
               %{<span class="disabled">&#9656;</span>}
             end
@@ -101,8 +101,8 @@ module Olelo
     end
 
     def format_diff(diff)
-      summary   = PatchSummary.new(:links => true)
-      formatter = PatchFormatter.new(:links => true, :header => true)
+      summary   = PatchSummary.new(links: true)
+      formatter = PatchFormatter.new(links: true, header: true)
       PatchParser.parse(diff.patch, summary, formatter)
       (summary.html + formatter.html).html_safe
     end
@@ -110,11 +110,11 @@ module Olelo
     def breadcrumbs(page)
       path = page.try(:path) || ''
       li = [%{<li>
-<a accesskey="z" href="#{escape_html build_path(nil, :version => page)}">#{escape_html :root.t}</a></li>}]
+<a accesskey="z" href="#{escape_html build_path(nil, version: page)}">#{escape_html :root.t}</a></li>}]
       path.split('/').inject('') do |parent,elem|
         current = parent/elem
         li << %{<li>
-<a href="#{escape_html build_path(current, :version => page)}">#{escape_html elem}</a></li>}
+<a href="#{escape_html build_path(current, version: page)}">#{escape_html elem}</a></li>}
         current
       end
       ('<ul class="breadcrumbs">' << li.join('<li>/</li>') << '</ul>').html_safe
@@ -146,7 +146,7 @@ module Olelo
       if params[:content]
         params[:content]
       elsif !(String === page.content) || !valid_xml_chars?(page.content)
-	:error_binary.t(:page => page.title, :type => "#{page.mime.comment} (#{page.mime})")
+	:error_binary.t(page: page.title, type: "#{page.mime.comment} (#{page.mime})")
       else
         params[:pos] ? page.content[params[:pos].to_i, params[:len].to_i].to_s : page.content
       end

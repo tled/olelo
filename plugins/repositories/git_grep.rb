@@ -58,9 +58,9 @@ end
 
 __END__
 @@ grep.slim
-- title :search_results.t(:pattern => params[:pattern])
+- title :search_results.t(pattern: params[:pattern])
 h1= title
-p= :match.t(:count => @matches.length)
+p= :match.t(count: @matches.length)
 .search
   - @matches.each do |path, content|
     .match
