@@ -19,10 +19,6 @@ class String
     end
   end
 
-  def html_safe?
-    false
-  end
-
   def html_safe
     HtmlString.new(self)
   end
