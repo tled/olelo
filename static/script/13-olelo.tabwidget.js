@@ -19,14 +19,14 @@
 	    selected.data('tab').show();
 	    selected.parent().addClass('selected');
 	    if (store) {
-		jStorage.set(store, selected.data('tab').attr('id'));
+		$.storage.set(store, selected.data('tab').attr('id'));
 	    }
 	    return false;
 	});
 
         // Get selected tab from store
 	if (store) {
-	    var name = jStorage.get(store);
+	    var name = $.storage.get(store);
 	    if (name) {
                 selected = $("> a[href='#" + name + "']", this);
 	    }

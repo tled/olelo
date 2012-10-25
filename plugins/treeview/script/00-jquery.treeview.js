@@ -25,19 +25,19 @@
         // Store if node is expanded
         function setExpanded(path, expanded) {
             if (options.stateStore) {
-                var state = jStorage.get(options.stateStore, []);
+                var state = $.storage.get(options.stateStore, []);
                 if (!expanded) {
                     state = $.grep(state, function(n, i) { return n != path; });
                 } else if ($.inArray(path, state) < 0) {
                     state.push(path);
                 }
-                jStorage.set(options.stateStore, state);
+                $.storage.set(options.stateStore, state);
             }
         }
 
         // Check if node is expanded
         function isExpanded(path) {
-            return options.stateStore && $.inArray(path, jStorage.get(options.stateStore, [])) >= 0;
+            return options.stateStore && $.inArray(path, $.storage.get(options.stateStore, [])) >= 0;
         }
 
         // Create child element.
@@ -74,7 +74,7 @@
             // Store json in cache
             function store(data) {
                 if (cacheKey) {
-                    jStorage.set(cacheKey, data);
+                    $.storage.set(cacheKey, data);
                 }
             }
 
@@ -126,7 +126,7 @@
                 setTimeout(function() {
                     options.ajax(path, dataUpdated, function() {
                         if (cacheKey) {
-                            jStorage.remove(cacheKey);
+                            $.storage.remove(cacheKey);
                         }
                     });
                 }, options.delay);
@@ -138,7 +138,7 @@
                 update();
             } else {
                 // Try to load from cache
-                var data = cacheKey ? jStorage.get(cacheKey) : null;
+                var data = cacheKey ? $.storage.get(cacheKey) : null;
                 if (data) {
                     dataLoaded(data);
                     update();

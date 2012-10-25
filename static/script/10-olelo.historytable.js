@@ -5,7 +5,7 @@
 	    var version = $(this).attr('id').substr(8);
 	    $(this).prepend('<td class="compare"><input type="checkbox" name="' + version + '"/></td>');
 	});
-	var versions = jStorage.get('historyTable');
+	var versions = $.storage.get('historyTable');
 	if (versions) {
 	    for (var i = 0; i < versions.length; ++i)
 		$('input[name=' + versions[i] + ']').attr('checked', 'checked');
@@ -25,7 +25,7 @@
 	var button = $('th button', this);
 	button.click(function() {
 	    var versions = getSelectedVersions();
-	    jStorage.set('historyTable', versions);
+	    $.storage.set('historyTable', versions);
             location.href = location.pathname.replace('/history', '/compare/' + versions[versions.length-1] + '...' + versions[0]);
 	});
 
