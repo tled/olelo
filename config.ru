@@ -54,6 +54,8 @@ FileUtils.mkpath ::File.dirname(Olelo::Config['log.file'])
 logger = ::Logger.new(Olelo::Config['log.file'], :monthly, 10240000)
 logger.level = ::Logger.const_get(Olelo::Config['log.level'])
 
+Olelo::Initializer.initialize(logger)
+
 # Doesn't work currently, rack issue #241
 # if !Olelo::Config['production']
 #   # Rack::Lint injector
@@ -91,8 +93,6 @@ use Rack::CommonLogger, LoggerOutput.new(logger)
 use Olelo::Middleware::ForceEncoding
 use Olelo::Middleware::Flash, set_accessors: %w(error warn info)
 use Rack::RelativeRedirect
-
-Olelo::Initializer.initialize(logger)
 run Olelo::Application.new
 
 logger.info "Olelo started in #{Olelo::Config['production'] ? 'production' : 'development'} mode"

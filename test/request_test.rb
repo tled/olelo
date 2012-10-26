@@ -1,9 +1,9 @@
 require 'helper'
 require 'olelo/middleware/flash'
 require 'olelo/middleware/force_encoding'
+require 'olelo/middleware/degrade_mime_type'
+require 'rack/relative_redirect'
 require 'rack/session/pool'
-
-Rack::MockRequest::DEFAULT_ENV['REMOTE_ADDR'] = 'localhorst'
 
 class Bacon::Context
   include Rack::Test::Methods
@@ -68,12 +68,15 @@ describe 'requests' do
     Thread.current[:olelo_repository] = nil
 
     logger = Logger.new(File.join(@app_path, 'test.log'))
+    Olelo::Initializer.initialize(logger)
 
     @app = Rack::Builder.new do
-      use Olelo::Middleware::ForceEncoding
       use Rack::Session::Pool
+      use Rack::MethodOverride
+      use Olelo::Middleware::ForceEncoding
+      use Olelo::Middleware::DegradeMimeType
       use Olelo::Middleware::Flash, set_accessors: %w(error warn info)
-      Olelo::Initializer.initialize(logger)
+      #use Rack::RelativeRedirect
       run Olelo::Application.new
     end
   end
