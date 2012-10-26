@@ -18,15 +18,15 @@ describe 'requests' do
     @app_path = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
     default_config = {
-      title:              'Olelo',
-      app_path:           @app_path,
-      plugins_path:       File.join(@app_path, 'plugins'),
-      config_path:        File.join(@app_path, 'config'),
+      title:             'Olelo',
+      app_path:          @app_path,
+      plugins_path:      File.join(@app_path, 'plugins'),
+      config_path:       File.join(@app_path, 'config'),
       initializers_path: File.join(@app_path, 'config', 'initializers'),
-      views_path:         File.join(@app_path, 'views'),
-      themes_path:        File.join(@app_path, 'static', 'themes'),
-      theme:              'atlantis',
-      cache_store:        {
+      views_path:        File.join(@app_path, 'views'),
+      themes_path:       File.join(@app_path, 'static', 'themes'),
+      theme:             'atlantis',
+      cache_store:       {
         type: 'file',
         file: {
           root: File.join(@test_path, 'cache')
@@ -48,11 +48,12 @@ describe 'requests' do
                 'content',
                 'text/x-creole',
                ],
+      math_renderer: 'mathjax',
       mime_suggestions: [],
       disabled_plugins: [
                             'security/readonly_wiki',
 			    'security/private_wiki',
-                            'editor/antispam',
+                            'editor/recaptcha',
                            ],
       repository: {
         type:   'git',
@@ -64,7 +65,7 @@ describe 'requests' do
     }
 
     Olelo::Config.instance.update(default_config)
-    Olelo::Repository.instance = nil
+    Thread.current[:olelo_repository] = nil
 
     logger = Logger.new(File.join(@app_path, 'test.log'))
 
@@ -90,8 +91,8 @@ describe 'requests' do
   it 'should show login page' do
     get '/login'
     last_response.should.be.ok
-    last_response.body.should.include '<form action="&#47;signup" method="post">'
-    last_response.body.should.include '<form action="&#47;login" method="post">'
+    last_response.body.should.include '<form action="/signup" method="post">'
+    last_response.body.should.include '<form action="/login" method="post">'
   end
 
   it 'should show to /new' do

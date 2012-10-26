@@ -10,16 +10,18 @@ module TestHelper
   end
 
   def create_repository
-    Olelo::Repository.instance = nil
+    Thread.current[:olelo_repository] = nil
+    Olelo::User.current = Olelo::User.new('anonymous', 'anonymous@localhost')
+    load_plugin('repositories/rugged_repository')
     Olelo::Config.instance['repository.type'] = 'git'
     Olelo::Config.instance['repository.git.path'] = File.expand_path(File.join(File.dirname(__FILE__), '.test'))
     Olelo::Config.instance['repository.git.bare'] = true
-    load_plugin('repositories/git')
   end
 
   def destroy_repository
-    Olelo::Repository.instance = nil
     FileUtils.rm_rf(Olelo::Config['repository.git.path'])
+    Thread.current[:olelo_repository] = nil
+    Olelo::User.current = nil
   end
 
   def create_page(name, content = 'content')

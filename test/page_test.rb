@@ -122,7 +122,7 @@ describe 'Olelo::Page' do
     tree.previous_version.should.equal old_tree.tree_version
     old_tree.tree_version.should.equal old_tree.children[0].tree_version
     old_tree.tree_version.should.equal old_tree.children[1].tree_version
-    old_tree.tree_version.should.equal old_tree.children[2].tree_version
+    old_tree.children[2].should.equal nil
     old_tree.children[0].tree_version.should.not.be.head
   end
 

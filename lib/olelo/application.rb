@@ -31,8 +31,6 @@ module Olelo
 
     # Executed before each request
     before :routing do
-      Olelo.logger.debug env
-
       User.current = User.find(session[:olelo_user])
       if !User.current
         invoke_hook(:auto_login)
