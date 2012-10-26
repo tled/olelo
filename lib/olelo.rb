@@ -1,5 +1,3 @@
-raise "Your Ruby version is too old (1.9.2 is required)" if RUBY_VERSION < '1.9.2'
-
 require 'logger'
 require 'cgi'
 require 'digest/md5'
