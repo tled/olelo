@@ -21,12 +21,12 @@ class Cache
 
     # Warning: don't change this. This must be thread safe!
     if options[:update]
-      if options[:defer] && (value = @store[key] || @store.key?(key)) # Check key? because value could be nil
+      if options[:defer] && ((value = @store[key]) || @store.key?(key)) # Check key? because value could be nil
         Worker.defer { update(key, options, &block) }
         return value
       end
     else
-      return value if value = @store[key] || @store.key?(key) # Check key? because value could be nil
+      return value if (value = @store[key]) || @store.key?(key) # Check key? because value could be nil
     end
     update(key, options, &block)
   end
