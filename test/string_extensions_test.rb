@@ -1,12 +1,6 @@
 require 'olelo/extensions'
 
 describe 'String extensions' do
-  it 'should have unindent' do
-    %{a
-      b
-      c}.unindent.should.equal "a\nb\nc"
-  end
-
   it 'should have #starts_with?' do
     '123456789'.starts_with?('12').should.equal true
     '123456789'.starts_with?('23').should.not.equal true
