@@ -7,12 +7,7 @@ require 'set'
 require 'yaml'
 require 'mimemagic'
 require 'socket'
-
-begin
-  require 'yajl/json_gem'
-rescue LoadError
-  require 'json'
-end
+require 'multi_json'
 
 require 'olelo/html_safe'
 require 'slim'

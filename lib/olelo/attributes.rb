@@ -119,7 +119,7 @@ module Olelo
         def field_tag(attr)
           %{<input class="observe" type="text" id="#{key}" name="#{key}" value="#{escape_html(values[attr] || attr)}"/>
             <script type="text/javascript">
-            $('##{key}').combobox({ source: #{escape_javascript values.values.sort.to_json} });
+            $('##{key}').combobox({ source: #{escape_javascript MultiJson.dump(values.values.sort)} });
             </script>}
         end
 

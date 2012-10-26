@@ -22,6 +22,6 @@ $(function() {
                        '</a></li><li id="sidebar-tab-tree"><a href="#sidebar-tree">' + $.t('tree') + '</a></li></ul>');
     $('#sidebar-tab-menu, #sidebar-tab-tree').tabWidget({store: 'sidebar-tab'});
     $('#treeview').treeView({stateStore: 'treeview-state', cacheStore: 'treeview-cache', root: Olelo.base_path, ajax: function(path, success, error) {
-	$.ajax({url: path, data: { aspect: 'treeview.json' }, success: success, error: error, dataType: 'json'});
+	$.ajax({url: path, data: { aspect: 'treeview' }, success: success, error: error, dataType: 'json'});
     }});
 });

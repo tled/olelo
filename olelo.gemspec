@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 1.9.2'
 
-  s.add_runtime_dependency('tilt', ['~> 1.3.3'])
+  s.add_runtime_dependency('multi_json', ['~> 1.3.6'])
   s.add_runtime_dependency('slim', ['~> 1.3.3'])
   s.add_runtime_dependency('creole', ['~> 0.4.2'])
   s.add_runtime_dependency('nokogiri', ['~> 1.5.5'])
