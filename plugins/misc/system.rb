@@ -44,6 +44,10 @@ ul.tabs
     tr
       td Memory usage:
       td #{@memory} MiB
+    - if defined?(Olelo::Worker)
+      tr
+        td Worker jobs
+        td= Olelo::Worker.jobs
 #tab-configuration.tab
   h2 Configuration
   table
