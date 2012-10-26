@@ -17,14 +17,18 @@ class Cache
   # * :update  Force cache update
   # * :defer   Deferred cache update
   def cache(key, options = {}, &block)
-    if options[:disable] || !Config['production']
-      yield(self)
-    elsif @store.key?(key) && (!options[:update] || options[:defer])
-      Worker.defer { update(key, options, &block) } if options[:update]
-      @store[key]
+    return yield(self) if options[:disable] || !Config['production']
+
+    # Warning: don't change this. This must be thread safe!
+    if options[:update]
+      if options[:defer] && (value = @store[key] || @store.key?(key)) # Check key? because value could be nil
+        Worker.defer { update(key, options, &block) }
+        return value
+      end
     else
-      update(key, options, &block)
+      return value if value = @store[key] || @store.key?(key) # Check key? because value could be nil
     end
+    update(key, options, &block)
   end
 
   def clear
