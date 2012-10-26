@@ -256,3 +256,16 @@ aspect :latex do
     html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
+
+################################################################################
+# Remind aspects configuration
+################################################################################
+
+aspect :calendar do
+  is_cacheable.needs_layout.has_priority(1)
+  accepts 'text/x-remind'
+  mime 'application/xhtml+xml; charset=utf-8'
+  filter do
+    remind!.html2xml!
+  end
+end

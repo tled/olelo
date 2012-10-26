@@ -27,3 +27,8 @@ MimeMagic.add('text/x-orgmode',
               extensions: 'org',
               parents: 'text/plain',
               comment: 'Emacs Orgmode File')
+
+MimeMagic.add('text/x-remind',
+              extensions: 'rem',
+              parents: 'text/plain',
+              comment: 'Remind Calendar File')
