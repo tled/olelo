@@ -288,7 +288,7 @@ class Tag < Filters::NestingFilter
       "#{@protection_prefix}#{@protected_tags.length-1}#{@protection_suffix}"
     end
   rescue Exception => ex
-    Olelo.logger.error ex.message
+    Olelo.logger.warn ex.message
     "#{name} - #{ex.message}"
   end
 
