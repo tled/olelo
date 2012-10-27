@@ -95,7 +95,7 @@ module Olelo
       @version
     end
 
-    def history(skip = nil, limit = nil)
+    def history(skip, limit)
       raise 'Page is new' if new?
       repository.get_history(path, skip, limit)
     end
