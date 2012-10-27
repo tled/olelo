@@ -22,7 +22,7 @@ Features, implemented by plugins:
 * Syntax highlighted embedded code blocks
 * Image resizing, SVG to PNG/JPEG conversion
 * Auto-generated table of contents
-* Wiki syntax can be extended with tags
+* Wiki syntax can be extended with tags (gist, math, footnotes, ...)
 * Editor preview
 * View pages as S5 presentation
 * Privacy features: Access control lists, Private wiki which needs login, readonly wiki
@@ -41,7 +41,7 @@ Go to a git repository via command line and start the Ōlelo webserver.
 $ olelo
 }}}
 
-Point your web browser at http://localhost:8080/.
+Point your web browser at http://localhost:8080/. This is all you have to do, now you are good to go to use your wiki!
 
 == Installation from source
 
@@ -74,25 +74,22 @@ For production purposes, I recommend that you deploy the wiki with [[http://unic
 $ unicorn path-to/config.ru
 }}}
 
-Unicorn is a very flexible ruby application server and Ōlelo runs very well on it. You can adapt the number of Unicorn workers depending on the load you expect. It is
-a good idea to observe the Unicorn workers as described in https://github.com/blog/519-unicorn-god and kill missbehaving workers if necessary.
+Unicorn is a very flexible ruby application server and Ōlelo runs very well on it. You can adapt the number of Unicorn workers depending on the load you expect. It is a good idea to observe the Unicorn workers as described in https://github.com/blog/519-unicorn-god and kill missbehaving workers if necessary.
 
 == Configuration
 
-For deployment you might want to tweak some settings. Ōlelo reads the files config/config.yml.default and config/config.yml in that order.
-So just copy the default configuration config/config.yml.default to config/config.yml and make your modifications. If you installed Ōlelo
-as gem this is not a good idea since you don't want to fiddle in the gem directory. For this purpose exists the environment variable OLELO_CONFIG which
+For deployment you might want to tweak some settings. Ōlelo reads the files config/config.yml.default and config/config.yml in that order. So just copy the default configuration 'config/config.yml.default' to 'config/config.yml' and make your modifications. If you installed Ōlelo as gem this is not a good idea since you don't want to fiddle in the gem directory. For this purpose the environment variable '$OLELO_CONFIG' exists which
 can point to the configuration file that you want to use.
 
 {{{
 export OLELO_CONFIG=/home/olelo/olelo_config.yml
 }}}
 
-You can also use the OLELO_CONFIG environment variable if you want to run multiple Ōlelo instances with different configurations.
+You can also use the '$OLELO_CONFIG' environment variable if you want to run multiple Ōlelo instances with different configurations, for example from different repositories.
 
 == Dependencies
 
-If you use Bundler or installed Ōlelo as gem you don't really have to care about the dependencies. The standard installation provides the core dependencies and a good selection of optional dependencies.
+If you installed Ōlelo as gem or used Bundler you don't really have to care about the dependencies. The standard installation provides the core dependencies and a good selection of optional dependencies.
 
 Core dependencies:
 * [[http://www.git-scm.com|Git]]
@@ -111,8 +108,7 @@ Some dependencies are optional, for example depending on the markup you want to 
 
 == Authors
 
-Git-Wiki was originally developed by Simon Rozet. The development of Ōlelo to its current state was done by Daniel Mendler and contributors.
-The current code base doesn't have much in common with the original Git-Wiki proof-of-concept.
+Git-Wiki was originally developed by Simon Rozet. The development of Ōlelo to its current state was done by Daniel Mendler and contributors. The current code base doesn't have much in common with the original Git-Wiki proof-of-concept.
 
 Contributors:
 * Alex Eagle
