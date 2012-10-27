@@ -114,6 +114,7 @@ disabled_plugins:
   - security/private_wiki
   - editor/recaptcha
   - editor/ace
+  - filters/remind
 
 ##################################################
 # Rack middleware configurations
