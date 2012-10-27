@@ -58,6 +58,7 @@ module Olelo
 
     def pagination(path, page_count, page_nr, options = {})
       return if page_count <= 1
+      unlimited = options.delete(:unlimited)
       li = []
       li << if page_nr > 1
               %{<a href="#{escape_html build_path(path, options.merge(page: page_nr - 1))}">&#9666;</a>}
@@ -86,11 +87,12 @@ module Olelo
       if max != page_count
         li << %{<span class="ellipsis"/>} << %{<a href="#{escape_html build_path(path, options.merge(page: page_count))}">#{page_count}</a>}
       end
-      li << if page_nr < page_count
-              %{<a href="#{escape_html build_path(path, options.merge(page: page_nr + 1))}">&#9656;</a>}
-            else
-              %{<span class="disabled">&#9656;</span>}
-            end
+      if page_nr < page_count
+        li << %{<span class="ellipsis"/>} if unlimited
+        li << %{<a href="#{escape_html build_path(path, options.merge(page: page_nr + 1))}">&#9656;</a>}
+      else
+        li << %{<span class="disabled">&#9656;</span>}
+      end
       ('<ul class="pagination">' + li.map {|x| "<li>#{x}</li>"}.join + '</ul>').html_safe
     end
 
