@@ -24,6 +24,12 @@ Olelo::Config.instance['themes_path'] = ::File.join(app_path, 'static', 'themes'
 Olelo::Config.instance['rack.session_secret'] = SecureRandom.hex
 Olelo::Config.instance.load!(::File.join(app_path, 'config', 'config.yml.default'))
 
+config_file = ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG']
+unless config_file
+  path = ::File.join(app_path, 'config', 'config.yml')
+  config_file = path if File.exists?(path)
+end
+
 if Dir.pwd == app_path
   puts "Serving from Olelo application directory #{app_path}"
   data_path = File.join(app_path, '.wiki')
@@ -38,14 +44,14 @@ elsif File.directory?(::File.join(Dir.pwd, '.git'))
   Olelo::Config.instance['cache_store'] = { type: 'file', 'file.root' => ::File.join(data_path, 'cache') }
   Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(data_path, 'users.yml')
   Olelo::Config.instance['log.file'] = ::File.join(data_path, 'log')
-else
-  puts 'No default data storage location defined, please create your own configuration!'
+elsif !config_file
+  puts 'No git repository found, please create your own configuration file!'
+  exit 1
 end
 
-if config = ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG']
-  Olelo::Config.instance.load!(config)
-else
-  Olelo::Config.instance.load(::File.join(app_path, 'config', 'config.yml'))
+if config_file
+  puts "Loading configuration from #{config_file}"
+  Olelo::Config.instance.load!(config_file)
 end
 
 Olelo::Config.instance.freeze
