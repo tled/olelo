@@ -2,8 +2,8 @@
 // Written by Daniel Mendler
 $(function() {
     $('html').removeClass('no-js').addClass('js');
-    function pageLoaded(parent) {
-        $('#upload-path', parent).each(function() {
+    function pageLoaded() {
+        $('#upload-path', this).each(function() {
             var elem = this;
             var old = elem.value;
             var base = elem.value;
@@ -16,18 +16,18 @@ $(function() {
                 });
             }
         });
-        $('label, #menu, .tabhead, .pagination, .button-bar', parent).disableSelection();
-        $('#history-table', parent).historyTable();
-	$('.date', parent).timeAgo();
-        $('.tabs', parent).each(function() {
+        $('label, #menu, .tabhead, .pagination, .button-bar', this).disableSelection();
+        $('#history-table', this).historyTable();
+	$('.date', this).timeAgo();
+        $('.tabs', this).each(function() {
 	    $('> li', this).tabWidget();
 	});
-        $('*[accesskey]', parent).underlineAccessKey();
+        $('*[accesskey]', this).underlineAccessKey();
     }
 
-    $('.pagination a').pagination('#content');
-    $('#content').bind('pageLoaded', function() { pageLoaded(this); });
-    pageLoaded();
+    $('#content').pagination('.pagination a');
+    $('#content').bind('pageLoaded', pageLoaded);
+    pageLoaded.apply($(document));
 
     $('button[data-target]').live('click', function() {
 	var button = $(this);

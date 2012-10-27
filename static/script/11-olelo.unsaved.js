@@ -51,10 +51,10 @@
 	return !hasUnsavedChanges(this) || confirm($.t('confirmUnsaved'));
     };
 
-    $('input.observe, textarea.observe, select.observe').live('change autocompletechange', updateUnsaved);
+    $(document).on('change autocompletechange', 'input.observe, textarea.observe, select.observe', updateUnsaved);
 
     var submitForm = false;
-    $('form').live('submit', function() {
+    $(document).on('submit', 'form', function() {
 	submitForm = true;
     }).bind('reset', function() {
 	$('.unsaved', this).removeClass('unsaved');
