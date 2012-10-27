@@ -80,6 +80,10 @@ module Olelo
       path.empty?
     end
 
+    def editable?
+      mime.text? || mime == EMPTY_MIME || mime == DIRECTORY_MIME
+    end
+
     def next_version
       init_versions
       @next_version

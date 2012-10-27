@@ -4,9 +4,9 @@
   - title params[:pos] ? :edit_page_section.t(page: page.title) : :edit_page.t(page: page.title)
 h1= title
 = flash_messages
-= page.mime.text? ? tabs(:edit, :upload, :attributes) :  tabs(:upload, :attributes)
+= page.editable? ? tabs(:edit, :upload, :attributes) :  tabs(:upload, :attributes)
 form action=build_path(page.new? ? nil : page.path) method='post'
-  - if page.mime.text?
+  - if page.editable?
     #tab-edit.tab
       h2= :edit.t
       ruby:
