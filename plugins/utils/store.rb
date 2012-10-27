@@ -278,7 +278,7 @@ class Store
       path = store_path(key)
       FileUtils.mkpath(::File.dirname(path))
       ::File.unlink(path) if ::File.exist?(path)
-      File.rename(temp_file, path)
+      ::File.rename(temp_file, path)
     rescue
       ::File.unlink(temp_file) rescue nil
     ensure
@@ -296,7 +296,7 @@ class Store
     # @override
     def clear
       temp_dir = "#{@root}-#{$$}-#{Thread.current.object_id}"
-      File.rename(@root, temp_dir)
+      ::File.rename(@root, temp_dir)
       FileUtils.rm_rf(temp_dir)
     rescue Errno::ENOENT
     end
