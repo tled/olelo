@@ -1,8 +1,8 @@
 - title :delete_page.t(page: page.title)
 h1= title
+= flash_messages
 form action=build_path(page.path) method='post'
   .box
-    = flash_messages
     &hidden name='_method' value='delete'
     label for='submit' = :really_delete.t
     button&submit#submit name='submit' accesskey='d' = :delete.t

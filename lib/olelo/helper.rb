@@ -34,11 +34,9 @@ module Olelo
       env['olelo.flash']
     end
 
-    def flash_messages(action = nil)
-      if !action || action?(action)
-        li = [:error, :warn, :info].map {|level| flash[level].to_a.map {|msg| %{<li class="#{level}">#{escape_html msg}</li>} } }.flatten
-        %{<ul class="flash">#{li.join}</ul>}.html_safe if !li.empty?
-      end
+    def flash_messages
+      li = [:error, :warn, :info].map {|level| flash[level].to_a.map {|msg| %{<li class="#{level}">#{escape_html msg}</li>} } }.flatten
+      %{<ul class="flash">#{li.join}</ul>}.html_safe if !li.empty?
     end
   end
 
@@ -140,16 +138,6 @@ module Olelo
         path += '?' + query unless query.empty?
       end
       '/' + (Config['base_path'] / path)
-    end
-
-    def edit_content(page)
-      if params[:content]
-        params[:content]
-      elsif !(String === page.content) || !valid_xml_chars?(page.content)
-	:error_binary.t(page: page.title, type: "#{page.mime.comment} (#{page.mime})")
-      else
-        params[:pos] ? page.content[params[:pos].to_i, params[:len].to_i].to_s : page.content
-      end
     end
   end
 

@@ -3,31 +3,38 @@
 - else
   - title params[:pos] ? :edit_page_section.t(page: page.title) : :edit_page.t(page: page.title)
 h1= title
-= tabs :edit, :upload, :attributes
+= flash_messages
+= page.mime.text? ? tabs(:edit, :upload, :attributes) :  tabs(:upload, :attributes)
 form action=build_path(page.new? ? nil : page.path) method='post'
-  #tab-edit.tab
-    h2= :edit.t
-    = flash_messages if action?(:edit) || page.new?
-    - content = edit_content(page)
-    - if page.new?
-      label for='edit-path' = :path.t
-      &text#edit-path name='path' value=params[:path]
+  - if page.mime.text?
+    #tab-edit.tab
+      h2= :edit.t
+      ruby:
+        content =
+          if params[:content]
+            params[:content]
+          else
+            params[:pos] ? page.content[params[:pos].to_i, params[:len].to_i].to_s : page.content
+          end
+      - if page.new?
+        label for='edit-path' = :path.t
+        &text#edit-path name='path' value=params[:path]
+        br
+        hr
+      - else
+        &hidden name='version' value=page.version
+        - if params[:pos]
+          &hidden name='pos' value=params[:pos]
+          &hidden name='len' value=content.size
+      textarea#edit-content.observe name='content' cols='100' rows='20' = content
       br
-      hr
-    - else
-      &hidden name='version' value=page.version
-      - if params[:pos]
-        &hidden name='pos' value=params[:pos]
-        &hidden name='len' value=content.size
-    textarea#edit-content.observe name='content' cols='100' rows='20' = content
-    br
-    label for='edit-comment' = :comment.t
-    &text#edit-comment name='comment' value=params[:comment] size='50'
-    = render_block :edit_buttons do
-      button&submit name='action' value='edit' = :save.t
-      button&submit name='action' value='edit-close' = :save_and_close.t
-      button&reset = :reset.t
-      br
+      label for='edit-comment' = :comment.t
+      &text#edit-comment name='comment' value=params[:comment] size='50'
+      = render_block :edit_buttons do
+        button&submit name='action' value='edit' = :save.t
+        button&submit name='action' value='edit-close' = :save_and_close.t
+        button&reset = :reset.t
+        br
 form action=build_path(page.new? ? nil : page.path) method='post' enctype='multipart/form-data'
   #tab-upload.tab
     h2= :upload_file.t
@@ -38,7 +45,6 @@ form action=build_path(page.new? ? nil : page.path) method='post' enctype='multi
       hr
     - else
       &hidden name='version' value=page.version
-    = flash_messages :upload
     label for='upload-file' = :file.t
     &file#upload-file.observe name='file'
     br
@@ -57,7 +63,6 @@ form action=build_path(page.new? ? nil : page.path) method='post'
       hr
     - else
       &hidden name='version' value=page.version
-    = flash_messages :attributes
     = page.attribute_editor
     = render_block :attributes_buttons do
       .indent

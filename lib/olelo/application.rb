@@ -205,6 +205,7 @@ module Olelo
 
     get '/edit(/:path)' do
       @page = Page.find!(params[:path])
+      flash.info!(:info_binary.t(page: page.title, type: "#{page.mime.comment} (#{page.mime})")) unless page.mime.text?
       render :edit
     end
 

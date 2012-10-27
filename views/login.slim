@@ -1,38 +1,36 @@
 - title :login.t
+= flash_messages
 - signup_enabled = Olelo::Config['authentication.enable_signup'] && Olelo::User.supports?(:signup)
-p
-  = signup_enabled ? tabs(:login, :signup) : tabs(:login)
-  form action=build_path(:login) method='post'
-    #tab-login.tab.fieldset
-      h2 Login
-      = flash_messages :login
-      label for='login-user' = :user.t
-      &text#login-user name='user'
+= signup_enabled ? tabs(:login, :signup) : tabs(:login)
+form action=build_path(:login) method='post'
+  #tab-login.tab.fieldset
+    h2 Login
+    label for='login-user' = :user.t
+    &text#login-user name='user'
+    br
+    label for='login-password' = :password.t
+    &password#login-password name='password'
+    br
+    .indent
+      = render_block :login_buttons do
+        button&submit= :login.t
+    br
+- if signup_enabled
+  form action=build_path(:signup) method='post'
+    #tab-signup.tab.fieldset
+      h2= :signup.t
+      label for='signup-user' = :user.t
+      &text#signup-user name='user'
       br
-      label for='login-password' = :password.t
-      &password#login-password name='password'
+      label for='signup-password' = :password.t
+      &password#signup-password name='password'
+      br
+      label for='signup-confirm' = :confirm_password.t
+      &password#signup-confirm name='confirm'
+      br
+      label for='signup-email' = :email.t
+      &text#signup-email name='email'
       br
       .indent
-        = render_block :login_buttons do
-          button&submit= :login.t
+        button&submit = :signup.t
       br
-  - if signup_enabled
-    form action=build_path(:signup) method='post'
-      #tab-signup.tab.fieldset
-        h2= :signup.t
-        = flash_messages :signup
-        label for='signup-user' = :user.t
-        &text#signup-user name='user'
-        br
-        label for='signup-password' = :password.t
-        &password#signup-password name='password'
-        br
-        label for='signup-confirm' = :confirm_password.t
-        &password#signup-confirm name='confirm'
-        br
-        label for='signup-email' = :email.t
-        &text#signup-email name='email'
-        br
-        .indent
-          button&submit = :signup.t
-        br

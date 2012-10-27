@@ -1,8 +1,8 @@
 - title :profile_title.t(user: Olelo::User.current.name)
 h1= title
+= flash_messages
 form action=build_path(:profile) method='post'
   .fieldset
-    = flash_messages
     h2= :change_password.t
     label for='oldpassword' = :old_password.t
     &password name='oldpassword' id='oldpassword'
