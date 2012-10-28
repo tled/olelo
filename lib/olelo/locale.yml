@@ -16,7 +16,7 @@ en:
   changes_of:             'Changes of %{page}'
   changes_saved:          'Changes saved'
   comment:                'Comment'
-  compare:                'Compare %{name}'
+  compare:                'Compare %{name}: %{from} → %{to}'
   confirm_password:       'Confirm password'
   head:                   'Head'
   create_page:            'Create %{page}'
