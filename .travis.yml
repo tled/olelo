@@ -6,6 +6,6 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: rbx-19mode
-# HACK: Fix problems with Nokogiri and Redcarpet on ruby-head
+# HACK: Fix problems with native libraries on ruby-head
 before_install:
-  - gem install nokogiri redcarpet -- --with-cflags='--std=gnu99'
+  - gem install nokogiri redcarpet rugged -- --with-cflags='--std=gnu99'
