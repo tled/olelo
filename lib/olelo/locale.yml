@@ -87,6 +87,7 @@ en:
   version_conflict:       'Version conflict detected'
   wrong_user_or_pw:       'Wrong username or password'
   wrong_password:         'Wrong password'
+  powered_by:             'Powered by <a href="https://github.com/minad/olelo">&#332;lelo</a>'
 de:
   access_denied:          'Zugriff verweigert'
   actions:                'Aktionen'
@@ -182,6 +183,7 @@ de:
   version_conflict:       'Versionskonflikt aufgetreten'
   wrong_user_or_pw:       'Falscher Benutzername oder falsches Passwort'
   wrong_password:         'Falsches Passwort'
+  powered_by:             'Powered by <a href="https://github.com/minad/olelo">&#332;lelo</a>'
 cs_CZ:
   access_denied:          'Přístup odepřen'
   actions:                'Akce'
@@ -368,3 +370,4 @@ fr:
   version_conflict:       "Conflit de version détecté"
   wrong_user_or_pw:       "Nom d'utilisateur ou mot de passe incorect"
   wrong_password:         "Mot de passe incorect"
+  powered_by:             'Powered by <a href="https://github.com/minad/olelo">&#332;lelo</a>'
