@@ -57,7 +57,6 @@ cs_CZ:
   move_page:              'Přesunout stránku %{page}'
   name:                   'Jméno'
   new_page:               'Nová stránka'
-  newer:                  'Novější'
   no_changes:             'Žádné změny'
   not_found_text:         'Pardon, stránka, kterou hledáte, nebyla nalezena.'
   old_password:           'Staré heslo'
@@ -244,7 +243,6 @@ en:
   move_page:              'Move %{page}'
   name:                   'Name'
   new_page:               'New Page'
-  newer:                  'Newer'
   no_changes:             'No changes'
   not_found_text:         'Sorry, the page you were looking for was not found.'
   not_found_title:        '404 Not found'
@@ -316,13 +314,13 @@ fr:
   edit_page_section:      "Modifier %{page} (Section)"
   email:                  "Courriel"
   empty_password:         "Mot de passe vide"
-  error_binary:           "%{page} est un binaire %{type} et ne peut pas être édité comme un fichier texte."
   error_occurred:         "Oops ! Une erreur est survenue."
   file:                   "Fichier"
   groups:                 "Groupes"
   head:                   "Tête"
   history:                "Historique"
   history_of:             "Historique de %{page}"
+  info_binary:            "%{page} est un binaire %{type} et ne peut pas être édité comme un fichier texte."
   invalid_email:          "Courriel invalide"
   invalid_mime_type:      "Type MIME invalide"
   invalid_name:           "Nom invalide"

@@ -76,7 +76,26 @@ end
 
 namespace :locale do
   task :sort do
-    system("for i in $(find -name locale.yml); do sort_yaml < $i > $i.sorted; mv $i.sorted $i; done")
+    Dir['**/locale.yml'].each do |file|
+      puts "Sorting #{file}"
+      system("sort_yaml < #{file} > #{file}.sorted; mv #{file}.sorted #{file}")
+    end
+  end
+
+  task :check do
+    require 'yaml'
+    Dir['**/locale.yml'].each do |file|
+      puts "Checking #{file}"
+      translations = YAML.load_file(file)
+      puts 'en locale missing' unless translations['en']
+      keys = translations['en'].keys
+      translations.each do |locale,hash|
+        delta = hash.keys - keys
+        puts "\tLocale #{locale} has additional keys #{delta.join(' ')}" unless delta.empty?
+        delta = keys - hash.keys
+        puts "\tLocale #{locale} has missing keys #{delta.join(' ')}" unless delta.empty?
+      end
+    end
   end
 end
 
