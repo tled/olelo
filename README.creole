@@ -125,7 +125,7 @@ Some dependencies are optional, for example depending on the markup you want to 
 === Tipps
 
 * Execute 'rake --tasks' to see the available development tasks
-* Active development mode by setting the option 'production: false' in 'config/config.yml'
+* Activate development mode by setting the option 'production: false' in 'config/config.yml'
 * Increase the log verbosity by setting 'log.level = DEBUG' in 'config/config.yml'
 * Do not hesitate to create an issue at the [[https://github.com/minad/olelo/issues|issue tracker]]
 
