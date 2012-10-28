@@ -1,9 +1,8 @@
 - title page.title
-= footer do
-  ' #{:version.t}
+= define_block :version_link do
   a.version href=build_path(page, version: page.version, force_version: true) title=page.version = page.version.short
-  '  #{:by.t} #{page.version.author.name},
-  = date page.version.date
+= footer do
+  == :version_by.t(version: blocks[:version_link], author: escape_html(page.version.author.name), date: date(page.version.date))
 - if !page.attributes['no_title']
   h1= title
 == content

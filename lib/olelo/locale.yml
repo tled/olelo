@@ -9,7 +9,7 @@ en:
   attributes_edited:      'Attributes of %{page} edited'
   author:                 'Author'
   binary_file:            'Binary file'
-  by:                     'by'
+  version_by:             'Version %{version} by %{author}, %{date}'
   cancel:                 'Cancel'
   change_password:        'Change password'
   changes:                'Changes'
@@ -100,7 +100,7 @@ de:
   attributes_edited:      'Attribute von %{page} bearbeitet'
   author:                 'Autor'
   binary_file:            'Binärdatei'
-  by:                     'von'
+  version_by:             'Version %{version} von %{author}, %{date}'
   cancel:                 'Abbrechen'
   change_password:        'Passwort ändern'
   changes:                'Änderungen'
@@ -197,7 +197,7 @@ cs_CZ:
   attributes_edited:      'Atributy stránky %{page} editovány'
   author:                 'Autor'
   binary_file:            'Binární soubor'
-  by:                     'od'
+  version_by:             'Verze %{version} od %{author}, %{date}'
   cancel:                 'Zrušit'
   change_password:        'Změnit heslo'
   changes:                'Změny'
@@ -295,7 +295,7 @@ fr:
   attributes_edited:      "Attributs de %{page} modifiés"
   author:                 "Auteur"
   binary_file:            "Fichier binaire"
-  by:                     "par"
+  version_by:             'Version %{version} par %{author}, %{date}'
   cancel:                 "Cancel"
   change_password:        "Changer de mot de passe"
   changes:                "Changement"
