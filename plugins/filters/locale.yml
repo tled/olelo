@@ -1,20 +1,20 @@
 en:
   attribute_toc: 'Generate Table of Contents'
   attribute_no_editsection: 'Disable Section Editing'
-  edit_section: 'Edit section "#{section}"'
-  section_edited: 'Section "#{section}" edited'
+  edit_section: 'Edit section "%{section}"'
+  section_edited: 'Section "%{section}" edited'
 de:
   attribute_toc: 'Inhaltsverzeichnis erzeugen'
   attribute_no_editsection: 'Bearbeiten von Bereichen deaktivieren'
-  edit_section: 'Bearbeite Bereich "#{section}"'
-  section_edited: 'Bereich "#{section}" bearbeitet'
+  edit_section: 'Bearbeite Bereich "%{section}"'
+  section_edited: 'Bereich "%{section}" bearbeitet'
 cs_CZ:
   attribute_toc: 'Vytvořit obsah'
   attribute_no_editsection: 'Zablokovat editaci sekcí'
-  edit_section: 'Edituj sekci "#{section}"'
-  section_edited: 'Sekce "#{section}" editována'
+  edit_section: 'Edituj sekci "%{section}"'
+  section_edited: 'Sekce "%{section}" editována'
 fr:
   attribute_toc: "Générer Table des Matières"
   attribute_no_editsection: "Désactiver l'édition"
-  edit_section: "Éditer la section \"#{section}\""
-  section_edited: "Section \"#{section}\" éditée"
+  edit_section: "Éditer la section \"%{section}\""
+  section_edited: "Section \"%{section}\" éditée"

@@ -13,7 +13,7 @@ en:
   aspect_gallery: 'Image Gallery'
   aspect_s5: 'S5 Presentation'
   aspect_latex: 'LaTeX'
-  aspect_not_available: 'Aspect #{aspect} is not available for page #{page} with type #{type}.'
+  aspect_not_available: 'Aspect %{aspect} is not available for page %{page} with type %{type}.'
   entry: 'Entry'
   exif: 'EXIF Information'
   geometry: 'Geometry'
@@ -35,7 +35,7 @@ de:
   aspect_gallery: 'Bildergalerie'
   aspect_s5: 'S5 Präsentation'
   aspect_latex: 'LaTeX'
-  aspect_not_available: 'Aspekt #{aspect} für die Seite #{page} mit dem Typ #{type} ist nicht verfügbar.'
+  aspect_not_available: 'Aspekt %{aspect} für die Seite %{page} mit dem Typ %{type} ist nicht verfügbar.'
   entry: 'Eintrag'
   exif: 'EXIF-Information'
   geometry: 'Geometrie'
@@ -56,7 +56,7 @@ cs_CZ:
   aspect_text: 'Stažení textu'
   aspect_gallery: 'Galerie'
   aspect_latex: 'LaTeX'
-  aspect_not_available: 'Vzhled #{aspect} není k dispozici pro stránku #{page} s typem #{type}.'
+  aspect_not_available: 'Vzhled %{aspect} není k dispozici pro stránku %{page} s typem %{type}.'
   entry: 'Položka'
   exif: 'Informace EXIF'
   geometry: 'Geometrie'
@@ -78,7 +78,7 @@ fr:
   aspect_gallery: "Galerie d'images"
   aspect_s5: "Presentation S5 "
   aspect_latex: "LaTeX"
-  aspect_not_available: "L'aspect #{aspect} n'est pas disponible pour la page #{page} avec le type #{type}."
+  aspect_not_available: "L'aspect %{aspect} n'est pas disponible pour la page %{page} avec le type %{type}."
   entry: "Entrée"
   exif: "Information EXIF"
   geometry: "Geometrie"

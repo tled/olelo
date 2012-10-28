@@ -1,43 +1,43 @@
 en:
   access_denied:          'Access denied'
   actions:                'Actions'
-  already_exists:         '#{page} exists already'
+  already_exists:         '%{page} exists already'
   attribute_mime:         'Mime-Type'
   attribute_no_title:     'Disable title'
   attribute_title:        'Title'
   attributes:             'Attributes'
-  attributes_edited:      'Attributes of #{page} edited'
+  attributes_edited:      'Attributes of %{page} edited'
   author:                 'Author'
   binary_file:            'Binary file'
   by:                     'by'
   cancel:                 'Cancel'
   change_password:        'Change password'
   changes:                'Changes'
-  changes_of:             'Changes of #{page}'
+  changes_of:             'Changes of %{page}'
   changes_saved:          'Changes saved'
   comment:                'Comment'
-  compare:                'Compare #{name}'
+  compare:                'Compare %{name}'
   confirm_password:       'Confirm password'
   head:                   'Head'
-  create_page:            'Create #{page}'
+  create_page:            'Create %{page}'
   create_redirect:        'Create redirect'
   date:                   'Date'
   delete:                 'Delete'
   deleted:                'Deleted'
-  delete_page:            'Delete #{page}'
+  delete_page:            'Delete %{page}'
   description:            'Description'
   destination:            'Destination'
   edit:                   'Edit'
-  edit_page:              'Editing #{page}'
-  edit_page_section:      'Editing #{page} (Section)'
+  edit_page:              'Editing %{page}'
+  edit_page_section:      'Editing %{page} (Section)'
   email:                  'E-Mail'
   empty_password:         'Empty password'
-  info_binary:            '#{page} is a binary #{type} and cannot be edited like a text file.'
+  info_binary:            '%{page} is a binary %{type} and cannot be edited like a text file.'
   error_occurred:         'Oh snap! An error occurred.'
   file:                   'File'
   groups:                 'Groups'
   history:                'History'
-  history_of:             'History of #{page}'
+  history_of:             'History of %{page}'
   invalid_email:          'E-Mail is invalid'
   invalid_mime_type:      'Invalid mime type'
   invalid_name:           'Name is invalid'
@@ -47,27 +47,27 @@ en:
   logout:                 'Logout'
   menu_actions_edit_new:  'New Page'
   move:                   'Move'
-  move_page:              'Move #{page}'
+  move_page:              'Move %{page}'
   name:                   'Name'
   newer:                  'Newer'
   new_page:               'New Page'
   no_changes:             'No changes'
   old_password:           'Old password'
   page:                   'Page'
-  page_edited:            '#{page} edited'
+  page_edited:            '%{page} edited'
   page_not_found:         'Sorry, the page you were looking for was not found.'
-  page_uploaded:          'Page #{page} uploaded'
+  page_uploaded:          'Page %{page} uploaded'
   password:               'Password'
   passwords_do_not_match: 'Passwords do not match'
   parents:                'Parents'
   path:                   'Path'
-  profile_title:          'Profile of #{user}'
+  profile_title:          'Profile of %{user}'
   really_delete:          'Really delete?'
   reserved_path:          'Path is reserved'
   reset:                  'Reset'
   root:                   'Root'
-  page_deleted:           '#{page} deleted.'
-  page_moved:             '#{page} moved to #{destination}.'
+  page_deleted:           '%{page} deleted.'
+  page_moved:             '%{page} moved to %{destination}.'
   save:                   'Save'
   save_and_close:         'Save & Close'
   search:                 'Search'
@@ -82,7 +82,7 @@ en:
   upload_file:            'Upload file'
   upload:                 'Upload'
   user:                   'User'
-  user_already_exists:    'User #{name} already exists'
+  user_already_exists:    'User %{name} already exists'
   version:                'Version'
   version_conflict:       'Version conflict detected'
   wrong_user_or_pw:       'Wrong username or password'
@@ -90,43 +90,43 @@ en:
 de:
   access_denied:          'Zugriff verweigert'
   actions:                'Aktionen'
-  already_exists:         '#{page} existiert bereits'
+  already_exists:         '%{page} existiert bereits'
   attribute_mime:         'Mime-Typ'
   attribute_no_title:     'Titel deaktivieren'
   attribute_title:        'Titel'
   attributes:             'Attribute'
-  attributes_edited:      'Attribute von #{page} bearbeitet'
+  attributes_edited:      'Attribute von %{page} bearbeitet'
   author:                 'Autor'
   binary_file:            'Binärdatei'
   by:                     'von'
   cancel:                 'Abbrechen'
   change_password:        'Passwort ändern'
   changes:                'Änderungen'
-  changes_of:             'Änderungen von #{page}'
+  changes_of:             'Änderungen von %{page}'
   changes_saved:          'Änderungen gespeichert'
   comment:                'Kommentar'
-  compare:                'Vergleiche #{name}'
+  compare:                'Vergleiche %{name}'
   confirm_password:       'Bestätige Passwort'
   head:                   'Kopf'
-  create_page:            'Neue #{page}'
+  create_page:            'Neue %{page}'
   create_redirect:        'Weiterleitung'
   date:                   'Datum'
   delete:                 'Löschen'
   deleted:                'Gelöscht'
-  delete_page:            'Lösche #{page}'
+  delete_page:            'Lösche %{page}'
   description:            'Beschreibung'
   destination:            'Ziel'
   edit:                   'Bearbeiten'
-  edit_page:              'Bearbeite #{page}'
-  edit_page_section:      'Bearbeite #{page} (Bereich)'
+  edit_page:              'Bearbeite %{page}'
+  edit_page_section:      'Bearbeite %{page} (Bereich)'
   email:                  'E-Mail'
   empty_password:         'Leeres Passwort'
-  info_binary:            '#{page} ist eine Datei mit dem Typ #{type} und kann nicht wie eine Textdatei bearbeitet werden.'
+  info_binary:            '%{page} ist eine Datei mit dem Typ %{type} und kann nicht wie eine Textdatei bearbeitet werden.'
   error_occurred:         'Hoppla! Es ist ein Fehler aufgetreten.'
   file:                   'Datei'
   groups:                 'Gruppen'
   history:                'Historie'
-  history_of:             'Historie von #{page}'
+  history_of:             'Historie von %{page}'
   invalid_email:          'E-Mail ist ungültig'
   invalid_mime_type:      'Mime-Typ ist ungültig'
   invalid_name:           'Name ist ungültig'
@@ -143,26 +143,26 @@ de:
   menu_actions_history_older: 'Älter'
   menu_actions_view:      'Ansicht'
   move:                   'Verschieben'
-  move_page:              'Verschiebe #{page}'
+  move_page:              'Verschiebe %{page}'
   name:                   'Name'
   new_page:               'Neue Seite'
   no_changes:             'Keine Änderungen'
   old_password:           'Altes Passwort'
   page:                   'Seite'
-  page_edited:            '#{page} edited'
+  page_edited:            '%{page} edited'
   page_not_found:         'Die Seite wurde leider nicht gefunden.'
-  page_uploaded:          'Seite #{page} hochgeladen'
+  page_uploaded:          'Seite %{page} hochgeladen'
   password:               'Passwort'
   passwords_do_not_match: 'Passwörter stimmen nicht überein'
   parents:                'Eltern'
   path:                   'Pfad'
-  profile_title:          'Profil von #{user}'
+  profile_title:          'Profil von %{user}'
   really_delete:          'Wirklich löschen?'
   reserved_path:          'Pfad ist reserviert'
   reset:                  'Zurücksetzen'
   root:                   'Root'
-  page_deleted:           '#{page} gelöscht.'
-  page_moved:             '#{page} verschoben nach #{destination}.'
+  page_deleted:           '%{page} gelöscht.'
+  page_moved:             '%{page} verschoben nach %{destination}.'
   save:                   'Speichern'
   save_and_close:         'Speichern & Schließen'
   search:                 'Suche'
@@ -177,7 +177,7 @@ de:
   upload_file:            'Datei hochladen'
   upload:                 'Hochladen'
   user:                   'Benutzer'
-  user_already_exists:    'Benutzer #{name} existiert bereits'
+  user_already_exists:    'Benutzer %{name} existiert bereits'
   version:                'Version'
   version_conflict:       'Versionskonflikt aufgetreten'
   wrong_user_or_pw:       'Falscher Benutzername oder falsches Passwort'
@@ -185,43 +185,43 @@ de:
 cs_CZ:
   access_denied:          'Přístup odepřen'
   actions:                'Akce'
-  already_exists:         'Stránka #{page} již existuje'
+  already_exists:         'Stránka %{page} již existuje'
   attribute_mime:         'Mime-Type'
   attribute_no_title:     'Skrýt titulek'
   attribute_title:        'Titulek'
   attributes:             'Atributy'
-  attributes_edited:      'Atributy stránky #{page} editovány'
+  attributes_edited:      'Atributy stránky %{page} editovány'
   author:                 'Autor'
   binary_file:            'Binární soubor'
   by:                     'od'
   cancel:                 'Zrušit'
   change_password:        'Změnit heslo'
   changes:                'Změny'
-  changes_of:             'Změny stránky #{page}'
+  changes_of:             'Změny stránky %{page}'
   changes_saved:          'Změny uloženy'
   comment:                'Komentář'
-  compare:                'Porovnat #{name}'
+  compare:                'Porovnat %{name}'
   confirm_password:       'Potvrdit heslo'
   head:                   'Nejnovější'
-  create_page:            'Vytvořit stránku #{page}'
+  create_page:            'Vytvořit stránku %{page}'
   create_redirect:        'Vytvořit přesměrování'
   date:                   'Datum'
   delete:                 'Smazat'
   deleted:                'Smazáno'
-  delete_page:            'Smazat stránku #{page}'
+  delete_page:            'Smazat stránku %{page}'
   description:            'Popis'
   destination:            'Cíl'
   edit:                   'Editovat'
-  edit_page:              'Editace stránky #{page}'
-  edit_page_section:      'Editovat #{page} (Sekci)'
+  edit_page:              'Editace stránky %{page}'
+  edit_page_section:      'Editovat %{page} (Sekci)'
   email:                  'e-mail'
   empty_password:         'Prázdné heslo'
-  info_binary:            'Stránka #{page} je binární typ #{type} a nemůže být editována jako textový soubor.'
+  info_binary:            'Stránka %{page} je binární typ %{type} a nemůže být editována jako textový soubor.'
   error_occurred:         'Ouvej! Vyskytla se chyba.'
   file:                   'Soubor'
   groups:                 'Skupiny'
   history:                'Historie'
-  history_of:             'Historie stránky #{page}'
+  history_of:             'Historie stránky %{page}'
   invalid_email:          'e-mail je neplatný'
   invalid_mime_type:      'mime-type je neplatný'
   invalid_name:           'Jméno je neplatné'
@@ -239,27 +239,27 @@ cs_CZ:
   menu_actions_history_head: 'Aktuální'
   menu_actions_view:      'Zobrazit'
   move:                   'Přesunout'
-  move_page:              'Přesunout stránku #{page}'
+  move_page:              'Přesunout stránku %{page}'
   name:                   'Jméno'
   newer:                  'Novější'
   new_page:               'Nová stránka'
   no_changes:             'Žádné změny'
   old_password:           'Staré heslo'
   page:                   'Stránka'
-  page_edited:            'Stránka #{page} editována'
+  page_edited:            'Stránka %{page} editována'
   page_not_found:         'Pardon, stránka, kterou hledáte, nebyla nalezena.'
-  page_uploaded:          'Stránka #{page} nahrána'
+  page_uploaded:          'Stránka %{page} nahrána'
   password:               'Heslo'
   passwords_do_not_match: 'Hesla se neshodují'
   parents:                'Rodiče'
   path:                   'Cesta'
-  profile_title:          'Profil uživatele #{user}'
+  profile_title:          'Profil uživatele %{user}'
   really_delete:          'Opravdu smazat?'
   reserved_path:          'Cesta je rezervována'
   reset:                  'Reset'
   root:                   'Hlavní strana'
-  page_deleted:           'Stránka #{page} smazána.'
-  page_moved:             'Stránka #{page} přesunuta do #{destination}.'
+  page_deleted:           'Stránka %{page} smazána.'
+  page_moved:             'Stránka %{page} přesunuta do %{destination}.'
   save:                   'Uložit'
   save_and_close:         'Uložit a zavřít'
   search:                 'Hledat'
@@ -274,7 +274,7 @@ cs_CZ:
   upload_file:            'Nahrát soubor'
   upload:                 'Nahrát'
   user:                   'Uživatel'
-  user_already_exists:    'Uživatel #{name} již existuje'
+  user_already_exists:    'Uživatel %{name} již existuje'
   version:                'Verze'
   version_conflict:       'Detekován konflikt verzí'
   wrong_user_or_pw:       'Chybné jméno uživatele nebo heslo'
@@ -282,43 +282,43 @@ cs_CZ:
 fr:
   access_denied:          "Accès refusé"
   actions:                "Actions"
-  already_exists:         "#{page} existe déjà"
+  already_exists:         "%{page} existe déjà"
   attribute_mime:         "Type MIME"
   attribute_no_title:     "Désactiver le titre"
   attribute_title:        "Titre"
   attributes:             "Attributs"
-  attributes_edited:      "Attributs de #{page} modifiés"
+  attributes_edited:      "Attributs de %{page} modifiés"
   author:                 "Auteur"
   binary_file:            "Fichier binaire"
   by:                     "par"
   cancel:                 "Cancel"
   change_password:        "Changer de mot de passe"
   changes:                "Changement"
-  changes_of:             "Chamgements de #{page}"
+  changes_of:             "Chamgements de %{page}"
   changes_saved:          "Changement enregistrés"
   comment:                "Commentaire"
-  compare:                "Comparer #{name}"
+  compare:                "Comparer %{name}"
   confirm_password:       "Confirmer le mot de passe"
   head:                   "Tête"
-  create_page:            "Créer #{page}"
+  create_page:            "Créer %{page}"
   create_redirect:        "Créer une redirection"
   date:                   "Date"
   delete:                 "Effacer"
   deleted:                "Supprimé"
-  delete_page:            "Effacer #{page}"
+  delete_page:            "Effacer %{page}"
   description:            "Description"
   destination:            "Destination"
   edit:                   "Éditer"
-  edit_page:              "Modifier #{page}"
-  edit_page_section:      "Modifier #{page} (Section)"
+  edit_page:              "Modifier %{page}"
+  edit_page_section:      "Modifier %{page} (Section)"
   email:                  "Courriel"
   empty_password:         "Mot de passe vide"
-  error_binary:           "#{page} est un binaire #{type} et ne peut pas être édité comme un fichier texte."
+  error_binary:           "%{page} est un binaire %{type} et ne peut pas être édité comme un fichier texte."
   error_occurred:         "Oops ! Une erreur est survenue."
   file:                   "Fichier"
   groups:                 "Groupes"
   history:                "Historique"
-  history_of:             "Historique de #{page}"
+  history_of:             "Historique de %{page}"
   invalid_email:          "Courriel invalide"
   invalid_mime_type:      "Type MIME invalide"
   invalid_name:           "Nom invalide"
@@ -328,27 +328,27 @@ fr:
   logout:                 "Déconnexion"
   menu_actions_edit_new:  "Nouvelle page"
   move:                   "Déplacer"
-  move_page:              "Déplacer #{page}"
+  move_page:              "Déplacer %{page}"
   name:                   "Nom"
   newer:                  "Plus récent"
   new_page:               "Nouvelle page"
   no_changes:             "Aucun changement"
   old_password:           "Ancien mot de passe"
   page:                   "Page"
-  page_edited:            "#{page} éditée"
+  page_edited:            "%{page} éditée"
   page_not_found:         "Désolé, la page que vous recherchez n'a pas été trouvée."
-  page_uploaded:          "Page #{page} téléversé"
+  page_uploaded:          "Page %{page} téléversé"
   password:               "Mot de passe"
   passwords_do_not_match: "Les mots de passe ne correspondent pas"
   parents:                "Parents"
   path:                   "Chemin"
-  profile_title:          "Profil de #{user}"
+  profile_title:          "Profil de %{user}"
   really_delete:          "Effacer réellement ?"
   reserved_path:          "Chemin réservé"
   reset:                  "Réinitialiser"
   root:                   "Racine"
-  page_deleted:           "#{page} supprimé."
-  page_moved:             "#{page} déplacer vers #{destination}."
+  page_deleted:           "%{page} supprimé."
+  page_moved:             "%{page} déplacer vers %{destination}."
   save:                   "Enregistrer"
   save_and_close:         "Enregistrer et fermer"
   search:                 "Rechercher"
@@ -363,7 +363,7 @@ fr:
   upload_file:            "Téléverser un fichier"
   upload:                 "Téléverser"
   user:                   "Utilisateur"
-  user_already_exists:    "L'utilisateur #{name} existe déjà"
+  user_already_exists:    "L'utilisateur %{name} existe déjà"
   version:                "Version"
   version_conflict:       "Conflit de version détecté"
   wrong_user_or_pw:       "Nom d'utilisateur ou mot de passe incorect"

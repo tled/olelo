@@ -1,16 +1,16 @@
 en:
-  search_results: 'Search results for #{pattern}'
+  search_results: 'Search results for %{pattern}'
   match:          'One match'
-  match_plural:   '#{count} matches'
+  match_plural:   '%{count} matches'
 de:
-  search_results: 'Suchergebnisse für #{pattern}'
+  search_results: 'Suchergebnisse für %{pattern}'
   match:          'Ein Treffer'
-  match_plural:   '#{count} Treffer'
+  match_plural:   '%{count} Treffer'
 cs_CZ:
-  search_results: 'Výsledky hledání pro #{pattern}'
+  search_results: 'Výsledky hledání pro %{pattern}'
   match:          'Jeden výsledek'
-  match_plural:   '#{count} výsledků'
+  match_plural:   '%{count} výsledků'
 fr:
-  search_results: "Chercher les résultats pour #{pattern}"
+  search_results: "Chercher les résultats pour %{pattern}"
   match:          "Une correspondance"
-  match_plural:   "#{count} correspondaces"
+  match_plural:   "%{count} correspondaces"
