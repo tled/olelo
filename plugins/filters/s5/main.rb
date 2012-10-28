@@ -2,6 +2,8 @@ description  'XSLT filter which transforms a html page to a S5 presentation'
 dependencies 'filters/xslt', 'utils/assets'
 export_assets 'ui/**/*', 'ui/default/*'
 
+raise 'Diascope not found' unless File.exists?(File.join(File.dirname(__FILE__), 'ui'))
+
 Page.attributes do
   group :s5 do
     string :presdate
