@@ -55,7 +55,8 @@ en:
   old_password:           'Old password'
   page:                   'Page'
   page_edited:            '%{page} edited'
-  page_not_found:         'Sorry, the page you were looking for was not found.'
+  not_found_title:        '404 Not found'
+  not_found_text:         'Sorry, the page you were looking for was not found.'
   page_uploaded:          'Page %{page} uploaded'
   password:               'Password'
   passwords_do_not_match: 'Passwords do not match'
@@ -150,8 +151,9 @@ de:
   no_changes:             'Keine Änderungen'
   old_password:           'Altes Passwort'
   page:                   'Seite'
-  page_edited:            '%{page} edited'
-  page_not_found:         'Die Seite wurde leider nicht gefunden.'
+  page_edited:            '%{page} bearbeitet'
+  not_found_title:        '404 Nicht gefunden'
+  not_found_text:         'Die Seite wurde leider nicht gefunden.'
   page_uploaded:          'Seite %{page} hochgeladen'
   password:               'Passwort'
   passwords_do_not_match: 'Passwörter stimmen nicht überein'
@@ -248,8 +250,9 @@ cs_CZ:
   no_changes:             'Žádné změny'
   old_password:           'Staré heslo'
   page:                   'Stránka'
-  page_edited:            'Stránka %{page} editována'
-  page_not_found:         'Pardon, stránka, kterou hledáte, nebyla nalezena.'
+  page_edited:            'Stránka %{page} editována'#
+  not_found_title:        '404 Not found'
+  not_found_text:         'Pardon, stránka, kterou hledáte, nebyla nalezena.'
   page_uploaded:          'Stránka %{page} nahrána'
   password:               'Heslo'
   passwords_do_not_match: 'Hesla se neshodují'
@@ -338,7 +341,8 @@ fr:
   old_password:           "Ancien mot de passe"
   page:                   "Page"
   page_edited:            "%{page} éditée"
-  page_not_found:         "Désolé, la page que vous recherchez n'a pas été trouvée."
+  not_found_title:        '404 Non trouvé'
+  not_found_text:         "Désolé, la page que vous recherchez n'a pas été trouvée."
   page_uploaded:          "Page %{page} téléversé"
   password:               "Mot de passe"
   passwords_do_not_match: "Les mots de passe ne correspondent pas"
