@@ -11,7 +11,7 @@ title:           'Ōlelo'
 
 # Default locale
 # Examples: en, en_US, de_DE
-locale:          'en_US'
+locale:          'fr'
 
 # Set this to false to put the wiki to debugging mode.
 # Debugging mode disables caching and enables exception backtraces.
