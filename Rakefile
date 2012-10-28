@@ -76,6 +76,7 @@ end
 
 namespace :locale do
   task :sort do
+    # You need the i18n_yaml_sorter gem
     Dir['**/locale.yml'].each do |file|
       puts "Sorting #{file}"
       system("sort_yaml < #{file} > #{file}.sorted; mv #{file}.sorted #{file}")
