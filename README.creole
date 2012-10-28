@@ -17,6 +17,7 @@ Core features:
 * Support for hierarchical wikis (directory structure)
 * File upload
 * History, commit and diff view
+* Locales, currently supported languages Czech, English, French, German
 
 Features, implemented by plugins:
 * Support for many markup languages (Creole, Markdown, Textile, ...)
