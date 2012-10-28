@@ -67,14 +67,19 @@ task :clean do |t|
   FileUtils.rm_rf '.wiki/log'
 end
 
-desc 'Generate documentation'
 namespace :doc do
+  desc 'Generate documentation'
   task :gen    do; system("yard doc -o doc/api 'lib/**/*.rb' 'plugins/**/*.rb'"); end
+
+  desc 'Start YARD documentation server'
   task :server do; system('yard server --reload'); end
+
+  desc 'Check YARD documentation'
   task :check  do; system("yardcheck 'lib/**/*.rb' 'plugins/**/*.rb'"); end
 end
 
 namespace :locale do
+  desc 'Sort locale yaml files'
   task :sort do
     # You need the i18n_yaml_sorter gem
     Dir['**/locale.yml'].each do |file|
@@ -83,6 +88,7 @@ namespace :locale do
     end
   end
 
+  desc 'Check locales for missing keys'
   task :check do
     require 'yaml'
     Dir['**/locale.yml'].each do |file|

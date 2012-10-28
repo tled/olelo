@@ -111,6 +111,24 @@ Some dependencies are optional, for example depending on the markup you want to 
 * [[http://nokogiri.org/|Nokogiri for auto-generated table of contents]]
 * [[http://pygments.org/|Pygments for syntax highlighting of code blocks]]
 
+== Development
+
+=== Important concepts
+
+* Plugin architecture
+* Aspects under 'plugins/aspects' which provide different 'views' for a page
+* Filters under 'plugins/filters' which make it possible to build up aspects from a filter chain.
+  These aspects are configured under 'config/aspects.rb'
+* Tags are provided by the 'plugins/tags/main.rb' plugin and can be integrated in a filter chain.
+  They look like html tags and can be used to extend the wiki syntax.
+
+=== Tipps
+
+* Execute 'rake --tasks' to see the available development tasks
+* Active development mode by setting the option 'production: false' in 'config/config.yml'
+* Increase the log verbosity by setting 'log.level = DEBUG' in 'config/config.yml'
+* Do not hesitate to create an issue at the [[https://github.com/minad/olelo/issues|issue tracker]]
+
 == Authors
 
 Git-Wiki was originally developed by Simon Rozet. The development of Ōlelo to its current state was done by Daniel Mendler and contributors. The current code base doesn't have much in common with the original Git-Wiki proof-of-concept.
