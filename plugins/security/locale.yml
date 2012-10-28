@@ -1,24 +1,24 @@
-en:
-  attribute_acl_write:  'Write access'
-  attribute_acl_create: 'Create subpages'
-  attribute_acl_delete: 'Delete subpages'
-  group_acl:            'Access control lists'
-  login_first:          'You have to login first'
-de:
-  attribute_acl_write:  'Schreibzugriff'
-  attribute_acl_create: 'Unterseiten anlegen'
-  attribute_acl_delete: 'Unterseiten löschen'
-  group_acl:            'Zugriffslisten'
-  login_first:          'Sie müssen sich zuerst anmelden'
 cs_CZ:
-  attribute_acl_write:  'Právo zápisu'
   attribute_acl_create: 'Vytvářet podstránky'
   attribute_acl_delete: 'Mazat podstránky'
+  attribute_acl_write:  'Právo zápisu'
   group_acl:            'Řízení přístupů (ACL)'
   login_first:          'Musíte se nejprve přihlásit'
+de:
+  attribute_acl_create: 'Unterseiten anlegen'
+  attribute_acl_delete: 'Unterseiten löschen'
+  attribute_acl_write:  'Schreibzugriff'
+  group_acl:            'Zugriffslisten'
+  login_first:          'Sie müssen sich zuerst anmelden'
+en:
+  attribute_acl_create: 'Create subpages'
+  attribute_acl_delete: 'Delete subpages'
+  attribute_acl_write:  'Write access'
+  group_acl:            'Access control lists'
+  login_first:          'You have to login first'
 fr:
-  attribute_acl_write:  "Accès en écriture"
   attribute_acl_create: "Créer sous-pages"
   attribute_acl_delete: "Supprimer sous-pages"
+  attribute_acl_write:  "Accès en écriture"
   group_acl:            "Liste de contrôle des accès"
   login_first:          "Vous devez d'abord vous connecter"

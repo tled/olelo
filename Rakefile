@@ -74,6 +74,12 @@ namespace :doc do
   task :check  do; system("yardcheck 'lib/**/*.rb' 'plugins/**/*.rb'"); end
 end
 
+namespace :locale do
+  task :sort do
+    system("for i in $(find -name locale.yml); do sort_yaml < $i > $i.sorted; mv $i.sorted $i; done")
+  end
+end
+
 namespace :notes do
   task :todo      do; system('ack T''ODO');      end
   task :fixme     do; system('ack F''IXME');     end
