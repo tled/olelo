@@ -156,16 +156,17 @@ a {
   &.img {
     background: transparent;
   }
-  span.img & {
-    border: $border;
-    float: right;
-    text-align: center;
-    color: black;
-    background: $main_bg;
-    padding: 0.2em;
-    img {
-      display: block;
-    }
+}
+
+span.img {
+  border: $border;
+  float: right;
+  text-align: center;
+  color: black;
+  background: $main_bg;
+  padding: 0.2em;
+  img {
+    display: block;
   }
 }
 

@@ -6,6 +6,15 @@ require 'nokogiri'
 # FIXME: Remove this check as soon as nokogiri works correctly.
 raise 'The libxml version used by nokogiri is broken, upgrade to 2.7' if Nokogiri.uses_libxml? && %w[2 6] === Nokogiri::LIBXML_VERSION.split('.')[0..1]
 
+class Nokogiri::XML::Node
+  def to_xhtml
+    # HACK: Issue https://github.com/sparklemotion/nokogiri/issues/339
+    serialize Nokogiri::XML::Node::SaveOptions::NO_DECLARATION |
+      Nokogiri::XML::Node::SaveOptions::NO_EMPTY_TAGS |
+      Nokogiri::XML::Node::SaveOptions::AS_XHTML
+  end
+end
+
 module XML
   extend self
 

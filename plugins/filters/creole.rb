@@ -18,16 +18,13 @@ class OleloCreole < ::Creole::Parser
     end
     image_path = escape_html(image_path)
     path = escape_html(path)
-    nolink = args.delete('nolink')
     box = args.delete('box')
     alt = escape_html(args[0] ? args[0] : path)
-    if nolink
-      %{<img src="#{image_path}" alt="#{alt}"/>}
-    elsif box
+    if box
       caption = args[0] ? %{<span class="caption">#{escape_html args[0]}</span>} : ''
-      %{<span class="img"><a href="#{path}"><img src="#{image_path}" alt="#{alt}"/>#{caption}</a></span>}
+      %{<span class="img"><img src="#{image_path}" alt="#{alt}"/>#{caption}</span>}
     else
-      %{<a href="#{path}" class="img"><img src="#{image_path}" alt="#{alt}"/></a>}
+      %{<img src="#{image_path}" alt="#{alt}"/>}
     end
   end
 end

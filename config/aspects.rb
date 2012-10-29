@@ -67,7 +67,8 @@ aspect :page do
       remove_comments.tag_shortcuts
       creole_nowiki.tag { creole!.rubypants }
     end
-    toc.interwiki(map: interwiki_map).link_classifier
+    fix_image_links.toc
+    interwiki(map: interwiki_map).link_classifier
   end
 end
 
@@ -78,7 +79,8 @@ aspect :s5 do
   filter do
     remove_comments.tag_shortcuts
     creole_nowiki.tag { creole!.rubypants }
-    toc.interwiki(map: interwiki_map).link_classifier
+    fix_image_links.toc
+    interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -90,7 +92,7 @@ aspect :latex do
   filter do
     remove_comments.tag_shortcuts.creole_nowiki
     tag(static: true) { creole!.rubypants }
-    toc.interwiki(map: interwiki_map)
+    interwiki(map: interwiki_map)
     html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
@@ -107,7 +109,8 @@ aspect :page do
       remove_comments.tag_shortcuts
       mediawiki_nowiki.tag { mediawiki!.rubypants }
     end
-    toc.interwiki(map: interwiki_map).link_classifier
+    fix_image_links.toc
+    interwiki(map: interwiki_map).link_classifier
   end
 end
 
@@ -118,7 +121,8 @@ aspect :s5 do
   filter do
     remove_comments.tag_shortcuts
     mediawiki_nowiki.tag { mediawiki!.rubypants }
-    toc.interwiki(map: interwiki_map).link_classifier
+    fix_image_links.toc
+    interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
 end
@@ -130,7 +134,7 @@ aspect :latex do
   filter do
     remove_comments.tag_shortcuts.mediawiki_nowiki
     tag(static: true) { mediawiki!.rubypants }
-    toc.interwiki(map: interwiki_map)
+    interwiki(map: interwiki_map)
     html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
@@ -145,7 +149,7 @@ aspect :page do
   filter do
     remove_comments.tag_shortcuts.textile_nowiki
     tag(disable: 'html:*') { textile!.rubypants }
-    fix_img_tag.toc
+    fix_image_links.toc
     interwiki(map: interwiki_map).link_classifier
   end
 end
@@ -157,7 +161,7 @@ aspect :s5 do
   filter do
     remove_comments.tag_shortcuts.textile_nowiki
     tag(disable: 'html:*') { textile!.rubypants }
-    fix_img_tag.toc
+    fix_image_links.toc
     interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
@@ -170,7 +174,7 @@ aspect :latex do
   filter do
     remove_comments.tag_shortcuts.textile_nowiki
     tag(static: true, disable: 'html:*') { textile!.rubypants }
-    toc.interwiki(map: interwiki_map)
+    interwiki(map: interwiki_map)
     html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
@@ -187,7 +191,7 @@ aspect :page do
       remove_comments.tag_shortcuts.markdown_nowiki
       tag(disable: 'html:*') { markdown! }
     end
-    fix_img_tag.toc
+    fix_image_links.toc
     interwiki(map: interwiki_map).link_classifier
   end
 end
@@ -199,7 +203,7 @@ aspect :s5 do
   filter do
     remove_comments.tag_shortcuts.markdown_nowiki
     tag(disable: 'html:*') { markdown! }
-    fix_img_tag.toc
+    fix_image_links.toc
     interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
@@ -212,7 +216,7 @@ aspect :latex do
   filter do
     remove_comments.tag_shortcuts.markdown_nowiki
     tag(static: true, disable: 'html:*') { markdown! }
-    toc.interwiki(map: interwiki_map)
+    interwiki(map: interwiki_map)
     html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end
@@ -227,7 +231,7 @@ aspect :page do
   filter do
     remove_comments.tag_shortcuts
     tag { orgmode!.rubypants }
-    fix_img_tag.toc
+    fix_image_links.toc
     interwiki(map: interwiki_map).link_classifier
   end
 end
@@ -239,7 +243,7 @@ aspect :s5 do
   filter do
     remove_comments.tag_shortcuts
     tag { orgmode!.rubypants }
-    fix_img_tag.toc
+    fix_image_links.toc
     interwiki(map: interwiki_map).link_classifier
     html_wrapper!.s5!
   end
@@ -252,7 +256,7 @@ aspect :latex do
   filter do
     remove_comments.tag_shortcuts
     tag(static: true) { orgmode!.rubypants }
-    toc.interwiki(map: interwiki_map)
+    interwiki(map: interwiki_map)
     html_wrapper!.xslt!(stylesheet: 'xhtml2latex.xsl')
   end
 end

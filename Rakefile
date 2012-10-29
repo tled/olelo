@@ -42,7 +42,7 @@ namespace :gen do
   task css: %w(static/themes/atlantis/style.css
                   plugins/treeview/treeview.css
                   plugins/utils/pygments.css
-                  plugins/gallery/gallery.css
+                  plugins/aspects/gallery/gallery.css
                   plugins/misc/fancybox/jquery.fancybox.css
                   plugins/blog/blog.css)
 end
