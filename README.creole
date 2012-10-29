@@ -1,8 +1,8 @@
 = Ōlelo Wiki
 
-{{https://secure.travis-ci.org/minad/olelo.png?branch=master|Build Status}}
-{{https://gemnasium.com/minad/olelo.png?travis|Dependency Status}}
-{{https://codeclimate.com/badge.png|Code Climate}}
+[[https://travis-ci.org/minad/olelo|{{https://secure.travis-ci.org/minad/olelo.png?branch=master|Build Status}}]]
+[[https://gemnasium.com/minad/olelo|{{https://gemnasium.com/minad/olelo.png?travis|Dependency Status}}]]
+[[https://codeclimate.com/github/minad/olelo|{{https://codeclimate.com/badge.png|Code Climate}}]]
 
 Ōlelo is a wiki that stores pages in a [[http://git-scm.org/|Git]] repository, supports many markup styles and has an extensible, hackable architecture!
 If you want to see a demo installation go to http://www.gitwiki.org/.
