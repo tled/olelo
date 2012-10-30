@@ -93,6 +93,7 @@ module Olelo
     # Hash used by {#escape_javascript}
     # @api private
     JAVASCRIPT_ESCAPE = { '&' => '\u0026', '>' => '\u003E', '<' => '\u003C' }
+    private_constant :JAVASCRIPT_ESCAPE
 
     # Escape javascript code for embedding in html
     #
@@ -199,6 +200,8 @@ module Olelo
       (0xE000..0xFFFD),
       (0x10000..0x10FFFF)
     ]
+
+    private_constant :VALID_XML_CHARS
 
     # Check if string contains only characters which are valid in XML
     #

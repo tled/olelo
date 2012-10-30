@@ -23,15 +23,19 @@ module Olelo
     # Pattern for valid paths
     # @api public
     PATH_PATTERN = '[^\s](?:.*[^\s]+)?'.freeze
+
     PATH_REGEXP = /^#{PATH_PATTERN}$/
+    private_constant :PATH_REGEXP
 
     # Mime type for empty page
     # @api public
     EMPTY_MIME = MimeMagic.new('inode/x-empty')
+    private_constant :EMPTY_MIME
 
     # Mime type for directory
     # @api public
     DIRECTORY_MIME = MimeMagic.new('inode/directory')
+    private_constant :DIRECTORY_MIME
 
     attr_reader :path, :tree_version
 

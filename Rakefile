@@ -62,13 +62,13 @@ end
 
 namespace :doc do
   desc 'Generate documentation'
-  task :gen    do; system("yard doc -o doc/api 'lib/**/*.rb' 'plugins/**/*.rb'"); end
+  task :gen    do; sh "yard doc -o doc/api 'lib/**/*.rb' 'plugins/**/*.rb'"; end
 
   desc 'Start YARD documentation server'
-  task :server do; system('yard server --reload'); end
+  task :server do; sh 'yard server --reload'; end
 
   desc 'Check YARD documentation'
-  task :check  do; system("yardcheck 'lib/**/*.rb' 'plugins/**/*.rb'"); end
+  task :check  do; sh "yardcheck 'lib/**/*.rb' 'plugins/**/*.rb'"; end
 end
 
 namespace :locale do
@@ -100,11 +100,11 @@ namespace :locale do
 end
 
 namespace :notes do
-  task :todo      do; system('ack T''ODO');      end
-  task :fixme     do; system('ack F''IXME');     end
-  task :hack      do; system('ack H''ACK');      end
-  task :warning   do; system('ack W''ARNING');   end
-  task :important do; system('ack I''MPORTANT'); end
+  task :todo      do; sh('ack T''ODO');      end
+  task :fixme     do; sh('ack F''IXME');     end
+  task :hack      do; sh('ack H''ACK');      end
+  task :warning   do; sh('ack W''ARNING');   end
+  task :important do; sh('ack I''MPORTANT'); end
 end
 
 desc 'Show annotations'

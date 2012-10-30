@@ -20,6 +20,15 @@ describe 'Olelo::Config' do
     end
   end
 
+  it 'should freeze' do
+    config = Olelo::Config.new
+    config['a'] = 42
+    config.freeze
+    lambda do
+      config['a'] += 1
+    end.should.raise RuntimeError
+  end
+
   it 'should raise NameError' do
     lambda do
       Olelo::Config.new.not.existing
