@@ -1,5 +1,4 @@
-require 'olelo/extensions'
-require 'olelo/util'
+require 'helper'
 
 describe 'Object extensions' do
   it 'should have #blank?' do

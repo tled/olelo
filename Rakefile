@@ -1,4 +1,4 @@
-task default: %w(test:spec)
+task default: :test
 
 def shrink_js(t)
   #sh "cat #{t.prerequisites.sort.join(' ')} > #{t.name}"
@@ -47,16 +47,9 @@ namespace :gen do
                   plugins/blog/blog.css)
 end
 
-namespace :test do
-  desc 'Run tests with bacon'
-  task spec: FileList['test/*_test.rb'] do |t|
-    sh "bacon -q -Ilib:test #{t.prerequisites.join(' ')}"
-  end
-
-  desc 'Generate test coverage report'
-  task rcov: FileList['test/*_test.rb'] do |t|
-    sh "rcov -Ilib:test #{t.prerequisites.join(' ')}"
-  end
+desc 'Run tests with bacon'
+task test: FileList['test/*_test.rb'] do |t|
+  sh "bacon -q -Ilib:test test/run.rb"
 end
 
 desc 'Cleanup'

@@ -1,10 +1,5 @@
 # encoding: UTF-8
-require 'cgi'
-require 'digest/md5'
-require 'digest/sha2'
-require 'open3'
-require 'olelo/extensions'
-require 'olelo/util'
+require 'helper'
 
 describe 'Olelo::Util' do
   it 'should have #check' do
