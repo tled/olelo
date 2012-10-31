@@ -115,6 +115,7 @@ disabled_plugins:
   - editor/recaptcha
   - editor/ace
   - filters/remind
+  - tags/fortune
 
 ##################################################
 # Rack middleware configurations
