@@ -1,5 +1,9 @@
 = Ōlelo Wiki
 
+[[https://travis-ci.org/minad/olelo|{{https://secure.travis-ci.org/minad/olelo.png?branch=master|Build Status}}]]
+[[https://gemnasium.com/minad/olelo|{{https://gemnasium.com/minad/olelo.png?travis|Dependency Status}}]]
+[[https://codeclimate.com/github/minad/olelo|{{https://codeclimate.com/badge.png|Code Climate}}]]
+
 Ōlelo is a wiki that stores pages in a [[http://git-scm.org/|Git]] repository, supports many markup styles and has an extensible, hackable architecture!
 If you want to see a demo installation go to http://www.gitwiki.org/.
 
@@ -13,6 +17,7 @@ Core features:
 * Support for hierarchical wikis (directory structure)
 * File upload
 * History, commit and diff view
+* Locales, currently supported languages Czech, English, French, German
 
 Features, implemented by plugins:
 * Support for many markup languages (Creole, Markdown, Textile, ...)
@@ -22,7 +27,7 @@ Features, implemented by plugins:
 * Syntax highlighted embedded code blocks
 * Image resizing, SVG to PNG/JPEG conversion
 * Auto-generated table of contents
-* Wiki syntax can be extended with tags
+* Wiki syntax can be extended with tags (gist, math, footnotes, ...)
 * Editor preview
 * View pages as S5 presentation
 * Privacy features: Access control lists, Private wiki which needs login, readonly wiki
@@ -41,7 +46,7 @@ Go to a git repository via command line and start the Ōlelo webserver.
 $ olelo
 }}}
 
-Point your web browser at http://localhost:8080/.
+Point your web browser at http://localhost:8080/. This is all you have to do, now you are good to go to use your wiki!
 
 == Installation from source
 
@@ -74,25 +79,22 @@ For production purposes, I recommend that you deploy the wiki with [[http://unic
 $ unicorn path-to/config.ru
 }}}
 
-Unicorn is a very flexible ruby application server and Ōlelo runs very well on it. You can adapt the number of Unicorn workers depending on the load you expect. It is
-a good idea to observe the Unicorn workers as described in https://github.com/blog/519-unicorn-god and kill missbehaving workers if necessary.
+Unicorn is a very flexible ruby application server and Ōlelo runs very well on it. You can adapt the number of Unicorn workers depending on the load you expect. It is a good idea to observe the Unicorn workers as described in https://github.com/blog/519-unicorn-god and kill missbehaving workers if necessary.
 
 == Configuration
 
-For deployment you might want to tweak some settings. Ōlelo reads the files config/config.yml.default and config/config.yml in that order.
-So just copy the default configuration config/config.yml.default to config/config.yml and make your modifications. If you installed Ōlelo
-as gem this is not a good idea since you don't want to fiddle in the gem directory. For this purpose exists the environment variable OLELO_CONFIG which
+For deployment you might want to tweak some settings. Ōlelo reads the files 'config/config.yml.default' and 'config/config.yml' in that order. So just copy the default configuration 'config/config.yml.default' to 'config/config.yml' and make your modifications. If you installed Ōlelo as gem this is not a good idea since you don't want to fiddle in the gem directory. For this purpose the environment variable '$OLELO_CONFIG' exists which
 can point to the configuration file that you want to use.
 
 {{{
 export OLELO_CONFIG=/home/olelo/olelo_config.yml
 }}}
 
-You can also use the OLELO_CONFIG environment variable if you want to run multiple Ōlelo instances with different configurations.
+You can also use the '$OLELO_CONFIG' environment variable if you want to run multiple Ōlelo instances with different configurations, for example to serve different pages from different repositories.
 
 == Dependencies
 
-If you use Bundler or installed Ōlelo as gem you don't really have to care about the dependencies. The standard installation provides the core dependencies and a good selection of optional dependencies.
+If you installed Ōlelo as gem or used Bundler you don't really have to care about the dependencies. The standard installation provides the core dependencies and a good selection of optional dependencies.
 
 Core dependencies:
 * [[http://www.git-scm.com|Git]]
@@ -109,15 +111,33 @@ Some dependencies are optional, for example depending on the markup you want to 
 * [[http://nokogiri.org/|Nokogiri for auto-generated table of contents]]
 * [[http://pygments.org/|Pygments for syntax highlighting of code blocks]]
 
+== Development
+
+=== Important concepts
+
+* Plugin architecture
+* Aspects under 'plugins/aspects' which provide different 'views' for a page
+* Filters under 'plugins/filters' which make it possible to build up aspects from a filter chain.
+  These aspects are configured under 'config/aspects.rb'
+* Tags are provided by the 'plugins/tags/main.rb' plugin and can be integrated in a filter chain.
+  They look like html tags and can be used to extend the wiki syntax.
+
+=== Tipps
+
+* Execute 'rake --tasks' to see the available development tasks
+* Activate development mode by setting the option 'production: false' in 'config/config.yml'
+* Increase the log verbosity by setting 'log.level: DEBUG' in 'config/config.yml'
+* Do not hesitate to create an issue at the [[https://github.com/minad/olelo/issues|issue tracker]]
+
 == Authors
 
-Git-Wiki was originally developed by Simon Rozet. The development of Ōlelo to its current state was done by Daniel Mendler and contributors.
-The current code base doesn't have much in common with the original Git-Wiki proof-of-concept.
+Git-Wiki was originally developed by Simon Rozet. The development of Ōlelo to its current state was done by Daniel Mendler and contributors. The current code base doesn't have much in common with the original Git-Wiki proof-of-concept.
 
 Contributors:
 * Alex Eagle
 * Alex Wall
 * Hrvoje
+* Korthaerd
 * Luca Greco
 * Pavel Suchmann
 * Raffael Schmid

@@ -1,6 +1,4 @@
-require 'olelo/virtualfs'
-require 'olelo/templates'
-require 'slim'
+require 'helper'
 
 class Bacon::Context
   include Olelo::Templates

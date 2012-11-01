@@ -37,7 +37,7 @@ class GitrbRepository < Repository
   # @override
   def get_history(path, skip, limit)
     @git.log(max_count:  limit, skip: skip,
-            path: [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT]).map do |c|
+             path: [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT]).map do |c|
       commit_to_version(c)
     end
   end

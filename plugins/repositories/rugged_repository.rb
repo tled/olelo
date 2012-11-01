@@ -253,8 +253,7 @@ class RuggedRepository < Repository
     end
   end
 
-  def get_history(path, skip = nil, limit = nil)
-    skip ||= 0
+  def get_history(path, skip, limit)
     commits = []
     walker = Rugged::Walker.new(@git)
     walker.sorting(Rugged::SORT_TOPO)
@@ -265,7 +264,7 @@ class RuggedRepository < Repository
           skip -= 1
         else
           commits << c
-          break if limit && commits.size >= limit
+          break if commits.size >= limit
         end
       end
     end

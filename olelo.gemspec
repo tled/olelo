@@ -21,12 +21,12 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency('multi_json', ['~> 1.3.6'])
   s.add_runtime_dependency('slim', ['~> 1.3.3'])
-  s.add_runtime_dependency('creole', ['~> 0.4.2'])
+  s.add_runtime_dependency('creole', ['~> 0.5.0'])
   s.add_runtime_dependency('nokogiri', ['~> 1.5.5'])
   s.add_runtime_dependency('mimemagic', ['~> 0.2.0'])
   s.add_runtime_dependency('rack', ['~> 1.4.1'])
-  s.add_runtime_dependency('redcarpet', ['~> 2.2.1'])
-  s.add_runtime_dependency('rugged', ['~> 0.17.0b6'])
+  s.add_runtime_dependency('redcarpet', ['~> 2.2.2'])
+  s.add_runtime_dependency('rugged', ['~> 0.17.0.b7'])
   s.add_runtime_dependency('evaluator', ['~> 0.1.6'])
 
   s.add_development_dependency('rake', ['>= 0.8.7'])

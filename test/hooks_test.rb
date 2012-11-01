@@ -1,5 +1,4 @@
-require 'olelo/extensions'
-require 'olelo/hooks'
+require 'helper'
 
 describe 'Olelo::Hooks' do
   before do

@@ -1,6 +1,6 @@
-- title '404 Not Found'
+- title :not_found_title.t
 .not_found_page
   h1= title
-  p= :page_not_found.t
+  p= :not_found_text.t
   - if !Olelo::Config['production']
     pre= error.backtrace.to_a.join("\n")

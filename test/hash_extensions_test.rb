@@ -1,4 +1,4 @@
-require 'olelo/extensions'
+require 'helper'
 
 describe 'Hash extensions' do
   it 'should have #with_indifferent_access' do

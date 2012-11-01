@@ -1,4 +1,4 @@
-require 'olelo/extensions'
+require 'helper'
 
 describe 'String extensions' do
   it 'should have #starts_with?' do

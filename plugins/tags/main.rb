@@ -350,4 +350,3 @@ end
 Tag.define :notags, description: 'Disable tag processing', immediate: true do |context, attrs, content|
   content
 end
-

@@ -66,7 +66,7 @@ module Olelo
                 Olelo.logger.warn "Plugin #{path} could not be loaded due to: #{ex.message} (Missing gem?)"
               else
                 Olelo.logger.error "Plugin #{path} could not be loaded due to: #{ex.message}"
-                Olelo.logger.error ex
+                Olelo.logger.debug ex
               end
               @loaded.delete(path)
               false

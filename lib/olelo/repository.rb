@@ -159,7 +159,7 @@ module Olelo
     # @param [Integer] Maximum number of versions to load
     # @return [Array<Version>]
     # @api public
-    def get_history(path, skip = nil, limit = nil)
+    def get_history(path, skip, limit)
       raise NotImplementedError
     end
 

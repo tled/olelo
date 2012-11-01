@@ -1,4 +1,4 @@
-require 'olelo/util'
+require 'helper'
 
 class Base
   extend Olelo::Factory

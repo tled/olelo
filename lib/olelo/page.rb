@@ -23,15 +23,19 @@ module Olelo
     # Pattern for valid paths
     # @api public
     PATH_PATTERN = '[^\s](?:.*[^\s]+)?'.freeze
+
     PATH_REGEXP = /^#{PATH_PATTERN}$/
+    private_constant :PATH_REGEXP
 
     # Mime type for empty page
     # @api public
     EMPTY_MIME = MimeMagic.new('inode/x-empty')
+    private_constant :EMPTY_MIME
 
     # Mime type for directory
     # @api public
     DIRECTORY_MIME = MimeMagic.new('inode/directory')
+    private_constant :DIRECTORY_MIME
 
     attr_reader :path, :tree_version
 
@@ -80,6 +84,10 @@ module Olelo
       path.empty?
     end
 
+    def editable?
+      mime.text? || mime == EMPTY_MIME || mime == DIRECTORY_MIME
+    end
+
     def next_version
       init_versions
       @next_version
@@ -95,7 +103,7 @@ module Olelo
       @version
     end
 
-    def history(skip = nil, limit = nil)
+    def history(skip, limit)
       raise 'Page is new' if new?
       repository.get_history(path, skip, limit)
     end
@@ -158,6 +166,7 @@ module Olelo
         @attributes = a
         @mime = nil
       end
+      raise :invalid_mime_type.t if attributes['mime'] && attributes['mime'] != mime.to_s
     end
 
     def saved_content
@@ -229,22 +238,24 @@ module Olelo
     end
 
     def detect_mime
-      return MimeMagic.new(attributes['mime']) if attributes['mime']
-      Config['mime'].each do |mime|
-        mime = if mime == 'extension'
-                 MimeMagic.by_extension(extension)
-               elsif %w(content magic).include?(mime)
-                 if !new?
-                   if content.blank?
-                     children.empty? ? EMPTY_MIME : DIRECTORY_MIME
-                   else
-                     MimeMagic.by_magic(content)
-                   end
-                 end
-               else
-                 MimeMagic.new(mime)
-               end
-        return mime if mime
+      [attributes['mime'], *Config['mime'], 'application/octet-stream'].each do |method|
+        mime =
+          case method
+          when nil
+          when 'extension'
+            MimeMagic.by_extension(extension)
+          when 'content', 'magic'
+            unless new?
+              if content.blank?
+                children.empty? ? EMPTY_MIME : DIRECTORY_MIME
+              else
+                MimeMagic.by_magic(content)
+              end
+            end
+          else
+            MimeMagic.new(method)
+          end
+        return mime if mime && (!mime.text? || valid_xml_chars?(content))
       end
     end
 

@@ -1,65 +1,87 @@
-en:
-  attribute_aspect: 'Default Aspect'
-  download: 'Download'
-  aspect_documentbrowser: 'Document Browser'
-  aspect_download: 'Raw Download'
-  aspect_pageinfo: 'Page Information'
-  aspect_highlight: 'Highlighted Source'
-  aspect_imageinfo: 'Image Information'
-  aspect_image: 'Raw Image'
-  aspect_source: 'Page Source'
-  aspect_subpages: 'Subpages'
-  aspect_text: 'Text Download'
-  aspect_gallery: 'Image Gallery'
-  aspect_s5: 'S5 Presentation'
-  aspect_latex: 'LaTeX'
-  aspect_not_available: 'Aspect #{aspect} is not available for page #{page} with type #{type}.'
-  entry: 'Entry'
-  exif: 'EXIF Information'
-  geometry: 'Geometry'
-  information: 'Information'
-  type: 'Type'
-  value: 'Value'
-de:
-  attribute_aspect: 'Standard-Ansicht'
-  download: 'Herunterladen'
-  aspect_documentbrowser: 'Dokumentenbrowser'
-  aspect_download: 'Herunterladen'
-  aspect_pageinfo: 'Seiten-Information'
-  aspect_highlight: 'Quellcode mit Syntaxhighlighting'
-  aspect_imageinfo: 'Bild-Information'
-  aspect_image: 'Bild'
-  aspect_source: 'Quellcode'
-  aspect_subpages: 'Unterseiten'
-  aspect_text: 'Quellcode herunterladen'
-  aspect_gallery: 'Bildergalerie'
-  aspect_s5: 'S5 Präsentation'
-  aspect_latex: 'LaTeX'
-  aspect_not_available: 'Aspekt #{aspect} für die Seite #{page} mit dem Typ #{type} ist nicht verfügbar.'
-  entry: 'Eintrag'
-  exif: 'EXIF-Information'
-  geometry: 'Geometrie'
-  information: 'Information'
-  type: 'Typ'
-  value: 'Wert'
 cs_CZ:
-  attribute_aspect: 'Přednastavený vzhled'
-  download: 'Stáhnout'
   aspect_documentbrowser: 'Document Browser'
   aspect_download: 'Stažení (neupraveno)'
-  aspect_pageinfo: 'Informace o stránce'
+  aspect_gallery: 'Galerie'
   aspect_highlight: 'Zvýrazněný zdroj'
-  aspect_imageinfo: 'Informace o obrázku'
   aspect_image: 'Stažení obrázku'
+  aspect_imageinfo: 'Informace o obrázku'
+  aspect_latex: 'LaTeX'
+  aspect_not_available: 'Vzhled %{aspect} není k dispozici pro stránku %{page} s typem %{type}.'
+  aspect_pageinfo: 'Informace o stránce'
   aspect_source: 'Zdroj stránky'
   aspect_subpages: 'Podstránky'
   aspect_text: 'Stažení textu'
-  aspect_gallery: 'Galerie'
-  aspect_latex: 'LaTeX'
-  aspect_not_available: 'Vzhled #{aspect} není k dispozici pro stránku #{page} s typem #{type}.'
+  attribute_aspect: 'Přednastavený vzhled'
+  download: 'Stáhnout'
   entry: 'Položka'
   exif: 'Informace EXIF'
   geometry: 'Geometrie'
   information: 'Informace'
   type: 'Typ'
   value: 'Hodnota'
+de:
+  aspect_documentbrowser: 'Dokumentenbrowser'
+  aspect_download: 'Herunterladen'
+  aspect_gallery: 'Bildergalerie'
+  aspect_highlight: 'Quellcode mit Syntaxhighlighting'
+  aspect_image: 'Bild'
+  aspect_imageinfo: 'Bild-Information'
+  aspect_latex: 'LaTeX'
+  aspect_not_available: 'Aspekt %{aspect} für die Seite %{page} mit dem Typ %{type} ist nicht verfügbar.'
+  aspect_pageinfo: 'Seiten-Information'
+  aspect_s5: 'S5 Präsentation'
+  aspect_source: 'Quellcode'
+  aspect_subpages: 'Unterseiten'
+  aspect_text: 'Quellcode herunterladen'
+  attribute_aspect: 'Standard-Ansicht'
+  download: 'Herunterladen'
+  entry: 'Eintrag'
+  exif: 'EXIF-Information'
+  geometry: 'Geometrie'
+  information: 'Information'
+  type: 'Typ'
+  value: 'Wert'
+en:
+  aspect_documentbrowser: 'Document Browser'
+  aspect_download: 'Raw Download'
+  aspect_gallery: 'Image Gallery'
+  aspect_highlight: 'Highlighted Source'
+  aspect_image: 'Raw Image'
+  aspect_imageinfo: 'Image Information'
+  aspect_latex: 'LaTeX'
+  aspect_not_available: 'Aspect %{aspect} is not available for page %{page} with type %{type}.'
+  aspect_pageinfo: 'Page Information'
+  aspect_s5: 'S5 Presentation'
+  aspect_source: 'Page Source'
+  aspect_subpages: 'Subpages'
+  aspect_text: 'Text Download'
+  attribute_aspect: 'Default Aspect'
+  download: 'Download'
+  entry: 'Entry'
+  exif: 'EXIF Information'
+  geometry: 'Geometry'
+  information: 'Information'
+  type: 'Type'
+  value: 'Value'
+fr:
+  aspect_documentbrowser: "Explorateur de fichier"
+  aspect_download: "Téléchargement brut"
+  aspect_gallery: "Galerie d'images"
+  aspect_highlight: "Source mise en valeur"
+  aspect_image: "Image brute"
+  aspect_imageinfo: "Information sur l'image"
+  aspect_latex: "LaTeX"
+  aspect_not_available: "L'aspect %{aspect} n'est pas disponible pour la page %{page} avec le type %{type}."
+  aspect_pageinfo: "Page d'information"
+  aspect_s5: "Presentation S5 "
+  aspect_source: "Source de la page"
+  aspect_subpages: "Sous-pages"
+  aspect_text: "Téléchargement en texte"
+  attribute_aspect: "Aspect par défaut"
+  download: "Télécharger"
+  entry: "Entrée"
+  exif: "Information EXIF"
+  geometry: "Geometrie"
+  information: "Information"
+  type: "Type"
+  value: "Valeur"

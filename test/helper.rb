@@ -1,5 +1,4 @@
 require 'olelo'
-require 'bacon'
 require 'rack/test'
 
 module TestHelper

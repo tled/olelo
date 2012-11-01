@@ -1,6 +1,5 @@
 *.log
 *.swp
-*.rbc
 .wiki
 .yardoc
 config.yml
