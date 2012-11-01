@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Filter pipeline aspect'
 dependencies 'aspects'
 
@@ -41,7 +42,7 @@ class Filter
 
   # Print filter definition. For debugging purposes.
   def definition
-    previous ? "#{previous.definition} > #{name}" : name
+    previous ? "#{previous.definition} → #{name}" : name
   end
 
   # Register a filter class

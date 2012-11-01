@@ -156,11 +156,13 @@ ul.tabs
       thead
         tr
           th Name
+          th Accepted mime types
           th Filters
       tbody
       - Olelo::Plugin::Aspects::Aspect.aspects.values.flatten.select {|aspect| Olelo::Plugin::Filters::FilterAspect === aspect }.sort_by(&:name).each do |aspect|
         tr
           td= aspect.name
+          td= aspect.accepts ? aspect.accepts.inspect : '*'
           td= aspect.definition
 - if defined?(Olelo::Plugin::Tags::Tag)
   #tab-tags.tab
