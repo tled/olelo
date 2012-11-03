@@ -1,5 +1,4 @@
 require 'helper'
-require 'olelo/middleware/flash'
 require 'olelo/middleware/force_encoding'
 require 'olelo/middleware/degrade_mime_type'
 require 'rack/relative_redirect'
@@ -75,7 +74,6 @@ describe 'requests' do
       use Rack::MethodOverride
       use Olelo::Middleware::ForceEncoding
       use Olelo::Middleware::DegradeMimeType
-      use Olelo::Middleware::Flash, set_accessors: %w(error warn info)
       #use Rack::RelativeRedirect
       run Olelo::Application.new
     end

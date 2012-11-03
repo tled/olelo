@@ -11,7 +11,6 @@ require 'rack/relative_redirect'
 require 'rack/static_cache'
 require 'olelo'
 require 'olelo/middleware/degrade_mime_type'
-require 'olelo/middleware/flash'
 require 'olelo/middleware/force_encoding'
 require 'securerandom'
 
@@ -79,7 +78,7 @@ Olelo::Initializer.initialize(logger)
 # end
 
 use Rack::Runtime
-use Rack::ShowExceptions if !Olelo::Config['production']
+use Rack::ShowExceptions unless Olelo::Config['production']
 
 if Olelo::Config['rack.deflater']
   use Rack::Deflater
@@ -96,9 +95,8 @@ end
 
 use Rack::MethodOverride
 use Rack::CommonLogger, LoggerOutput.new(logger)
-use Olelo::Middleware::ForceEncoding
-use Olelo::Middleware::Flash, set_accessors: %w(error warn info)
 use Rack::RelativeRedirect
+use Olelo::Middleware::ForceEncoding
 run Olelo::Application.new
 
 logger.info "Olelo started in #{Olelo::Config['production'] ? 'production' : 'development'} mode"
