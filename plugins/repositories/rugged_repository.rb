@@ -392,13 +392,11 @@ class RuggedRepository < Repository
 
   def path_changed?(c, path)
     return true if path.blank?
-    new = [(c.tree.path(path) rescue nil),
-           (c.tree.path(path + ATTRIBUTE_EXT) rescue nil),
-           (c.tree.path(path + CONTENT_EXT) rescue nil)]
-    (new.first && c.parents.empty?) || c.parents.any? do |parent|
-      new != [(parent.tree.path(path) rescue nil),
-              (parent.tree.path(path + ATTRIBUTE_EXT) rescue nil),
-              (parent.tree.path(path + CONTENT_EXT) rescue nil)]
+    ref1, ref2, ref3 = nil, nil, nil
+    (c.parents.empty? && (ref1 ||= c.tree.path(path) rescue {})) || c.parents.any? do |parent|
+      (ref1 ||= c.tree.path(path) rescue {}) != (parent.tree.path(path) rescue {}) ||
+        (ref2 ||= c.tree.path(path + ATTRIBUTE_EXT) rescue {}) != (parent.tree.path(path + ATTRIBUTE_EXT) rescue {}) ||
+        (ref3 ||= c.tree.path(path + CONTENT_EXT) rescue {}) != (parent.tree.path(path + CONTENT_EXT) rescue {})
     end
   end
 
