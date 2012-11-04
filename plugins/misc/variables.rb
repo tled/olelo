@@ -25,6 +25,6 @@ end
 # Export variables to javascript for client extensions
 Application.hook :head, 1 do
   vars = page ? params.merge(PLUGIN.exported_variables(page)) : params
-  vars = vars.merge('user_logged_in' => !User.logged_in?, 'user_name' => User.current.name)
+  vars = vars.merge('user_name' => User.current.name) if User.logged_in?
   %{<script type="text/javascript">Olelo = #{escape_javascript MultiJson.dump(vars)};</script>}
 end
