@@ -47,7 +47,9 @@
 	}
 
 	// Show initially selected tab
-	selected.parent().addClass('selected');
-	selected.data('tab').show();
+	if (selected && selected.data('tab')) {
+	    selected.parent().addClass('selected');
+	    selected.data('tab').show();
+	}
     };
 })(jQuery);
