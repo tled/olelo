@@ -21,7 +21,7 @@ class ::Olelo::Application
     end
     if js
       path = build_path "_/assets/assets.js?#{js.first.to_i}"
-      result << %{<script src="#{escape_html path}" type="text/javascript"/>}
+      result << %{<script src="#{escape_html path}" type="text/javascript"></script>}
     end
     result
   end

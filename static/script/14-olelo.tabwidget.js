@@ -4,9 +4,8 @@
     $.fn.tabWidget = function(options) {
         var store = options && options.store;
 	var selected = null;
-
-        // Handle tab clicks
 	$("> a[href^='#']", this).click(function() {
+            // Handle tab clicks
 	    if (selected.data('tab') == $(this).data('tab')) {
 		return false;
 	    }
@@ -22,6 +21,11 @@
 		$.storage.set(store, selected.data('tab').attr('id'));
 	    }
 	    return false;
+	}).each(function() {
+	    // Hide tabs
+	    var tab = $(this.href.match(/(#.*)$/)[1]);
+	    tab.hide();
+	    $(this).data('tab', tab);
 	});
 
         // Get selected tab from store
@@ -42,15 +46,7 @@
             selected = $(this).filter(':first').find("> a[href^='#']");
 	}
 
-        // Find all tabs and hide them
-	$("> a[href^='#']", this).each(function() {
-	    var tab = $(this.href.match(/(#.*)$/)[1]);
-	    tab.hide();
-	    $(this).data('tab', tab);
-	});
-
 	// Show initially selected tab
-	this.removeClass('selected');
 	selected.parent().addClass('selected');
 	selected.data('tab').show();
     };

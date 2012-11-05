@@ -326,7 +326,7 @@ module Olelo
       @@script_link ||=
         begin
           path = build_path "static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}"
-          %{<script src="#{escape_html path}" type="text/javascript"/>}
+          %{<script src="#{escape_html path}" type="text/javascript"></script>}
         end
       base_path = if page && page.root?
         url = request.base_url

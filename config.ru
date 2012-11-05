@@ -11,6 +11,7 @@ require 'rack/relative_redirect'
 require 'rack/static_cache'
 require 'olelo'
 require 'olelo/middleware/degrade_mime_type'
+require 'olelo/middleware/ua_header'
 require 'olelo/middleware/force_encoding'
 require 'securerandom'
 
@@ -87,6 +88,7 @@ end
 use Rack::StaticCache, urls: ['/static'], root: app_path
 use Rack::Session::Cookie, key: 'olelo.session', secret: Olelo::Config['rack.session_secret']
 use Olelo::Middleware::DegradeMimeType
+use Olelo::Middleware::UAHeader
 
 class LoggerOutput
   def initialize(logger); @logger = logger; end
