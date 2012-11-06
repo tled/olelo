@@ -148,7 +148,7 @@ module Olelo
         raise NotFound
       end
       @version = @diff.to
-      cache_control version: @version
+      cache_control etag: @version.etag
       render :changes
     end
 
@@ -158,7 +158,7 @@ module Olelo
       @page_nr = [params[:page].to_i, 1].max
       @history = page.history((@page_nr - 1) * per_page, per_page)
       @page_count = @page_nr + @history.length / per_page
-      cache_control version: page.version
+      cache_control etag: page.version.etag
       render :history
     end
 
@@ -268,7 +268,7 @@ module Olelo
     get '/(:path)', tail: true do
       begin
         @page = Page.find!(params[:path])
-        cache_control version: page.version
+        cache_control etag: page.version.etag
         show_page
       rescue NotFound
         redirect build_path(params[:path], action: :new)
@@ -277,7 +277,7 @@ module Olelo
 
     get '/version/:version(/:path)' do
       @page = Page.find!(params[:path], params[:version])
-      cache_control version: page.version
+      cache_control etag: page.version.etag
       show_page
     end
 

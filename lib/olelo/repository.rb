@@ -42,7 +42,7 @@ module Olelo
       other.to_s == id
     end
 
-    def cache_id
+    def etag
       "#{@id}-#{@head}"
     end
   end

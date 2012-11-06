@@ -242,11 +242,6 @@ module Olelo
       last_modified = last_modified.try(:to_time) || last_modified
       last_modified = last_modified.try(:httpdate) || last_modified
 
-      if options[:version]
-        options[:etag] = options[:version].cache_id
-        options[:last_modified] = options[:version].date
-      end
-
       if User.logged_in?
         # Always private mode if user is logged in
         options[:private] = true
