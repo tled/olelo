@@ -158,7 +158,6 @@ module Olelo
       @page_nr = [params[:page].to_i, 1].max
       @history = page.history((@page_nr - 1) * per_page, per_page)
       @page_count = @page_nr + @history.length / per_page
-      @history = @history[0...per_page]
       cache_control version: page.version
       render :history
     end
