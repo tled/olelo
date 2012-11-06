@@ -3,6 +3,8 @@
 // $('#page_element').bind('pageLoaded', function() {});
 // Written by Daniel Mendler
 (function($) {
+    "use strict";
+
     $.fn.pagination = function(links) {
 	var page = this;
 

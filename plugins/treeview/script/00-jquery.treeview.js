@@ -1,6 +1,8 @@
 // Ajax Tree View
 // Written by Daniel Mendler, 2009
 (function($) {
+    "use strict";
+
     // Create treeview
     // $('div#id').treeView(...);
     $.fn.treeView = function(options) {

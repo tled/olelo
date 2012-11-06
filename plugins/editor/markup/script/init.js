@@ -1,4 +1,6 @@
 $(function() {
+    "use strict";
+
     var mime = Olelo.page_mime;
     if (mime == 'application/x-empty' || mime == 'inode/directory') {
 	mime = Olelo.default_mime;

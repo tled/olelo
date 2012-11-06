@@ -1,6 +1,8 @@
 // Olelo bootstrap
 // Written by Daniel Mendler
 $(function() {
+    "use strict";
+
     $('html').removeClass('no-js').addClass('js');
     function pageLoaded() {
         $('#upload-path', this).each(function() {

@@ -1,6 +1,8 @@
 // Simple storage plugin
 // Written by Daniel Mendler
 (function($) {
+    "use strict";
+
     var storage = {}, data = {};
     try {
 	if (window.localStorage) {

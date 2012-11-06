@@ -1,6 +1,8 @@
 // Replace timestamps with relative time
 // Written by Daniel Mendler
 (function($) {
+    "use strict";
+
     $.translations({
          en: {
               less_than_a_minute_ago: 'less than a minute ago',

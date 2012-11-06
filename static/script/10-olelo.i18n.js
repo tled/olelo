@@ -1,6 +1,8 @@
 // Very simple i18n plugin
 // Written by Daniel Mendler
 (function($) {
+    "use strict";
+
     var locale = null, translations = {};
     $.translations = function(t) {
         for (var lang in t) {

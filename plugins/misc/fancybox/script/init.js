@@ -1,4 +1,6 @@
 $(function() {
+    "use strict";
+
     function initFancybox() {
         $('a.fancybox').each(function() {
             var href = this.href.replace(/aspect=\w+/g, '');

@@ -1,4 +1,6 @@
 (function($) {
+    "use strict";
+
     $.fn.historyTable = function() {
 	$('thead tr', this).prepend('<th class="compare"><button>&#177;</button></th>');
 	$('tbody tr', this).each(function() {

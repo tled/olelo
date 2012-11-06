@@ -1,4 +1,6 @@
 (function($) {
+    "use strict";
+
     $.widget('ui.combobox', {
 	_create: function() {
 	    var input = this.element;

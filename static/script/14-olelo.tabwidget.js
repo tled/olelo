@@ -1,6 +1,8 @@
 // Simple, unobtrusive tab widget
 // Written by Daniel Mendler
 (function($) {
+    "use strict";
+
     $.fn.tabWidget = function(options) {
         var store = options && options.store;
 	var selected = null;

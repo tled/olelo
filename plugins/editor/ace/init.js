@@ -1,4 +1,6 @@
 $(function() {
+    "use strict";
+
     var textarea = $('#edit-content');
     if (textarea.length == 1) {
 	textarea.hide().before('<div id="ace-editor" style="position:relative; width:100%; height: 40em"/>');

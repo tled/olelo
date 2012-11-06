@@ -1,4 +1,6 @@
 $(function() {
+    "use strict";
+
     // Add treeview translations
     $.translations({
 	en: {

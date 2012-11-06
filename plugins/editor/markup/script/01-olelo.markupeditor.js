@@ -1,4 +1,6 @@
 (function($) {
+    "use strict";
+
     var markups = {
         creole: {
             link:   ['[[', 'link text', ']]'],

@@ -1,6 +1,8 @@
 // Underline text in elements. Especially useful for accesskeys.
 // Written by Daniel Mendler
 (function($) {
+    "use strict";
+
     $.extend($.fn, {
 	// Underline text
 	underlineText: function(str) {
