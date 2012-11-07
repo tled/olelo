@@ -320,8 +320,10 @@ module Olelo
           %{<link rel="stylesheet" href="#{escape_html css_path}" type="text/css"/>
 <script src="#{escape_html js_path}" type="text/javascript"></script>}
         end
+      # Add base path to root page to fix links in history browsing and for wikis with base_path
       base_path = if page && page.root?
         url = request.base_url
+        url << Config['base_path'] if Config['base_path'] != '/'
         url << '/' << 'version'/page.tree_version if !page.head?
         %{<base href="#{escape_html url}/"/>}.html_safe
       end
