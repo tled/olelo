@@ -317,8 +317,8 @@ class RuggedRepository < Repository
     raise 'Not a commit' unless Rugged::Commit === commit
     object = object_by_path(commit, path)
     Rugged::Tree === object ? object.map do |e|
-      [e[:name].force_encoding(Encoding.default_external), e[:oid]]
-     end.reject {|e| reserved_name?(e.first) } : []
+      e[:name].force_encoding(Encoding.default_external)
+    end.reject {|name| reserved_name?(name) } : []
   end
 
   def get_content(path, version)

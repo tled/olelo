@@ -39,7 +39,7 @@ module Olelo
 
     attr_reader :path, :tree_version
 
-    def initialize(path, etag = nil, tree_version = nil, parent = nil)
+    def initialize(path, tree_version = nil, etag = nil, parent = nil)
       @path, @etag, @tree_version, @parent = path.to_s.cleanpath.freeze, etag, tree_version, parent
       Page.check_path(@path)
     end
@@ -69,7 +69,7 @@ module Olelo
       tree_version = repository.get_version(tree_version) unless Version === tree_version
       if tree_version
         etag = repository.path_etag(path, tree_version)
-        Page.new(path, etag, tree_version) if etag
+        Page.new(path, tree_version, etag) if etag
       end
     end
 
@@ -92,7 +92,10 @@ module Olelo
     end
 
     def etag
-      "#{head? ? 1 : 0}-#{@etag}"
+      unless new?
+        @etag ||= repository.path_etag(path, tree_version)
+        "#{head? ? 1 : 0}-#{@etag}"
+      end
     end
 
     def next_version
@@ -214,8 +217,8 @@ module Olelo
         if new?
           []
         else
-          repository.get_children(path, tree_version).sort.map do |name, etag|
-            Page.new(path/name, etag, tree_version, self)
+          repository.get_children(path, tree_version).sort.map do |name|
+            Page.new(path/name, tree_version, nil, self)
           end
         end
     end
