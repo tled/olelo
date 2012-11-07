@@ -99,7 +99,7 @@
             var list = $('<ul class="button-bar" id="markup-editor"/>');
 
             var buttons = [];
-            for (k in markup) {
+            for (var k in markup) {
                  buttons.push(k);
             }
             buttons.sort();
