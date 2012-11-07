@@ -148,7 +148,7 @@ module Olelo
         raise NotFound
       end
       @version = @diff.to
-      cache_control etag: @version.etag
+      cache_control etag: @version.to_s
       render :changes
     end
 
