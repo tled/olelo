@@ -32,8 +32,7 @@ module Olelo
 
       catch(:forward) do
         with_hooks(:request) { perform! }
-        status, header, body = response.finish
-        return [status, header, request.head? ? [] : body]
+        return response.finish
       end
 
       @app ? @app.call(env) : error!(NotFound.new(@request.path_info))
@@ -195,7 +194,6 @@ module Olelo
 
       def get(path, patterns = {}, &block)
         add_route('GET',  path, patterns, &block)
-        add_route('HEAD', path, patterns, &block)
       end
 
       def put(path, patterns = {}, &block)

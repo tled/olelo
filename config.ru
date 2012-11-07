@@ -99,6 +99,7 @@ use Rack::MethodOverride
 use Rack::CommonLogger, LoggerOutput.new(logger)
 use Rack::RelativeRedirect
 use Olelo::Middleware::ForceEncoding
+use Rack::Head
 run Olelo::Application.new
 
 logger.info "Olelo started in #{Olelo::Config['production'] ? 'production' : 'development'} mode"
