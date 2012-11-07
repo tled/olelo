@@ -28,7 +28,7 @@ opts = OptionParser.new do |opts|
     options[:host] = host
   end
 
-  opts.on('-s', '--server SERVER', 'serve using SERVER (webrick/mongrel)') do |server|
+  opts.on('-s', '--server SERVER', 'serve using SERVER (webrick/mongrel/thin)') do |server|
     options[:server] = server
   end
 
