@@ -268,7 +268,6 @@ module Olelo
 
     def init_versions
       if !@version && @tree_version
-        puts "init versions #{path} #{tree_version}"
         raise 'Page is new' if new?
         @previous_version, @version, @next_version = repository.get_path_version(path, tree_version)
       end

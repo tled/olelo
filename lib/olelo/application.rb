@@ -13,7 +13,7 @@ module Olelo
 
     has_around_hooks :request, :routing, :action, :title, :footer, :login_buttons,
                      :edit_buttons, :attributes_buttons, :upload_buttons
-    has_hooks :auto_login, :render, :menu, :head, :script
+    has_hooks :auto_login, :render, :menu, :head
 
     def self.reserved_path?(path)
       path = '/' + path.cleanpath

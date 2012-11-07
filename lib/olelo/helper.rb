@@ -17,14 +17,6 @@ module Olelo
     def render_block(name)
       with_hooks(name) { yield }.join.html_safe
     end
-
-    def include_or_define_block(name, content = nil, &block)
-      if block_given? || content
-        define_block(name, content, &block)
-      else
-        include_block(name)
-      end
-    end
   end
 
   module FlashHelper
@@ -304,11 +296,19 @@ module Olelo
     end
 
     def footer(content = nil, &block)
-      include_or_define_block(:footer, content, &block)
+      if block_given? || content
+        define_block(:footer, content, &block)
+      else
+        include_block(:footer)
+      end
     end
 
     def title(content = nil, &block)
-      include_or_define_block(:title,  content, &block)
+      if block_given? || content
+        define_block(:title, content, &block)
+      else
+        include_block(:title)
+      end
     end
 
     def head
