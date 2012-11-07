@@ -29,5 +29,6 @@ Filter.create :markdown_nowiki do |context, content|
       output << line.gsub(/``.*?``|`[^`]*`/, '<notags>\0</notags>')
     end
   end
+  output << (state == :before ? block : "<notags>#{block}</notags>") if block
   output
 end
