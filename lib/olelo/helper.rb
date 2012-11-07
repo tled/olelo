@@ -312,23 +312,20 @@ module Olelo
     end
 
     def head
-      @@theme_link ||=
+      @@js_css_links ||=
         begin
           file = File.join(Config['themes_path'], Config['theme'], 'style.css')
-          path = build_path "static/themes/#{Config['theme']}/style.css?#{File.mtime(file).to_i}"
-          %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
-        end
-      @@script_link ||=
-        begin
-          path = build_path "static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}"
-          %{<script src="#{escape_html path}" type="text/javascript"></script>}
+          css_path = build_path "static/themes/#{Config['theme']}/style.css?#{File.mtime(file).to_i}"
+          js_path = build_path "static/script.js?#{File.mtime(File.join(Config['app_path'], 'static', 'script.js')).to_i}"
+          %{<link rel="stylesheet" href="#{escape_html css_path}" type="text/css"/>
+<script src="#{escape_html js_path}" type="text/javascript"></script>}
         end
       base_path = if page && page.root?
         url = request.base_url
         url << '/' << 'version'/page.tree_version if !page.head?
         %{<base href="#{escape_html url}/"/>}.html_safe
       end
-      [base_path, @@theme_link, @@script_link, *invoke_hook(:head)].join.html_safe
+      [base_path, @@js_css_links, *invoke_hook(:head)].join.html_safe
     end
 
     def session
