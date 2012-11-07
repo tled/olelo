@@ -146,7 +146,7 @@ end
 # Plug-in the aspect subsystem
 module ::Olelo::PageHelper
   def render_page(page)
-    Cache.cache("include-#{page.path}-#{page.version.etag}", update: no_cache?, defer: true) do |context|
+    Cache.cache("include-#{page.path}-#{page.etag}", update: no_cache?, defer: true) do |context|
       begin
         context = Context.new(page: page, params: {included: true})
         Aspect.find!(page, layout: true).call(context, page)
@@ -162,7 +162,7 @@ class ::Olelo::Application
   def show_page
     params[:aspect] ||= 'subpages' if params[:path].to_s.ends_with? '/'
     @selected_aspect, layout, header, content =
-    Cache.cache("aspect-#{page.path}-#{page.version.etag}-#{build_query(params)}",
+    Cache.cache("aspect-#{page.path}-#{page.etag}-#{build_query(params)}",
                 update: no_cache?, defer: true) do |cache|
       aspect = Aspect.find!(page, name: params[:aspect])
       cache.disable! if !aspect.cacheable?
@@ -172,6 +172,7 @@ class ::Olelo::Application
       context.header['Content-Type'] ||= page.mime.to_s if !aspect.layout?
       [aspect.name, aspect.layout?, context.header.to_hash, result]
     end
+
     self.response.header.merge!(header)
 
     @menu_versions = true
@@ -186,18 +187,15 @@ class ::Olelo::Application
 
   hook :menu do |menu|
     if menu.name == :actions && view_menu = menu[:view]
-      Cache.cache("aspect-menu-#{page.path}-#{page.version.etag}-#{@selected_aspect}",
-                              update: no_cache?, defer: true) do
-        aspects = Aspect.find_all(page).select {|a| !a.hidden? || a.name == @selected_aspect || a.name == page.attributes['aspect'] }.map do |a|
-          [Locale.translate("aspect_#{a.name}", fallback: titlecase(a.name)), a]
-        end.sort_by(&:first)
-        aspects.select {|label, a| a.layout? }.map do |label, a|
-          MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: a.name == @selected_aspect ? 'selected' : nil)
-        end +
-        aspects.reject {|label, a| a.layout? }.map do |label, a|
-          MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: 'download')
-        end
-      end.each {|item| view_menu << item }
+      aspects = Aspect.find_all(page).select {|a| !a.hidden? || a.name == @selected_aspect || a.name == page.attributes['aspect'] }.map do |a|
+        [Locale.translate("aspect_#{a.name}", fallback: titlecase(a.name)), a]
+      end.sort_by(&:first)
+      aspects.select {|label, a| a.layout? }.each do |label, a|
+        view_menu << MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: a.name == @selected_aspect ? 'selected' : nil)
+      end
+      aspects.reject {|label, a| a.layout? }.each do |label, a|
+        view_menu << MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: 'download')
+      end
     end
   end
 end

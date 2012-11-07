@@ -238,10 +238,14 @@ class RuggedRepository < Repository
     commit_to_version(@git.last_commit)
   end
 
-  def path_exists?(path, version)
+  def path_etag(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    path.blank? || commit.tree.path(path) != nil rescue nil
+    if oid = oid_by_path(commit, path)
+      [oid,
+       oid_by_path(commit, path + CONTENT_EXT),
+       oid_by_path(commit, path + ATTRIBUTE_EXT)].join('-')
+    end
   end
 
   def get_version(version = nil)
@@ -311,15 +315,17 @@ class RuggedRepository < Repository
   def get_children(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    object = object_by_path(commit.tree, path)
-    Rugged::Tree === object ? object.map {|e| e[:name].force_encoding(Encoding.default_external) }.reject {|name| reserved_name?(name) } : []
+    object = object_by_path(commit, path)
+    Rugged::Tree === object ? object.map do |e|
+      [e[:name].force_encoding(Encoding.default_external), e[:oid]]
+     end.reject {|e| reserved_name?(e.first) } : []
   end
 
   def get_content(path, version)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
-    object = object_by_path(commit.tree, path)
-    object = object_by_path(commit.tree, path + CONTENT_EXT) if Rugged::Tree === object
+    object = object_by_path(commit, path)
+    object = object_by_path(commit, path + CONTENT_EXT) if Rugged::Tree === object
     Rugged::Blob === object ? object.content.try_encoding(Encoding.default_external) : ''
   end
 
@@ -327,7 +333,7 @@ class RuggedRepository < Repository
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     path += ATTRIBUTE_EXT
-    object = object_by_path(commit.tree, path)
+    object = object_by_path(commit, path)
     object ? YAML.load(object.content) : {}
   end
 
@@ -393,17 +399,23 @@ class RuggedRepository < Repository
   def path_changed?(c, path)
     return true if path.blank?
     ref1, ref2, ref3 = nil, nil, nil
-    (c.parents.empty? && (ref1 ||= c.tree.path(path) rescue {})) || c.parents.any? do |parent|
-      (ref1 ||= c.tree.path(path) rescue {}) != (parent.tree.path(path) rescue {}) ||
-        (ref2 ||= c.tree.path(path + ATTRIBUTE_EXT) rescue {}) != (parent.tree.path(path + ATTRIBUTE_EXT) rescue {}) ||
-        (ref3 ||= c.tree.path(path + CONTENT_EXT) rescue {}) != (parent.tree.path(path + CONTENT_EXT) rescue {})
+    (c.parents.empty? && (ref1 ||= oid_by_path(c, path))) || c.parents.any? do |parent|
+      (ref1 ||= oid_by_path(c, path)) != (oid_by_path(parent, path)) ||
+        (ref2 ||= oid_by_path(c, path + ATTRIBUTE_EXT)) != (oid_by_path(parent, path + ATTRIBUTE_EXT)) ||
+        (ref3 ||= oid_by_path(c, path + CONTENT_EXT)) != (oid_by_path(parent, path + CONTENT_EXT))
     end
   end
 
-  def object_by_path(tree, path)
-    return tree if path.blank?
-    ref = tree.path(path)
-    @git.lookup(ref[:oid])
+  def oid_by_path(commit, path)
+    return commit.tree_oid if path.blank?
+    commit.tree.path(path)[:oid]
+  rescue Rugged::IndexerError
+    nil
+  end
+
+  def object_by_path(commit, path)
+    return commit.tree if path.blank?
+    @git.lookup(commit.tree.path(path)[:oid])
   rescue Rugged::IndexerError
     nil
   end

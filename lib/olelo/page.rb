@@ -39,8 +39,8 @@ module Olelo
 
     attr_reader :path, :tree_version
 
-    def initialize(path, tree_version = nil, parent = nil)
-      @path, @tree_version, @parent = path.to_s.cleanpath.freeze, tree_version, parent
+    def initialize(path, etag = nil, tree_version = nil, parent = nil)
+      @path, @etag, @tree_version, @parent = path.to_s.cleanpath.freeze, etag, tree_version, parent
       Page.check_path(@path)
     end
 
@@ -67,7 +67,10 @@ module Olelo
       path = path.to_s.cleanpath
       check_path(path)
       tree_version = repository.get_version(tree_version) unless Version === tree_version
-      Page.new(path, tree_version) if tree_version && repository.path_exists?(path, tree_version)
+      if tree_version
+        etag = repository.path_etag(path, tree_version)
+        Page.new(path, etag, tree_version) if etag
+      end
     end
 
     # Throws if not found
@@ -86,6 +89,10 @@ module Olelo
 
     def editable?
       mime.text? || mime == EMPTY_MIME || mime == DIRECTORY_MIME
+    end
+
+    def etag
+      "#{head? ? 1 : 0}-#{@etag}"
     end
 
     def next_version
@@ -207,8 +214,8 @@ module Olelo
         if new?
           []
         else
-          repository.get_children(path, tree_version).sort.map do |name|
-            Page.new(path/name, tree_version, self)
+          repository.get_children(path, tree_version).sort.map do |name, etag|
+            Page.new(path/name, etag, tree_version, self)
           end
         end
     end
@@ -261,6 +268,7 @@ module Olelo
 
     def init_versions
       if !@version && @tree_version
+        puts "init versions #{path} #{tree_version}"
         raise 'Page is new' if new?
         @previous_version, @version, @next_version = repository.get_path_version(path, tree_version)
       end

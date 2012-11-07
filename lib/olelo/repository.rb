@@ -41,10 +41,6 @@ module Olelo
     def ==(other)
       other.to_s == id
     end
-
-    def etag
-      "#{@id}-#{@head}"
-    end
   end
 
   # Difference between versions
@@ -131,13 +127,13 @@ module Olelo
       raise NotImplementedError
     end
 
-    # Check if path exists
+    # Check if path exists and return etag
     #
     # @param [String] path
     # @param [String, Version] version
-    # @return [Boolean]
+    # @return [String]
     # @api public
-    def path_exists?(path, version)
+    def path_etag(path, version)
       raise NotImplementedError
     end
 
