@@ -1,8 +1,8 @@
 require 'helper'
 require 'olelo/middleware/force_encoding'
 require 'olelo/middleware/degrade_mime_type'
+require 'olelo/middleware/ua_header'
 require 'rack/relative_redirect'
-require 'rack/session/pool'
 
 class Bacon::Context
   include Rack::Test::Methods
@@ -74,7 +74,9 @@ describe 'requests' do
       use Rack::MethodOverride
       use Olelo::Middleware::ForceEncoding
       use Olelo::Middleware::DegradeMimeType
+      use Olelo::Middleware::UAHeader
       #use Rack::RelativeRedirect
+      use Rack::Head
       run Olelo::Application.new
     end
   end
