@@ -21,6 +21,7 @@ production:      true
 sidebar_page:    'Sidebar'
 
 # Use a different base directory as root to support installation in user homes
+# e.g. /wiki
 base_path:      '/'
 
 # Main cache store. Uncomment this!
