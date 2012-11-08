@@ -95,6 +95,7 @@ end
 use Rack::MethodOverride
 use Rack::CommonLogger, LoggerOutput.new(logger)
 use Rack::RelativeRedirect
+use Rack::ContentLength
 use Olelo::Middleware::ForceEncoding
 run Olelo::Application.new
 
