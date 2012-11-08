@@ -10,9 +10,6 @@ require 'fileutils'
 require 'rack/relative_redirect'
 require 'rack/static_cache'
 require 'olelo'
-require 'olelo/middleware/degrade_mime_type'
-require 'olelo/middleware/ua_header'
-require 'olelo/middleware/force_encoding'
 require 'securerandom'
 
 Olelo::Config.instance['app_path'] = app_path
@@ -99,7 +96,6 @@ use Rack::MethodOverride
 use Rack::CommonLogger, LoggerOutput.new(logger)
 use Rack::RelativeRedirect
 use Olelo::Middleware::ForceEncoding
-use Rack::Head
 run Olelo::Application.new
 
 logger.info "Olelo started in #{Olelo::Config['production'] ? 'production' : 'development'} mode"
