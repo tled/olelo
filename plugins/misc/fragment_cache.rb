@@ -19,7 +19,8 @@ class ::Olelo::Application
   end
 
   redefine_method :footer do |content = nil, &block|
-    if block_given? || content
+    # FIXME: Use block instead of block_given?, block_given? returns always false. Is this a ruby issue?
+    if block || content
       super(content, &block)
     else
       Cache.cache("footer-#{cache_id}", update: no_cache?) do |cache|
