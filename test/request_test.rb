@@ -29,7 +29,7 @@ describe 'requests' do
         }
       },
       base_path:          '/',
-      production:         true,
+      production:         false,
       locale:             'en_US',
       sidebar_page:       'Sidebar',
       authentication: {
