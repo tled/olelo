@@ -24,9 +24,13 @@ class GitrbRepository < Repository
   end
 
   # @override
-  def path_exists?(path, version)
+  def path_etag(path, version)
     check_path(path)
-    !get_object(path, version).nil? rescue false
+    if id = get_object(path, version).id rescue nil
+      [id,
+       (get_object(path + CONTENT_EXT, version).id rescue nil),
+       (get_object(path + ATTRIBUTE_EXT, version).id rescue nil)].join('-')
+    end
   end
 
   # @override
@@ -73,7 +77,7 @@ class GitrbRepository < Repository
     if object
       content = object.data
       # Try to force utf-8 encoding and revert to old encoding if this doesn't work
-      content.try_encoding(Encoding.default_encoding)
+      content.try_encoding(Encoding.default_external)
     else
       ''
     end
