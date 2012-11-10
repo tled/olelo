@@ -15,7 +15,7 @@ Tags::Tag.define 'menu', optional: 'path', description: 'Show blog menu', dynami
       page.children.each do |child|
         (years[child.version.date.year] ||= [])[child.version.date.month] = true
       end
-      render :menu, locals: {years: years, page: page}
+      render :blog_menu, locals: {years: years, page: page}
     end
   end
 end
@@ -53,12 +53,12 @@ Aspects::Aspect.create(:blog, priority: 3, layout: true, cacheable: true, hidden
       end
       [article, content]
     end
-    render :blog, locals: {full: context.params[:full]}
+    render :blog_page, locals: {full: context.params[:full]}
   end
 end
 
 __END__
-@@ blog.slim
+@@ blog_page.slim
 - if @articles.empty?
   .error= :no_articles.t
 - else
@@ -73,7 +73,7 @@ __END__
         - if !full
           a.full href=build_path(page.path) = :full_article.t
 = pagination(@page, @page_count, @page_nr, aspect: 'blog')
-@@ menu.slim
+@@ blog_menu.slim
 table.blog-menu
   - years.keys.sort.each do |year|
     tr

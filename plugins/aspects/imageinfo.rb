@@ -8,12 +8,12 @@ Aspect.create(:imageinfo, priority: 1, layout: true, cacheable: true, accepts: %
     @type = identify[0]
     @geometry = "#{identify[1]}x#{identify[2]}"
     @exif = identify[3..-1].to_a.map {|line| line.sub(/^exif:/, '').split('=', 2) }
-    render :info
+    render :imageinfo
   end
 end
 
 __END__
-@@ info.slim
+@@ imageinfo.slim
 p
   a href=build_path(@page, aspect: 'image')
     img src=build_path(@page, aspect: 'image', geometry: '640x480>') alt=@page.title

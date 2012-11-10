@@ -17,18 +17,6 @@ module Olelo
       # Get failed plugins
       attr_reader :failed
 
-      # Current plugin
-      def caller
-        last, stack = nil, []
-        Kernel.caller(1).each do |line|
-          if line =~ %r{^#{@dir}/(.+?)(?:\/main)?\.rb} && $1 != last
-            stack << @loaded[$1]
-            last = $1
-          end
-        end
-        stack
-      end
-
       # Get loaded plugins
       def loaded
         @loaded.values

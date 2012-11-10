@@ -19,10 +19,9 @@ module Olelo
     def render(name, options = {}, &block)
       locals = options.delete(:locals) || {}
       name = "#{name}.slim"
-      path = Templates.loader.context.to_s/name
-      id = [path, options.to_a].flatten.join('-')
+      id = [name, options.to_a].flatten.join('-')
       template = Templates.with_caching(id) do
-        Slim::Template.new(path, options) { Templates.loader.load(name) }
+        Slim::Template.new(name, options) { Templates.loader.call(name) }
       end
       template.render(self, locals, &block).html_safe
     end

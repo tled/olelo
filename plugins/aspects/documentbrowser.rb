@@ -18,13 +18,13 @@ Aspect.create(:documentbrowser, priority: 1, layout: true, cacheable: true, acce
     @page = page
     @page_nr = [context.params[:page].to_i, 1].max
     @page_count = count_pages
-    render :browser
+    render :documentbrowser
   end
 end
 
 __END__
 
-@@ browser.slim
+@@ documentbrowser.slim
 = pagination(@page, @page_count, @page_nr, aspect: 'documentbrowser')
 p
   img src=build_path(@page, aspect: 'image', geometry: '480x>', trim: 1, page: @page_nr)

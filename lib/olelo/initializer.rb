@@ -28,16 +28,10 @@ module Olelo
 
     def init_templates
       Templates.enable_caching if Config['production']
-      Templates.loader = Class.new do
-        def context
-          Plugin.caller.first.try(:name)
-        end
-
-        def load(name)
-          VirtualFS::Union.new(Plugin.caller.first.try(:virtual_fs),
-                               VirtualFS::Native.new(Config['views_path'])).read(name)
-        end
-      end.new
+      Templates.loader = proc do |name|
+        VirtualFS::Union.new(VirtualFS::Native.new(Config['views_path']),
+                             *Plugin.loaded.map(&:virtual_fs)).read(name)
+      end
     end
 
     def init_plugins

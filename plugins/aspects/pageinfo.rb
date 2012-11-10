@@ -3,12 +3,12 @@ description 'Page information aspect'
 Aspect.create(:pageinfo, priority: 4, layout: true, cacheable: true) do
   def call(context, page)
     @page = page
-    render :info
+    render :pageinfo
   end
 end
 
 __END__
-@@ info.slim
+@@ pageinfo.slim
 table
   tbody
     tr

@@ -16,11 +16,11 @@ class ::Olelo::Application
     css = Application.scripts['css']
     result = ''
     if css
-      path = build_path "_/assets/assets.css?#{css.first.to_i}"
+      path = build_path "_/assets/assets.css?#{css.first}"
       result << %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
     end
     if js
-      path = build_path "_/assets/assets.js?#{js.first.to_i}"
+      path = build_path "_/assets/assets.js?#{js.first}"
       result << %{<script src="#{escape_html path}" type="text/javascript"></script>}
     end
     result
@@ -28,7 +28,7 @@ class ::Olelo::Application
 
   get "/_/assets/assets.:type", type: 'js|css' do
     if script = Application.scripts[params[:type]]
-      cache_control last_modified: script.first, max_age: :static
+      cache_control max_age: :static, must_revalidate: false
       response['Content-Type'] = MimeMagic.by_extension(params[:type]).to_s
       response['Content-Length'] = script.last.bytesize.to_s
       script.last
@@ -39,15 +39,16 @@ class ::Olelo::Application
 
   get "/_/assets/:name", name: '.*' do
     if asset = Application.assets[params[:name]]
-      if path = asset.real_path
+      fs, name = asset
+      if path = fs.real_path(name)
         file = Rack::File.new(nil)
         file.path = path
         file.serving(env)
       else
-        cache_control last_modified: asset.mtime, max_age: :static
-        response['Content-Type'] = (MimeMagic.by_path(asset.name) || 'application/octet-stream').to_s
-        response['Content-Length'] = asset.size.to_s
-        asset.read
+        cache_control last_modified: fs.mtime(name), max_age: :static
+        response['Content-Type'] = (MimeMagic.by_path(name) || 'application/octet-stream').to_s
+        response['Content-Length'] = fs.size(name).to_s
+        fs.read(name)
       end
     else
       :not_found
@@ -57,24 +58,17 @@ end
 
 class ::Olelo::Plugin
   def export_assets(*files)
-    virtual_fs.glob(*files) do |file|
-      Application.assets[plugin_dir/file.name] = file
+    virtual_fs.glob(*files) do |fs, name|
+      Application.assets[path/name] = [fs, name]
     end
   end
 
   def export_scripts(*files)
-    virtual_fs.glob(*files) do |file|
-      raise 'Invalid script type' if file.name !~ /\.(css|js)$/
+    virtual_fs.glob(*files) do |fs, name|
+      raise 'Invalid script type' if name !~ /\.(css|js)$/
       scripts = Application.scripts[$1].to_a
-      Application.scripts[$1] = [[scripts[0], file.mtime].compact.max, "#{scripts[1]}/* #{plugin_dir/file.name} */\n#{file.read}\n"]
-    end
-  end
-
-  def plugin_dir
-    if File.basename(file) == 'main.rb'
-      path
-    else
-      File.dirname(path)
+      code = "#{scripts[1]}/* #{path/name} */\n#{fs.read(name)}\n"
+      Application.scripts[$1] = [md5(code), code]
     end
   end
 end

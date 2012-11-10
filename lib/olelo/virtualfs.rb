@@ -20,30 +20,6 @@ module Olelo
       read(name).bytesize
     end
 
-    class VirtualFile
-      attr_reader :fs, :name
-
-      def initialize(fs, name)
-        @fs, @name = fs, name
-      end
-
-      def read
-        fs.read(name)
-      end
-
-      def real_path
-        fs.real_path(name)
-      end
-
-      def mtime
-        @mtime ||= fs.mtime(name)
-      end
-
-      def size
-        @size ||= fs.size(name)
-      end
-    end
-
     class Native < VirtualFS
       def initialize(dir)
         @dir = dir
@@ -59,7 +35,7 @@ module Olelo
         names.map do |name|
           Dir[real_path(name)].select {|f| File.file?(f) }
         end.flatten.each do |f|
-          yield(VirtualFile.new(self, f[@dir.length+1..-1]))
+          yield(self, f[@dir.length+1..-1])
         end
       end
 
@@ -89,7 +65,7 @@ module Olelo
       def read(name)
         @cache[name] ||=
           begin
-            code, data = File.read(@file).split('__END__')
+            code, data = File.read(@file).split('__END__', 2)
             content = nil
             data.to_s.each_line do |line|
             if line =~ /^@@\s*([^\s]+)\s*/
@@ -108,10 +84,10 @@ module Olelo
 
       # @override
       def glob(*names)
-        code, data = File.read(@file).split('__END__')
+        code, data = File.read(@file).split('__END__', 2)
         data.to_s.each_line do |line|
-          if line =~ /^@@\s*([^\s]+)\s*/ && names.any? {|pattern| File.fnmatch(pattern, $1) }
-            yield(VirtualFile.new(self, $1))
+          if line =~ /^@@\ss*([^\s]+)\s*/ && names.any? {|pattern| File.fnmatch(pattern, $1) }
+            yield(self, $1)
           end
         end
       end

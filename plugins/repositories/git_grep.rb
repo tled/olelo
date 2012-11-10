@@ -46,7 +46,7 @@ class ::Olelo::Application
       a[1].length == b[1].length ? a[0] <=> b[0] : b[1].length <=> a[1].length
     end.map {|path, content| [path, content.join] }
 
-    render :grep
+    render :git_grep
   end
 
   private
@@ -57,7 +57,7 @@ class ::Olelo::Application
 end
 
 __END__
-@@ grep.slim
+@@ git_grep.slim
 - title :search_results.t(pattern: params[:pattern])
 h1= title
 p= :match.t(count: @matches.length)
