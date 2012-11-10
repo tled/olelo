@@ -84,6 +84,10 @@ end
 
 use Rack::StaticCache, urls: ['/static'], root: app_path
 use Rack::Session::Cookie, key: 'olelo.session', secret: Olelo::Config['rack.session_secret']
+
+#require 'rack/perftools_profiler'
+#use Rack::PerftoolsProfiler
+
 use Olelo::Middleware::DegradeMimeType
 use Olelo::Middleware::UAHeader
 
