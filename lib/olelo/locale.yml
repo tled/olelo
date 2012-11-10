@@ -70,6 +70,7 @@ cs_CZ:
   password:               'Heslo'
   passwords_do_not_match: 'Hesla se neshodují'
   path:                   'Cesta'
+  powered_by:             'Powered by <a href="https://github.com/minad/olelo">&#332;lelo</a>'
   profile_title:          'Profil uživatele %{user}'
   really_delete:          'Opravdu smazat?'
   reserved_path:          'Cesta je rezervována'
@@ -329,11 +330,11 @@ fr:
   login:                  "Connexion"
   logout:                 "Déconnexion"
   menu_actions_edit_new:  "Nouvelle page"
+  menu_actions_history_newer: "Plus récent"
   move:                   "Déplacer"
   move_page:              "Déplacer %{page}"
   name:                   "Nom"
   new_page:               "Nouvelle page"
-  newer:                  "Plus récent"
   no_changes:             "Aucun changement"
   not_found_text:         "Désolé, la page que vous recherchez n'a pas été trouvée."
   not_found_title:        '404 Non trouvé'
