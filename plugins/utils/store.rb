@@ -94,22 +94,6 @@ class Store
   # Delegated store
   Delegated = DelegateClass(Store)
 
-  # Synchronized store
-  def self.Synchronized(type)
-    klass = Class.new
-    klass.class_eval %{
-      def initialize(config)
-        @store = #{type.name}.new(config)
-        @lock = Mutex.new
-      end
-
-      def method_missing(*args)
-        @lock.synchronize { @store.send(*args) }
-      end
-    }
-    klass
-  end
-
   # Memory based store (uses hash)
   class Memory < Delegated
     def initialize(config)
@@ -122,7 +106,7 @@ class Store
   # Memcached client
   class Memcached < Delegated
     def initialize(config)
-      super(Store::Synchronized(Native).new(config))
+      super(Native.new(config))
     rescue LoadError
       super(Ruby.new(config))
     end
@@ -218,7 +202,8 @@ class Store
     def initialize(config)
       require 'pstore'
       FileUtils.mkpath(::File.dirname(config[:file]))
-      @store = ::PStore.new(config[:file])
+      # Create a thread-safe pstore
+      @store = ::PStore.new(config[:file], true)
     end
 
     # @override
@@ -251,7 +236,43 @@ class Store
     end
   end
 
-  register :pstore, Synchronized(PStore)
+  register :pstore, PStore
+
+  # GDBM based store
+  class GDBM < Store
+    def initialize(config)
+      require 'gdbm'
+      FileUtils.mkpath(::File.dirname(config[:db]))
+      @db = ::GDBM.new(config[:db])
+    end
+
+    # @override
+    def key?(key)
+      @db.has_key?(key)
+    end
+
+    # @override
+    def [](key)
+      deserialize(@db[key])
+    end
+
+    # @override
+    def []=(key, value)
+      @db[key] = serialize(value)
+    end
+
+    # @override
+    def delete(key)
+      @db.delete(key)
+    end
+
+    # @override
+    def clear
+      @db.clear
+    end
+  end
+
+  register :gdbm, GDBM
 
   # File based store
   class File < Store
