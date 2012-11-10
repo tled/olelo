@@ -77,7 +77,7 @@ namespace :locale do
     # You need the i18n_yaml_sorter gem
     Dir['**/locale.yml'].each do |file|
       puts "Sorting #{file}"
-      system("sort_yaml < #{file} > #{file}.sorted; mv #{file}.sorted #{file}")
+      system("sort_yaml < #{file} > #{file}.sorted && mv #{file}.sorted #{file}")
     end
   end
 
@@ -87,13 +87,19 @@ namespace :locale do
     Dir['**/locale.yml'].each do |file|
       puts "Checking #{file}"
       translations = YAML.load_file(file)
-      puts 'en locale missing' unless translations['en']
-      keys = translations['en'].keys
+      en = translations['en']
+      raise 'en locale missing' unless en
+      en_keys = en.keys
       translations.each do |locale,hash|
-        delta = hash.keys - keys
-        puts "\tLocale #{locale} has additional keys #{delta.join(' ')}" unless delta.empty?
-        delta = keys - hash.keys
-        puts "\tLocale #{locale} has missing keys #{delta.join(' ')}" unless delta.empty?
+        delta = hash.keys - en_keys
+        puts "\t#{locale} has additional keys #{delta.join(' ')}" unless delta.empty?
+        delta = en_keys - hash.keys
+        puts "\t#{locale} is missing the keys #{delta.join(' ')}" unless delta.empty?
+        (en_keys & hash.keys).each do |key|
+          if hash[key].count('%{') != en[key].count('%{')
+            puts "\t#{locale}:#{key} has invalid number of arguments"
+          end
+        end
       end
     end
   end
