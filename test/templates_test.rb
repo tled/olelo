@@ -4,20 +4,12 @@ class Bacon::Context
   include Olelo::Templates
 end
 
-class TestTemplateLoader
-  def context
-    nil
-  end
-
-  def load(path)
-    Olelo::VirtualFS::Embedded.new(__FILE__).read(path)
-  end
-end
-
 describe 'Olelo::Templates' do
   before do
     Olelo::Templates.enable_caching
-    Olelo::Templates.loader = TestTemplateLoader.new
+    Olelo::Templates.loader = proc do |name|
+      Olelo::VirtualFS::Embedded.new(__FILE__).read(name)
+    end
   end
 
   after do
