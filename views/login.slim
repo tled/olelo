@@ -12,7 +12,7 @@ form action=build_path(:login) method='post'
     &password#login-password name='password'
     br
     .indent
-      = render_block :login_buttons do
+      = wrap_block :login_buttons do
         button&submit= :login.t
     br
 - if signup_enabled

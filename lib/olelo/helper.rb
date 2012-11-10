@@ -2,19 +2,24 @@
 module Olelo
   module BlockHelper
     def blocks
-      @blocks ||= Hash.with_indifferent_access('')
+      @blocks ||= Hash.new('')
     end
 
-    def define_block(name, content = nil)
-      blocks[name] = block_given? ? yield : escape_html(content)
+    def define_block(name, content = nil, &block)
+      blocks[name] = block ? block : escape_html(content)
       ''
     end
 
-    def include_block(name)
-      with_hooks(name) { blocks[name] }.join.html_safe
+    def render_block(name)
+      block = blocks[name]
+      block.respond_to?(:call) ? block.call : block
     end
 
-    def render_block(name)
+    def include_block(name)
+      wrap_block(name) { render_block(name) }
+    end
+
+    def wrap_block(name)
       with_hooks(name) { yield }.join.html_safe
     end
   end
@@ -299,7 +304,7 @@ module Olelo
       if block_given? || content
         define_block(:footer, content, &block)
       else
-        include_block(:footer)
+        render_block(:footer)
       end
     end
 
@@ -307,7 +312,7 @@ module Olelo
       if block_given? || content
         define_block(:title, content, &block)
       else
-        include_block(:title)
+        render_block(:title)
       end
     end
 

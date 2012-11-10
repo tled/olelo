@@ -30,7 +30,7 @@ form action=build_path(page.new? ? nil : page.path) method='post'
       br
       label for='edit-comment' = :comment.t
       &text#edit-comment name='comment' value=params[:comment] size='50'
-      = render_block :edit_buttons do
+      = wrap_block :edit_buttons do
         button&submit name='action' value='edit' = :save.t
         button&submit name='action' value='edit-close' = :save_and_close.t
         button&reset = :reset.t
@@ -48,7 +48,7 @@ form action=build_path(page.new? ? nil : page.path) method='post' enctype='multi
     label for='upload-file' = :file.t
     &file#upload-file.observe name='file'
     br
-    = render_block :upload_buttons do
+    = wrap_block :upload_buttons do
       button&submit name='action' value='upload' = :save.t
       button&submit name='action' value='upload-close' = :save_and_close.t
       button&reset = :reset.t
@@ -64,7 +64,7 @@ form action=build_path(page.new? ? nil : page.path) method='post'
     - else
       &hidden name='version' value=page.version
     = page.attribute_editor
-    = render_block :attributes_buttons do
+    = wrap_block :attributes_buttons do
       .indent
         button&submit name='action' value='attributes' = :save.t
         button&submit name='action' value='attributes-close' = :save_and_close.t

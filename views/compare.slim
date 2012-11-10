@@ -1,7 +1,7 @@
 - title :compare.t(name: page.title, from: @diff.from.short, to: @diff.to.short)
 = define_block :from do
   a.version href=build_path(page, version: @diff.from) = @diff.from.short
-=  define_block :to do
+= define_block :to do
   a.version href=build_path(page, version: @diff.to) = @diff.to.short
-h1== :compare.t(name: escape_html(page.title), from: blocks[:from], to: blocks[:to])
+h1== :compare.t(name: escape_html(page.title), from: render_block(:from), to: render_block(:to))
 = format_diff(@diff)

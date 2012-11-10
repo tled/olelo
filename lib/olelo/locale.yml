@@ -15,7 +15,7 @@ cs_CZ:
   changes_of:             'Změny stránky %{page}'
   changes_saved:          'Změny uloženy'
   comment:                'Komentář'
-  compare:                'Porovnat %{name}'
+  compare:                'Porovnat %{name}: %{from} → %{to}'
   confirm_password:       'Potvrdit heslo'
   create_page:            'Vytvořit stránku %{page}'
   create_redirect:        'Vytvořit přesměrování'
@@ -112,7 +112,7 @@ de:
   changes_of:             'Änderungen von %{page}'
   changes_saved:          'Änderungen gespeichert'
   comment:                'Kommentar'
-  compare:                'Vergleiche %{name}'
+  compare:                'Vergleiche %{name}: %{from} → %{to}'
   confirm_password:       'Bestätige Passwort'
   create_page:            'Neue %{page}'
   create_redirect:        'Weiterleitung'
@@ -299,7 +299,7 @@ fr:
   changes_of:             "Chamgements de %{page}"
   changes_saved:          "Changement enregistrés"
   comment:                "Commentaire"
-  compare:                "Comparer %{name}"
+  compare:                "Comparer %{name}: %{from} → %{to}"
   confirm_password:       "Confirmer le mot de passe"
   create_page:            "Créer %{page}"
   create_redirect:        "Créer une redirection"

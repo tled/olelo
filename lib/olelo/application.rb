@@ -11,7 +11,7 @@ module Olelo
     attr_reader :page
     attr_setter :on_error
 
-    has_around_hooks :request, :routing, :action, :title, :footer, :login_buttons,
+    has_around_hooks :request, :routing, :action, :login_buttons,
                      :edit_buttons, :attributes_buttons, :upload_buttons
     has_hooks :auto_login, :render, :menu, :head
 
