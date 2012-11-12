@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Aspect subsystem'
 dependencies 'utils/cache'
 
@@ -175,7 +176,6 @@ class ::Olelo::Application
 
     self.response.header.merge!(header)
 
-    @menu_versions = true
     layout ? render(:show, locals: {content: content}) : content
   rescue Aspect::NotAvailable => ex
     cache_control no_cache: true
@@ -199,3 +199,18 @@ class ::Olelo::Application
     end
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  aspect_not_available: 'Vzhled %{aspect} není k dispozici pro stránku %{page} s typem %{type}.'
+  attribute_aspect: 'Přednastavený vzhled'
+de:
+  aspect_not_available: 'Aspekt %{aspect} für die Seite %{page} mit dem Typ %{type} ist nicht verfügbar.'
+  attribute_aspect: 'Standard-Ansicht'
+en:
+  aspect_not_available: 'Aspect %{aspect} is not available for page %{page} with type %{type}.'
+  attribute_aspect: 'Default Aspect'
+fr:
+  aspect_not_available: "L'aspect %{aspect} n'est pas disponible pour la page %{page} avec le type %{type}."
+  attribute_aspect: "Aspect par défaut"

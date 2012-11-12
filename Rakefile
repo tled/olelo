@@ -33,10 +33,11 @@ file('static/script.js' => Dir.glob('static/script/*.js')) { |t| shrink_js(t) }
 file('plugins/treeview/script.js' => Dir.glob('plugins/treeview/script/*.js')) {|t| shrink_js(t) }
 file('plugins/misc/fancybox/script.js' => Dir.glob('plugins/misc/fancybox/script/*.js')) {|t| shrink_js(t) }
 file('plugins/editor/markup/script.js' => Dir.glob('plugins/editor/markup/script/*.js')) {|t| shrink_js(t) }
+file('plugins/history/script.js' => Dir.glob('plugins/history/script/*.js')) {|t| shrink_js(t) }
 
 namespace :gen do
   desc('Shrink JS files')
-  task js: %w(static/script.js plugins/treeview/script.js plugins/misc/fancybox/script.js plugins/editor/markup/script.js)
+  task js: %w(static/script.js plugins/treeview/script.js plugins/misc/fancybox/script.js plugins/editor/markup/script.js plugins/history/script.js)
 
   desc('Compile CSS files')
   task css: %w(static/themes/atlantis/style.css

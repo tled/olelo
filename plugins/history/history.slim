@@ -1,7 +1,7 @@
 - title :history_of.t(page: page.title)
 h1= title
 = pagination(page, @page_count, @page_nr, action: :history, unlimited: true)
-table#history-table
+table#history
   thead
     tr
       th= :comment.t

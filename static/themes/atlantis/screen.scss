@@ -220,7 +220,7 @@ pre {
   display: block;
 }
 
-#history-table .compare {
+#history .compare {
   padding: 0;
   width: 1em;
   button {
@@ -234,7 +234,7 @@ pre {
   }
 }
 
-table.full, #history-table, #subpages-table {
+table.full, #history, #subpages {
   width: 100%;
   td, th {
     white-space: nowrap;
@@ -258,7 +258,7 @@ table.full, #history-table, #subpages-table {
   }
 }
 
-#subpages-table {
+#subpages {
   .actions {
     width: 80px;
     padding: 0px;

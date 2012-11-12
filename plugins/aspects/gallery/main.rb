@@ -32,3 +32,12 @@ table.gallery
           a.fancybox href=info_path rel="gallery" title=description
             img src=thumb_path alt=''
           a.title href=info_path = description
+@@ locale.yml
+cs_CZ:
+  aspect_gallery: 'Galerie'
+de:
+  aspect_gallery: 'Bildergalerie'
+en:
+  aspect_gallery: 'Image Gallery'
+fr:
+  aspect_gallery: "Galerie d'images"

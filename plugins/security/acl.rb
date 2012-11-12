@@ -55,3 +55,26 @@ class ::Olelo::Application
     end
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  attribute_acl_create: 'Vytvářet podstránky'
+  attribute_acl_delete: 'Mazat podstránky'
+  attribute_acl_write:  'Právo zápisu'
+  group_acl:            'Řízení přístupů (ACL)'
+de:
+  attribute_acl_create: 'Unterseiten anlegen'
+  attribute_acl_delete: 'Unterseiten löschen'
+  attribute_acl_write:  'Schreibzugriff'
+  group_acl:            'Zugriffslisten'
+en:
+  attribute_acl_create: 'Create subpages'
+  attribute_acl_delete: 'Delete subpages'
+  attribute_acl_write:  'Write access'
+  group_acl:            'Access control lists'
+fr:
+  attribute_acl_create: "Créer sous-pages"
+  attribute_acl_delete: "Supprimer sous-pages"
+  attribute_acl_write:  "Accès en écriture"
+  group_acl:            "Liste de contrôle des accès"

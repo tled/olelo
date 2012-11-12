@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description  'Auto-generated table of contents'
 dependencies 'utils/xml'
 
@@ -48,3 +49,14 @@ Filter.create :toc do |context, content|
 
   toc + doc.to_xhtml
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  attribute_toc: 'Vytvořit obsah'
+de:
+  attribute_toc: 'Inhaltsverzeichnis erzeugen'
+en:
+  attribute_toc: 'Generate Table of Contents'
+fr:
+  attribute_toc: "Générer Table des Matières"

@@ -3,27 +3,22 @@ module Olelo
   module Locale
     @locale = nil
     @translations = Hash.with_indifferent_access
-    @loaded = []
 
     class << self
       attr_accessor :locale
 
-      # Load locale from file
+      # Add locale hash
       #
-      # A locale is a yamlfile which maps
+      # A locale is a hash which maps
       # keys to strings.
       #
-      # @param [String] file name
+      # @param [Hash] Locale hash
       # @return [void]
       #
-      def load(file)
-        if !@loaded.include?(file) && File.file?(file)
-          locale = YAML.load_file(file)
-          @translations.update(locale[$1] || {}) if @locale =~ /^(\w+)(_|-)/
-          @translations.update(locale[@locale] || {})
-          @translations.each_value(&:freeze)
-          @loaded << file
-        end
+      def add(locale)
+        @translations.update(locale[$1] || {}) if @locale =~ /^(\w+)(_|-)/
+        @translations.update(locale[@locale] || {})
+        @translations.each_value(&:freeze)
       end
 
       # Return translated string for key

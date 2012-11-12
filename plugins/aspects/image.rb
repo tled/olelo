@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Image aspect'
 dependencies 'utils/image_magick'
 
@@ -39,3 +40,14 @@ Aspect.create(:image, priority: 5, accepts: %r{^application/pdf$|postscript$|^im
     end
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  aspect_image: 'Stažení obrázku'
+de:
+  aspect_image: 'Bild'
+en:
+  aspect_image: 'Raw Image'
+fr:
+  aspect_image: "Image brute"

@@ -67,3 +67,20 @@ p= :match.t(count: @matches.length)
       h2
         a.name href=build_path(path) = emphasize(path)
       .content= emphasize(content)
+@@ locale.yml
+cs_CZ:
+  match:          'Jeden výsledek'
+  match_plural:   '%{count} výsledků'
+  search_results: 'Výsledky hledání pro %{pattern}'
+de:
+  match:          'Ein Treffer'
+  match_plural:   '%{count} Treffer'
+  search_results: 'Suchergebnisse für %{pattern}'
+en:
+  match:          'One match'
+  match_plural:   '%{count} matches'
+  search_results: 'Search results for %{pattern}'
+fr:
+  match:          "Une correspondance"
+  match_plural:   "%{count} correspondaces"
+  search_results: "Chercher les résultats pour %{pattern}"

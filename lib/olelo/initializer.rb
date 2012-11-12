@@ -23,20 +23,23 @@ module Olelo
 
     def init_locale
       Locale.locale = Config['locale']
-      Locale.load(File.join(File.dirname(__FILE__), 'locale.yml'))
+      Locale.add(YAML.load_file(File.join(File.dirname(__FILE__), 'locale.yml')))
     end
 
     def init_templates
       Templates.enable_caching if Config['production']
       Templates.loader = proc do |name|
-        VirtualFS::Union.new(VirtualFS::Native.new(Config['views_path']),
+        VirtualFS::Union.new(VirtualFS::Native.new(File.join(File.dirname(__FILE__), 'views')),
                              *Plugin.loaded.map(&:virtual_fs)).read(name)
       end
     end
 
     def init_plugins
-      # Load locales provided by plugins
-      Plugin.after(:load) { Locale.load(File.join(File.dirname(file), 'locale.yml')) }
+      # Load locale provided by plugin
+      Plugin.after(:load) do
+        locale = virtual_fs.read('locale.yml') rescue nil
+        Locale.add(YAML.load(locale)) if locale
+      end
 
       # Configure plugin system
       Plugin.disabled = Config['disabled_plugins'].to_a

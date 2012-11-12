@@ -22,3 +22,14 @@ class ::Olelo::Application
     end
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  login_first:          'Musíte se nejprve přihlásit'
+de:
+  login_first:          'Sie müssen sich zuerst anmelden'
+en:
+  login_first:          'You have to login first'
+fr:
+  login_first:          "Vous devez d'abord vous connecter"

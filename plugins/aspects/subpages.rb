@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Subpages aspect'
 
 Aspect.create(:subpages, priority: 2, layout: true, cacheable: true) do
@@ -15,7 +16,7 @@ end
 __END__
 @@ subpages.slim
 = pagination(@page, @page_count, @page_nr, aspect: 'subpages')
-table#subpages-table
+table#subpages
   thead
     tr
       th= :name.t
@@ -42,3 +43,18 @@ table#subpages-table
           a.action-move href=build_path(child, action: :move) title=:move.t = :move.t
           a.action-delete href=build_path(child, action: :delete) title=:delete.t = :delete.t
 = pagination(@page, @page_count, @page_nr, aspect: 'subpages')
+
+__END__
+@@ locale.yml
+cs_CZ:
+  aspect_subpages: 'Podstránky'
+  author:          'Autor'
+de:
+  aspect_subpages: 'Unterseiten'
+  author:          'Autor'
+en:
+  aspect_subpages: 'Subpages'
+  author:          'Author'
+fr:
+  aspect_subpages: "Sous-pages"
+  author:          "Auteur"

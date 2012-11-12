@@ -30,3 +30,14 @@ class ::Olelo::Application
     end
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  persistent_login:     'Trvalé přihlášení'
+de:
+  persistent_login:     'Dauerhaft anmelden'
+en:
+  persistent_login:     'Persistent login'
+fr:
+  persistent_login:     'Connexion persistente'

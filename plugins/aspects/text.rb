@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Text aspect'
 
 Aspect.create(:text, mime: 'text/plain; charset=utf-8') do
@@ -7,3 +8,14 @@ Aspect.create(:text, mime: 'text/plain; charset=utf-8') do
     page.content
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  aspect_text: 'Stažení textu'
+de:
+  aspect_text: 'Quellcode herunterladen'
+en:
+  aspect_text: 'Text Download'
+fr:
+  aspect_text: "Téléchargement en texte"

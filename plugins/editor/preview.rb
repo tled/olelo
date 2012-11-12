@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description  'Enhance editor form with preview and diff'
 dependencies 'aspects'
 
@@ -50,3 +51,18 @@ class ::Olelo::Application
     halt render(request.xhr? ? flash.now[:changes] : :edit)
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  changes: 'Změny'
+  preview: 'Náhled'
+de:
+  changes: 'Änderungen'
+  preview: Vorschau
+en:
+  changes: Changes
+  preview: Preview
+fr:
+  changes: "Changement"
+  preview: "Prévisualisez"

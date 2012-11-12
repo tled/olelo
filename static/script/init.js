@@ -19,7 +19,6 @@ $(function() {
             }
         });
         $('label, #menu, .tabhead, .pagination, .button-bar', this).disableSelection();
-        $('#history-table', this).historyTable();
 	$('.date', this).timeAgo();
         $('.tabs', this).each(function() {
 	    $('> li', this).tabWidget();

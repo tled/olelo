@@ -31,7 +31,7 @@ module Olelo
       @original_params.freeze
 
       catch(:forward) do
-        with_hooks(:request) { perform! }
+        perform!
         status, header, body = response.finish
         return [status, header, request.head? ? [] : body]
       end

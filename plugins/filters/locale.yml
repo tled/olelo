@@ -1,20 +1,15 @@
 cs_CZ:
-  attribute_no_editsection: 'Zablokovat editaci sekcí'
-  attribute_toc: 'Vytvořit obsah'
-  edit_section: 'Edituj sekci "%{section}"'
-  section_edited: 'Sekce "%{section}" editována'
+  aspect_latex: 'LaTeX'
+  aspect_page: 'Stránce'
 de:
-  attribute_no_editsection: 'Bearbeiten von Bereichen deaktivieren'
-  attribute_toc: 'Inhaltsverzeichnis erzeugen'
-  edit_section: 'Bearbeite Bereich "%{section}"'
-  section_edited: 'Bereich "%{section}" bearbeitet'
+  aspect_latex: 'LaTeX'
+  aspect_page: 'Seite'
+  aspect_s5: 'S5 Präsentation'
 en:
-  attribute_no_editsection: 'Disable Section Editing'
-  attribute_toc: 'Generate Table of Contents'
-  edit_section: 'Edit section "%{section}"'
-  section_edited: 'Section "%{section}" edited'
+  aspect_latex: 'LaTeX'
+  aspect_page: 'Page'
+  aspect_s5: 'S5 Presentation'
 fr:
-  attribute_no_editsection: "Désactiver l'édition"
-  attribute_toc: "Générer Table des Matières"
-  edit_section: "Éditer la section \"%{section}\""
-  section_edited: "Section \"%{section}\" éditée"
+  aspect_latex: "LaTeX"
+  aspect_page: "Page"
+  aspect_s5: "Presentation S5"

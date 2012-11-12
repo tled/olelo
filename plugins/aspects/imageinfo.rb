@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Image information aspect'
 dependencies 'utils/image_magick'
 
@@ -54,3 +55,36 @@ table
         tr
           td= key
           td= value
+@@ locale.yml
+cs_CZ:
+  aspect_imageinfo: 'Informace o obrázku'
+  entry: 'Položka'
+  exif: 'Informace EXIF'
+  geometry: 'Geometrie'
+  information: 'Informace'
+  type: 'Typ'
+  value: 'Hodnota'
+de:
+  aspect_imageinfo: 'Bild-Information'
+  entry: 'Eintrag'
+  exif: 'EXIF-Information'
+  geometry: 'Geometrie'
+  information: 'Information'
+  type: 'Typ'
+  value: 'Wert'
+en:
+  aspect_imageinfo: 'Image Information'
+  entry: 'Entry'
+  exif: 'EXIF Information'
+  geometry: 'Geometry'
+  information: 'Information'
+  type: 'Type'
+  value: 'Value'
+fr:
+  aspect_imageinfo: "Information sur l'image"
+  entry: "Entrée"
+  exif: "Information EXIF"
+  geometry: "Geometrie"
+  information: "Information"
+  type: "Type"
+  value: "Valeur"

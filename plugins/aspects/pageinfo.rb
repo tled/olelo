@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Page information aspect'
 
 Aspect.create(:pageinfo, priority: 4, layout: true, cacheable: true) do
@@ -35,3 +36,20 @@ table
         td= :download.t
         td
           a href=build_path(@page, aspect: 'download') = :download.t
+@@ locale.yml
+cs_CZ:
+  aspect_pageinfo: 'Informace o stránce'
+  download: 'Stáhnout'
+  type: 'Typ'
+de:
+  aspect_pageinfo: 'Seiten-Information'
+  download: 'Herunterladen'
+  type: 'Typ'
+en:
+  aspect_pageinfo: 'Page Information'
+  download: 'Download'
+  type: 'Type'
+fr:
+  aspect_pageinfo: "Page d'information"
+  download: "Télécharger"
+  type: "Type"

@@ -58,3 +58,22 @@ class ::Olelo::Application
     end
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  captcha_invalid: 'Neplatný captcha kód'
+  captcha_valid: 'Platný captcha kód'
+  enter_captcha: 'Vložte laskavě captcha kód.'
+de:
+  captcha_invalid: 'Ungültiges Captcha'
+  captcha_valid: 'Gültiges Captcha'
+  enter_captcha: 'Bitte geben Sie ein Captcha ein.'
+en:
+  captcha_invalid: Invalid captcha
+  captcha_valid: Valid captcha
+  enter_captcha: 'Please enter the captcha.'
+fr:
+  captcha_invalid: "Captcha invalide"
+  captcha_valid: "Captcha valide"
+  enter_captcha: "Veuillez entrer le captcha."

@@ -7,19 +7,14 @@ cs_CZ:
   attribute_title:        'Titulek'
   attributes:             'Atributy'
   attributes_edited:      'Atributy stránky %{page} editovány'
-  author:                 'Autor'
   binary_file:            'Binární soubor'
   cancel:                 'Zrušit'
   change_password:        'Změnit heslo'
-  changes:                'Změny'
-  changes_of:             'Změny stránky %{page}'
   changes_saved:          'Změny uloženy'
   comment:                'Komentář'
-  compare:                'Porovnat %{name}: %{from} → %{to}'
   confirm_password:       'Potvrdit heslo'
   create_page:            'Vytvořit stránku %{page}'
   create_redirect:        'Vytvořit přesměrování'
-  date:                   'Datum'
   delete:                 'Smazat'
   delete_page:            'Smazat stránku %{page}'
   deleted:                'Smazáno'
@@ -35,7 +30,6 @@ cs_CZ:
   groups:                 'Skupiny'
   head:                   'Nejnovější'
   history:                'Historie'
-  history_of:             'Historie stránky %{page}'
   info_binary:            'Stránka %{page} je binární typ %{type} a nemůže být editována jako textový soubor.'
   invalid_email:          'e-mail je neplatný'
   invalid_mime_type:      'mime-type je neplatný'
@@ -48,10 +42,6 @@ cs_CZ:
   menu_actions_edit_delete: 'Smazat'
   menu_actions_edit_move: 'Přesunout'
   menu_actions_edit_new:  'Nová stránka'
-  menu_actions_history:   'Historie'
-  menu_actions_history_head: 'Aktuální'
-  menu_actions_history_newer: 'Novější'
-  menu_actions_history_older: 'Starší'
   menu_actions_view:      'Zobrazit'
   move:                   'Přesunout'
   move_page:              'Přesunout stránku %{page}'
@@ -66,7 +56,6 @@ cs_CZ:
   not_found_title:        '404 Not found'
   page_moved:             'Stránka %{page} přesunuta do %{destination}.'
   page_uploaded:          'Stránka %{page} nahrána'
-  parents:                'Rodiče'
   password:               'Heslo'
   passwords_do_not_match: 'Hesla se neshodují'
   path:                   'Cesta'
@@ -105,19 +94,14 @@ de:
   attribute_title:        'Titel'
   attributes:             'Attribute'
   attributes_edited:      'Attribute von %{page} bearbeitet'
-  author:                 'Autor'
   binary_file:            'Binärdatei'
   cancel:                 'Abbrechen'
   change_password:        'Passwort ändern'
-  changes:                'Änderungen'
-  changes_of:             'Änderungen von %{page}'
   changes_saved:          'Änderungen gespeichert'
   comment:                'Kommentar'
-  compare:                'Vergleiche %{name}: %{from} → %{to}'
   confirm_password:       'Bestätige Passwort'
   create_page:            'Neue %{page}'
   create_redirect:        'Weiterleitung'
-  date:                   'Datum'
   delete:                 'Löschen'
   delete_page:            'Lösche %{page}'
   deleted:                'Gelöscht'
@@ -133,7 +117,6 @@ de:
   groups:                 'Gruppen'
   head:                   'Kopf'
   history:                'Historie'
-  history_of:             'Historie von %{page}'
   info_binary:            '%{page} ist eine Datei mit dem Typ %{type} und kann nicht wie eine Textdatei bearbeitet werden.'
   invalid_email:          'E-Mail ist ungültig'
   invalid_mime_type:      'Mime-Typ ist ungültig'
@@ -146,9 +129,6 @@ de:
   menu_actions_edit_delete: 'Löschen'
   menu_actions_edit_move: 'Verschieben'
   menu_actions_edit_new:  'Neue Seite'
-  menu_actions_history:   'Historie'
-  menu_actions_history_newer: 'Neuer'
-  menu_actions_history_older: 'Älter'
   menu_actions_view:      'Ansicht'
   move:                   'Verschieben'
   move_page:              'Verschiebe %{page}'
@@ -163,7 +143,6 @@ de:
   page_edited:            '%{page} bearbeitet'
   page_moved:             '%{page} verschoben nach %{destination}.'
   page_uploaded:          'Seite %{page} hochgeladen'
-  parents:                'Eltern'
   password:               'Passwort'
   passwords_do_not_match: 'Passwörter stimmen nicht überein'
   path:                   'Pfad'
@@ -202,19 +181,14 @@ en:
   attribute_title:        'Title'
   attributes:             'Attributes'
   attributes_edited:      'Attributes of %{page} edited'
-  author:                 'Author'
   binary_file:            'Binary file'
   cancel:                 'Cancel'
   change_password:        'Change password'
-  changes:                'Changes'
-  changes_of:             'Changes of %{page}'
   changes_saved:          'Changes saved'
   comment:                'Comment'
-  compare:                'Compare %{name}: %{from} → %{to}'
   confirm_password:       'Confirm password'
   create_page:            'Create %{page}'
   create_redirect:        'Create redirect'
-  date:                   'Date'
   delete:                 'Delete'
   delete_page:            'Delete %{page}'
   deleted:                'Deleted'
@@ -230,7 +204,6 @@ en:
   groups:                 'Groups'
   head:                   'Head'
   history:                'History'
-  history_of:             'History of %{page}'
   info_binary:            '%{page} is a binary %{type} and cannot be edited like a text file.'
   invalid_email:          'E-Mail is invalid'
   invalid_mime_type:      'Invalid mime type'
@@ -253,7 +226,6 @@ en:
   page_edited:            '%{page} edited'
   page_moved:             '%{page} moved to %{destination}.'
   page_uploaded:          'Page %{page} uploaded'
-  parents:                'Parents'
   password:               'Password'
   passwords_do_not_match: 'Passwords do not match'
   path:                   'Path'
@@ -292,19 +264,14 @@ fr:
   attribute_title:        "Titre"
   attributes:             "Attributs"
   attributes_edited:      "Attributs de %{page} modifiés"
-  author:                 "Auteur"
   binary_file:            "Fichier binaire"
   cancel:                 "Cancel"
   change_password:        "Changer de mot de passe"
-  changes:                "Changement"
-  changes_of:             "Chamgements de %{page}"
   changes_saved:          "Changement enregistrés"
   comment:                "Commentaire"
-  compare:                "Comparer %{name}: %{from} → %{to}"
   confirm_password:       "Confirmer le mot de passe"
   create_page:            "Créer %{page}"
   create_redirect:        "Créer une redirection"
-  date:                   "Date"
   delete:                 "Effacer"
   delete_page:            "Effacer %{page}"
   deleted:                "Supprimé"
@@ -320,7 +287,6 @@ fr:
   groups:                 "Groupes"
   head:                   "Tête"
   history:                "Historique"
-  history_of:             "Historique de %{page}"
   info_binary:            "%{page} est un binaire %{type} et ne peut pas être édité comme un fichier texte."
   invalid_email:          "Courriel invalide"
   invalid_mime_type:      "Type MIME invalide"
@@ -330,7 +296,6 @@ fr:
   login:                  "Connexion"
   logout:                 "Déconnexion"
   menu_actions_edit_new:  "Nouvelle page"
-  menu_actions_history_newer: "Plus récent"
   move:                   "Déplacer"
   move_page:              "Déplacer %{page}"
   name:                   "Nom"
@@ -344,7 +309,6 @@ fr:
   page_edited:            "%{page} éditée"
   page_moved:             "%{page} déplacer vers %{destination}."
   page_uploaded:          "Page %{page} téléversé"
-  parents:                "Parents"
   password:               "Mot de passe"
   passwords_do_not_match: "Les mots de passe ne correspondent pas"
   path:                   "Chemin"

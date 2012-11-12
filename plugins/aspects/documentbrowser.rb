@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Document browser aspect'
 dependencies 'utils/shell'
 
@@ -55,3 +56,24 @@ table
       td= :download.t
       td
         a href=build_path(@page, aspect: 'download') = :download.t
+@@ locale.yml
+cs_CZ:
+  aspect_documentbrowser: 'Document Browser'
+  download: 'Stáhnout'
+  information: 'Informace'
+  type: 'Typ'
+de:
+  aspect_documentbrowser: 'Dokumentenbrowser'
+  download: 'Herunterladen'
+  information: 'Information'
+  type: 'Typ'
+en:
+  aspect_documentbrowser: 'Document Browser'
+  download: 'Download'
+  information: 'Information'
+  type: 'Type'
+fr:
+  aspect_documentbrowser: "Explorateur de fichier"
+  download: "Télécharger"
+  information: "Information"
+  type: "Type"

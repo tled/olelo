@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Download aspect'
 
 Aspect.create(:download) do
@@ -9,3 +10,14 @@ Aspect.create(:download) do
     page.content
   end
 end
+
+__END__
+@@ locale.yml
+cs_CZ:
+  aspect_download: 'Stažení (neupraveno)'
+de:
+  aspect_download: 'Herunterladen'
+en:
+  aspect_download: 'Raw Download'
+fr:
+  aspect_download: "Téléchargement brut"

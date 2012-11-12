@@ -1,0 +1,40 @@
+cs_CZ:
+  author:                 'Autor'
+  date:                   'Datum'
+  parents:                'Rodiče'
+  history_of:             'Historie stránky %{page}'
+  compare:                'Porovnat %{name}: %{from} → %{to}'
+  changes_of:             'Změny stránky %{page}'
+  changes:                'Změny'
+  menu_actions_history:   'Historie'
+  menu_actions_history_head: 'Aktuální'
+  menu_actions_history_newer: 'Novější'
+  menu_actions_history_older: 'Starší'
+de:
+  author:                 'Autor'
+  date:                   'Datum'
+  parents:                'Eltern'
+  history_of:             'Historie von %{page}'
+  compare:                'Vergleiche %{name}: %{from} → %{to}'
+  changes_of:             'Änderungen von %{page}'
+  changes:                'Änderungen'
+  menu_actions_history:   'Historie'
+  menu_actions_history_newer: 'Neuer'
+  menu_actions_history_older: 'Älter'
+en:
+  author:                 'Author'
+  date:                   'Date'
+  parents:                'Parents'
+  history_of:             'History of %{page}'
+  compare:                'Compare %{name}: %{from} → %{to}'
+  changes_of:             'Changes of %{page}'
+  changes:                'Changes'
+fr:
+  author:                 "Auteur"
+  history_of:             "Historique de %{page}"
+  date:                   "Date"
+  parents:                "Parents"
+  compare:                "Comparer %{name}: %{from} → %{to}"
+  changes_of:             "Chamgements de %{page}"
+  changes:                "Changement"
+  menu_actions_history_newer: "Plus récent"

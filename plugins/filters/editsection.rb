@@ -65,3 +65,22 @@ class EditSection < Filters::NestingFilter
 end
 
 Filters::Filter.register :editsection, EditSection
+
+__END__
+@@ locale.yml
+cs_CZ:
+  attribute_no_editsection: 'Zablokovat editaci sekcí'
+  edit_section: 'Edituj sekci "%{section}"'
+  section_edited: 'Sekce "%{section}" editována'
+de:
+  attribute_no_editsection: 'Bearbeiten von Bereichen deaktivieren'
+  edit_section: 'Bearbeite Bereich "%{section}"'
+  section_edited: 'Bereich "%{section}" bearbeitet'
+en:
+  attribute_no_editsection: 'Disable Section Editing'
+  edit_section: 'Edit section "%{section}"'
+  section_edited: 'Section "%{section}" edited'
+fr:
+  attribute_no_editsection: "Désactiver l'édition"
+  edit_section: "Éditer la section \"%{section}\""
+  section_edited: "Section \"%{section}\" éditée"
