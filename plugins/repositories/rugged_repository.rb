@@ -227,6 +227,7 @@ class RuggedRepository < Repository
   end
 
   def delete(path)
+    check_path(path)
     work_tree.delete(path)
     work_tree.delete(path + CONTENT_EXT) if work_tree[path + CONTENT_EXT]
     work_tree.delete(path + ATTRIBUTE_EXT) if work_tree[path + ATTRIBUTE_EXT]
@@ -239,6 +240,7 @@ class RuggedRepository < Repository
   end
 
   def path_etag(path, version)
+    check_path(path)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     if oid = oid_by_path(commit, path)
@@ -258,6 +260,8 @@ class RuggedRepository < Repository
   end
 
   def get_history(path, skip, limit)
+    check_path(path)
+
     commits = []
     walker = Rugged::Walker.new(@git)
     walker.sorting(Rugged::SORT_TOPO)
@@ -276,6 +280,8 @@ class RuggedRepository < Repository
   end
 
   def get_path_version(path, version)
+    check_path(path)
+
     version ||= @git.head.target
     version = version.to_s
 
@@ -313,6 +319,7 @@ class RuggedRepository < Repository
   end
 
   def get_children(path, version)
+    check_path(path)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     object = object_by_path(commit, path)
@@ -322,6 +329,7 @@ class RuggedRepository < Repository
   end
 
   def get_content(path, version)
+    check_path(path)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     object = object_by_path(commit, path)
@@ -330,6 +338,7 @@ class RuggedRepository < Repository
   end
 
   def get_attributes(path, version)
+    check_path(path)
     commit = @git.lookup(version.to_s)
     raise 'Not a commit' unless Rugged::Commit === commit
     path += ATTRIBUTE_EXT
@@ -338,6 +347,7 @@ class RuggedRepository < Repository
   end
 
   def diff(path, from, to)
+    check_path(path)
     commit_from = from && @git.rev_parse(from.to_s)
     commit_to = @git.rev_parse(to.to_s)
     raise 'Not a commit' unless (!commit_from || Rugged::Commit === commit_from) && Rugged::Commit === commit_to

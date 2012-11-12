@@ -40,6 +40,7 @@ class GitrbRepository < Repository
 
   # @override
   def get_history(path, skip, limit)
+    check_path(path)
     @git.log(max_count:  limit, skip: skip,
              path: [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT]).map do |c|
       commit_to_version(c)
@@ -48,6 +49,8 @@ class GitrbRepository < Repository
 
   # @override
   def get_path_version(path, version)
+    check_path(path)
+
     commits = @git.log(max_count:  2, start: version, path: [path, path + ATTRIBUTE_EXT, path + CONTENT_EXT])
 
     succ = nil
@@ -65,12 +68,14 @@ class GitrbRepository < Repository
 
   # @override
   def get_children(path, version)
+    check_path(path)
     object = get_object(path, version)
     object && object.type != :tree ? [] : object.names.reject {|name| reserved_name?(name) }
   end
 
   # @override
   def get_content(path, version)
+    check_path(path)
     tree = get_commit(version).tree
     object = tree[path]
     object = tree[path + CONTENT_EXT] if object && object.type == :tree
@@ -85,6 +90,7 @@ class GitrbRepository < Repository
 
   # @override
   def get_attributes(path, version)
+    check_path(path)
     object = get_object(path + ATTRIBUTE_EXT, version)
     object && object.type == :blob ? YAML.load(object.data) : {}
   end
@@ -129,6 +135,7 @@ class GitrbRepository < Repository
 
   # @override
   def delete(path)
+    check_path(path)
     @git.root.delete(path)
     @git.root.delete(path + CONTENT_EXT)
     @git.root.delete(path + ATTRIBUTE_EXT)
@@ -137,6 +144,7 @@ class GitrbRepository < Repository
 
   # @override
   def diff(path, from, to)
+    check_path(path)
     diff = @git.diff(from: from && from.to_s, to: to.to_s,
                     path: [path, path + CONTENT_EXT, path + ATTRIBUTE_EXT], detect_renames:  true)
     Diff.new(commit_to_version(diff.from), commit_to_version(diff.to), diff.patch)
