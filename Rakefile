@@ -84,10 +84,22 @@ namespace :locale do
 
   desc 'Check locales for missing keys'
   task :check do
+    require File.join(File.dirname(__FILE__), 'lib/olelo/virtualfs')
     require 'yaml'
+    files = {}
+    Dir['**/*.rb'].each do |file|
+      begin
+        files[file] = Olelo::VirtualFS::Embedded.new(file).read('locale.yml')
+      rescue
+      end
+    end
     Dir['**/locale.yml'].each do |file|
+      files[file] = File.read(file)
+    end
+
+    files.each do |file, content|
       puts "Checking #{file}"
-      translations = YAML.load_file(file)
+      translations = YAML.load(content)
       en = translations['en']
       raise 'en locale missing' unless en
       en_keys = en.keys
