@@ -75,7 +75,22 @@ end
 namespace :locale do
   desc 'Sort locale yaml files'
   task :sort do
-    # You need the i18n_yaml_sorter gem
+    require File.join(File.dirname(__FILE__), 'lib/olelo/virtualfs')
+    require 'i18n_yaml_sorter'
+
+    Dir['**/*.rb'].each do |file|
+      begin
+        locale = Olelo::VirtualFS::Embedded.new(file).read('locale.yml')
+      rescue
+        next
+      end
+      puts "Sorting #{file}"
+      result = I18nYamlSorter::Sorter.new(StringIO.new(locale)).sort
+      if result != locale
+        puts "Sorted #{file}:\n#{result}\n"
+      end
+    end
+
     Dir['**/locale.yml'].each do |file|
       puts "Sorting #{file}"
       system("sort_yaml < #{file} > #{file}.sorted && mv #{file}.sorted #{file}")

@@ -1,40 +1,40 @@
 cs_CZ:
   author:                 'Autor'
-  date:                   'Datum'
-  parents:                'Rodiče'
-  history_of:             'Historie stránky %{page}'
-  compare:                'Porovnat %{name}: %{from} → %{to}'
-  changes_of:             'Změny stránky %{page}'
   changes:                'Změny'
+  changes_of:             'Změny stránky %{page}'
+  compare:                'Porovnat %{name}: %{from} → %{to}'
+  date:                   'Datum'
+  history_of:             'Historie stránky %{page}'
   menu_actions_history:   'Historie'
   menu_actions_history_head: 'Aktuální'
   menu_actions_history_newer: 'Novější'
   menu_actions_history_older: 'Starší'
+  parents:                'Rodiče'
 de:
   author:                 'Autor'
-  date:                   'Datum'
-  parents:                'Eltern'
-  history_of:             'Historie von %{page}'
-  compare:                'Vergleiche %{name}: %{from} → %{to}'
-  changes_of:             'Änderungen von %{page}'
   changes:                'Änderungen'
+  changes_of:             'Änderungen von %{page}'
+  compare:                'Vergleiche %{name}: %{from} → %{to}'
+  date:                   'Datum'
+  history_of:             'Historie von %{page}'
   menu_actions_history:   'Historie'
   menu_actions_history_newer: 'Neuer'
   menu_actions_history_older: 'Älter'
+  parents:                'Eltern'
 en:
   author:                 'Author'
-  date:                   'Date'
-  parents:                'Parents'
-  history_of:             'History of %{page}'
-  compare:                'Compare %{name}: %{from} → %{to}'
-  changes_of:             'Changes of %{page}'
   changes:                'Changes'
+  changes_of:             'Changes of %{page}'
+  compare:                'Compare %{name}: %{from} → %{to}'
+  date:                   'Date'
+  history_of:             'History of %{page}'
+  parents:                'Parents'
 fr:
   author:                 "Auteur"
-  history_of:             "Historique de %{page}"
-  date:                   "Date"
-  parents:                "Parents"
-  compare:                "Comparer %{name}: %{from} → %{to}"
-  changes_of:             "Chamgements de %{page}"
   changes:                "Changement"
+  changes_of:             "Chamgements de %{page}"
+  compare:                "Comparer %{name}: %{from} → %{to}"
+  date:                   "Date"
+  history_of:             "Historique de %{page}"
   menu_actions_history_newer: "Plus récent"
+  parents:                "Parents"
