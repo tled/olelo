@@ -37,8 +37,9 @@ class ::Olelo::Application
     per_page = 30
     @page = Page.find!(params[:path])
     @page_nr = [params[:page].to_i, 1].max
-    @history = page.history((@page_nr - 1) * per_page, per_page)
-    @page_count = @page_nr + @history.length / per_page
+    @history = page.history((@page_nr - 1) * per_page, per_page + 1)
+    @page_count = @page_nr + (@history.length > per_page ? 1 : 0)
+    @history = @history[0...per_page]
     cache_control etag: page.etag
     render :history
   end
