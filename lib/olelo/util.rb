@@ -79,7 +79,7 @@ module Olelo
     # @param [String] s String
     # @return [String] Escaped string
     def escape_html(s)
-      CGI.escapeHTML(s.to_s)
+      CGI.escapeHTML(s.to_s).html_safe
     end
 
     # Unescape html entities in string
