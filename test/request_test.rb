@@ -20,7 +20,6 @@ describe 'requests' do
       config_path:       File.join(@app_path, 'config'),
       initializers_path: File.join(@app_path, 'config', 'initializers'),
       views_path:        File.join(@app_path, 'views'),
-      themes_path:       File.join(@app_path, 'static', 'themes'),
       theme:             'atlantis',
       cache_store:       {
         type: 'file',

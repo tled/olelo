@@ -94,7 +94,7 @@ module Olelo
     def etag
       unless new?
         @etag ||= repository.path_etag(path, tree_version)
-        "#{head? ? 1 : 0}-#{@etag}"
+        "#{Olelo::VERSION}-#{head? ? 1 : 0}-#{@etag}"
       end
     end
 

@@ -15,7 +15,6 @@ Olelo::Config.instance['app_path'] = app_path
 Olelo::Config.instance['config_path'] = ::File.join(app_path, 'config')
 Olelo::Config.instance['initializers_path'] = ::File.join(app_path, 'config', 'initializers')
 Olelo::Config.instance['plugins_path'] = ::File.join(app_path, 'plugins')
-Olelo::Config.instance['themes_path'] = ::File.join(app_path, 'static', 'themes')
 Olelo::Config.instance['rack.session_secret'] = SecureRandom.hex
 Olelo::Config.instance.load!(::File.join(app_path, 'config', 'config.yml.default'))
 
