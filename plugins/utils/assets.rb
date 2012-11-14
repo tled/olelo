@@ -40,12 +40,12 @@ class ::Olelo::Application
   get "/_/assets(-:version)/:name", name: '.*' do
     if asset = Application.assets[params[:name]]
       fs, name = asset
+      cache_control last_modified: fs.mtime(name), max_age: :static, must_revalidate: false
       if path = fs.real_path(name)
         file = Rack::File.new(nil)
         file.path = path
         file.serving(env)
       else
-        cache_control last_modified: fs.mtime(name), max_age: :static, must_revalidate: false
         response['Content-Type'] = (MimeMagic.by_path(name) || 'application/octet-stream').to_s
         response['Content-Length'] = fs.size(name).to_s
         fs.read(name)
