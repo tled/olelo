@@ -8,7 +8,6 @@ Encoding.default_external = Encoding::UTF_8
 
 require 'fileutils'
 require 'rack/relative_redirect'
-require 'rack/static_cache'
 require 'olelo'
 require 'securerandom'
 
@@ -81,7 +80,9 @@ if Olelo::Config['rack.deflater']
   use Rack::Deflater
 end
 
-use Rack::StaticCache, urls: ['/static'], root: app_path
+use Olelo::Middleware::StaticCache
+use Rack::Static, urls: ['/static'], root: app_path
+
 use Rack::Session::Cookie, key: 'olelo.session', secret: Olelo::Config['rack.session_secret']
 
 #require 'rack/perftools_profiler'
