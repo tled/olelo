@@ -45,14 +45,14 @@ class ::Olelo::Application
   end
 
   before :action do |method, path|
-    @history_action = path
+    @history_versions_menu = method == :get && (path == '/version/:version(/:path)' || path == '/(:path)')
   end
 
   hook :menu do |menu|
     if menu.name == :actions && page && !page.new?
       history_menu = menu.item(:history, href: build_path(page, action: :history), accesskey: 'h')
 
-      if @history_action == '/version/:version(/:path)' || @history_action == '/(:path)'
+      if @history_versions_menu
         head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
         if page.previous_version || head || page.next_version
           history_menu.item(:older, href: build_path(page, original_params.merge(version: page.previous_version)),
