@@ -48,6 +48,8 @@
             selected = $(this).filter(':first').find("> a[href^='#']");
 	}
 
+	$(this).removeClass('selected');
+
 	// Show initially selected tab
 	if (selected && selected.data('tab')) {
 	    selected.parent().addClass('selected');
