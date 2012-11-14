@@ -7,3 +7,4 @@ doc/api
 coverage
 attic
 test/.test
+Gemfile.lock
