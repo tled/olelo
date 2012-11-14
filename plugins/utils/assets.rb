@@ -31,6 +31,7 @@ class ::Olelo::Application
       cache_control max_age: :static, must_revalidate: false, etag: script.first
       response['Content-Type'] = MimeMagic.by_extension(params[:type]).to_s
       response['Content-Length'] = script.last.bytesize.to_s
+      script.last
     else
       :not_found
     end
