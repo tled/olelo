@@ -6,22 +6,21 @@ module Olelo
 
     def initialize(name)
       @name = name.to_sym
-      @items = []
-      @items_map = {}
+      @items = {}
     end
 
     def each(&block)
-      @items.each(&block)
+      @items.each_value(&block)
     end
 
     def [](name)
       path = path.to_s
       i = path.index('/')
       if i
-        item = @items_map[path[0...i]]
+        item = @items[path[0...i]]
         item[path[i+1..-1]] if item
       else
-        @items_map[name.to_sym]
+        @items[name.to_sym]
       end
     end
 
@@ -31,10 +30,9 @@ module Olelo
 
     def <<(item)
       raise TypeError, "Only items allowed" unless MenuItem === item
-      raise "Item #{item.name} exists already in #{path.join('/')}" if @items_map.include?(item.name)
+      raise "Item #{item.name} exists already in #{path.join('/')}" if @items.include?(item.name)
       item.parent = self
-      @items << item
-      @items_map[item.name] = item
+      @items[item.name] = item
     end
 
     def empty?
@@ -43,23 +41,21 @@ module Olelo
 
     def clear
       @items.clear
-      @items_map.clear
     end
 
     def remove(name)
       path = name.to_s
       i = path.index('/')
       if i
-        item = @items_map[path[0...i]]
+        item = @items[path[0...i]]
         item.remove(path[i+1..-1]) if item
       else
-        item = @items_map.delete(name.to_sym)
-        @items.delete(item) if item
+        @items.delete(name.to_sym)
       end
     end
 
     def build_menu
-      empty? ? '' : %{<ul id="menu-#{html_id}">#{map {|item| item.build_menu }.join}</ul>}
+      empty? ? '' : %{<ul id="menu-#{html_id}">#{map(&:build_menu).join}</ul>}
     end
 
     def to_html
