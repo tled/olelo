@@ -37,10 +37,16 @@ module Olelo
       # @param list List of plugin paths to load
       # @return [Boolean] true if every plugin was loaded
       def load(*list)
-        files = list.map {|path| [File.join(@dir, path, 'main.rb'), File.join(@dir, "#{path}.rb")] }.flatten.select {|file| File.file?(file) }
+        files = []
+        list.each do |path|
+          path = path.sub(%r{/main$}, '')
+          f = [File.join(@dir, path, 'main.rb'), File.join(@dir, "#{path}.rb")].select {|file| File.file?(file) }
+          raise "Duplicate plugin #{f.join(', ')}" if f.size == 2
+          files << [path, f.first] unless f.empty?
+        end
+
         return false if files.empty?
-        files.inject(true) do |result,file|
-          path = File.basename(file) == 'main.rb' ? file[(@dir.size+1)..-9] : file[(@dir.size+1)..-4]
+        files.inject(true) do |result,(path,file)|
           if @loaded.include?(path)
 	    result
 	  elsif @failed.include?(path) || !enabled?(path)
