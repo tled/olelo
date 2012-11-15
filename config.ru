@@ -18,6 +18,8 @@ Olelo::Config.instance['plugins_path'] = ::File.join(app_path, 'plugins')
 Olelo::Config.instance['rack.session_secret'] = SecureRandom.hex
 Olelo::Config.instance.load!(::File.join(app_path, 'config', 'config.yml.default'))
 
+puts 'WARNING: Environment variable $WIKI_CONFIG is deprecated, use $OLELO_CONFIG instead' if ENV['WIKI_CONFIG']
+
 config_file = ENV['OLELO_CONFIG'] || ENV['WIKI_CONFIG']
 unless config_file
   path = ::File.join(app_path, 'config', 'config.yml')
