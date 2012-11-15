@@ -32,46 +32,44 @@ module Olelo
         @loaded[path] = plugin
       end
 
-      # Load plugins by path
+      # Load plugin by path
       #
-      # @param list List of plugin paths to load
+      # @param [String] path Plugin path to load
       # @return [Boolean] true if every plugin was loaded
-      def load(*list)
-        files = []
-        list.each do |path|
-          path = path.sub(%r{/main$}, '')
-          f = [File.join(@dir, path, 'main.rb'), File.join(@dir, "#{path}.rb")].select {|file| File.file?(file) }
-          raise "Duplicate plugin #{f.join(', ')}" if f.size == 2
-          files << [path, f.first] unless f.empty?
+      def load(path)
+        path = path.sub(%r{/main$}, '')
+        files = [File.join(@dir, path, 'main.rb'), File.join(@dir, "#{path}.rb")].select {|file| File.file?(file) }
+        if files.size == 2
+          Olelo.logger.error "Duplicate plugin #{files.join(', ')}"
+          return false
         end
-
         return false if files.empty?
-        files.inject(true) do |result,(path,file)|
-          if @loaded.include?(path)
-	    result
-	  elsif @failed.include?(path) || !enabled?(path)
-	    false
-	  else
-            begin
-	      new(path, file)
-            rescue Exception => ex
-              @failed << path
-              if LoadError === ex
-                Olelo.logger.warn "Plugin #{path} could not be loaded due to: #{ex.message} (Missing gem?)"
-              else
-                Olelo.logger.error "Plugin #{path} could not be loaded due to: #{ex.message}"
-                Olelo.logger.debug ex
-              end
-              @loaded.delete(path)
-              false
+
+        if @loaded.include?(path)
+          true
+        elsif @failed.include?(path) || !enabled?(path)
+          false
+        else
+          begin
+            new(path, files.first)
+            true
+          rescue Exception => ex
+            @failed << path
+            if LoadError === ex
+              Olelo.logger.warn "Plugin #{path} could not be loaded due to: #{ex.message} (Missing gem?)"
+            else
+              Olelo.logger.error "Plugin #{path} could not be loaded due to: #{ex.message}"
+              Olelo.logger.debug ex
             end
+            @loaded.delete(path)
+            false
 	  end
         end
       end
 
       # Load all plugins
       def load_all
-        load(*Dir[File.join(@dir, '**', '*.rb')].map {|file| file[(@dir.size+1)..-4] })
+        Dir[File.join(@dir, '**', '*.rb')].inject(true) {|result,file| load(file[(@dir.size+1)..-4]) && result }
       end
 
       # Check if plugin is enabled
