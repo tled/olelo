@@ -58,7 +58,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   attribute_acl_create: 'Vytvářet podstránky'
   attribute_acl_delete: 'Mazat podstránky'
   attribute_acl_write:  'Právo zápisu'

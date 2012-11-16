@@ -1,4 +1,4 @@
-cs_CZ:
+cs:
   user_already_exists:    'Uživatel %{name} již existuje'
   wrong_password:         'Chybné heslo'
   wrong_user_or_pw:       'Chybné jméno uživatele nebo heslo'

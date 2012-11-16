@@ -11,7 +11,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_text: 'Stažení textu'
 de:
   aspect_text: 'Quellcode herunterladen'

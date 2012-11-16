@@ -25,7 +25,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   login_first:          'Musíte se nejprve přihlásit'
 de:
   login_first:          'Sie müssen sich zuerst anmelden'

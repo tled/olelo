@@ -46,7 +46,7 @@ table#subpages
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   actions:         'Akce'
   aspect_subpages: 'Podstránky'
   history:         'Historie'

@@ -54,7 +54,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   changes: 'Změny'
   preview: 'Náhled'
 de:

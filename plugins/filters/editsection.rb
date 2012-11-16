@@ -68,7 +68,7 @@ Filters::Filter.register :editsection, EditSection
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   attribute_no_editsection: 'Zablokovat editaci sekcí'
   edit_section: 'Edituj sekci "%{section}"'
   section_edited: 'Sekce "%{section}" editována'

@@ -9,7 +9,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_highlight: 'Zvýrazněný zdroj'
 de:
   aspect_highlight: 'Quellcode mit Syntaxhighlighting'

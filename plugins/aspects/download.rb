@@ -13,7 +13,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_download: 'Stažení (neupraveno)'
 de:
   aspect_download: 'Herunterladen'

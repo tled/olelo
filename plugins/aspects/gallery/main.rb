@@ -33,7 +33,7 @@ table.gallery
             img src=thumb_path alt=''
           a.title href=info_path = description
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_gallery: 'Galerie'
 de:
   aspect_gallery: 'Bildergalerie'

@@ -62,7 +62,7 @@ table
           td= key
           td= value
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_imageinfo: 'Informace o obrázku'
   entry: 'Položka'
   exif: 'Informace EXIF'

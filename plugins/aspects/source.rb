@@ -8,7 +8,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_source: 'Zdroj stránky'
 de:
   aspect_source: 'Quellcode'

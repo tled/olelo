@@ -52,7 +52,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   attribute_toc: 'Vytvořit obsah'
 de:
   attribute_toc: 'Inhaltsverzeichnis erzeugen'

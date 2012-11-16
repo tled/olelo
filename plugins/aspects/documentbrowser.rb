@@ -57,7 +57,7 @@ table
       td
         a href=build_path(@page, aspect: 'download') = :download.t
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_documentbrowser: 'Document Browser'
   download: 'Stáhnout'
   information: 'Informace'

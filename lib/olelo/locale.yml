@@ -1,4 +1,4 @@
-cs_CZ:
+cs:
   access_denied:          'Přístup odepřen'
   already_exists:         'Stránka %{page} již existuje'
   attribute_mime:         'Mime-Type'

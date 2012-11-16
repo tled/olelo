@@ -43,7 +43,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_image: 'Stažení'
 de:
   aspect_image: 'Bild'

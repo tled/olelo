@@ -202,7 +202,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   aspect_not_available: 'Vzhled %{aspect} není k dispozici pro stránku %{page} s typem %{type}.'
   attribute_aspect: 'Přednastavený vzhled'
 de:

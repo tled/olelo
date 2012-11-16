@@ -33,7 +33,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   persistent_login:     'Trvalé přihlášení'
 de:
   persistent_login:     'Dauerhaft anmelden'

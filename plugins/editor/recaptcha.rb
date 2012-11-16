@@ -61,7 +61,7 @@ end
 
 __END__
 @@ locale.yml
-cs_CZ:
+cs:
   captcha_invalid: 'Neplatný captcha kód'
   captcha_valid: 'Platný captcha kód'
   enter_captcha: 'Vložte laskavě captcha kód.'
