@@ -1,5 +1,5 @@
 description 'History menu'
-dependencies 'utils/assets'
+dependencies 'utils/assets', 'utils/cache'
 export_scripts '*.js'
 
 class ::Olelo::Application
