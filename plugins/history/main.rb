@@ -3,7 +3,7 @@ dependencies 'utils/assets'
 export_scripts '*.js'
 
 class ::Olelo::Application
-  get '/compare/:versions(/:path)', versions: '(?:\w+)\.{2,3}(?:\w+)' do
+  get '/compare/:versions(/(:path))', versions: '(?:\w+)\.{2,3}(?:\w+)' do
     @page = Page.find!(params[:path])
     versions = params[:versions].split(/\.{2,3}/)
     begin
@@ -15,12 +15,12 @@ class ::Olelo::Application
     render :compare
   end
 
-  get '/compare(/:path)' do
+  get '/compare(/(:path))' do
     versions = params[:versions] || []
     redirect build_path(params[:path], action: versions.size < 2 ? :history : "compare/#{versions.first}...#{versions.last}")
   end
 
-  get '/changes/:version(/:path)' do
+  get '/changes/:version(/(:path))' do
     @page = Page.find!(params[:path])
     begin
       @diff = page.diff(nil, params[:version])
@@ -33,7 +33,7 @@ class ::Olelo::Application
     render :changes
   end
 
-  get '/history(/:path)' do
+  get '/history(/(:path))' do
     per_page = 30
     @page = Page.find!(params[:path])
     @page_nr = [params[:page].to_i, 1].max
@@ -45,7 +45,7 @@ class ::Olelo::Application
   end
 
   before :action do |method, path|
-    @history_versions_menu = method == :get && (path == '/version/:version(/:path)' || path == '/(:path)')
+    @history_versions_menu = method == :get && (path == '/version/:version(/(:path))' || path == '/(:path)')
   end
 
   hook :menu do |menu|

@@ -149,13 +149,13 @@ module Olelo
       end
     end
 
-    get '/edit(/:path)' do
+    get '/edit(/(:path))' do
       @page = Page.find!(params[:path])
       flash.info!(:info_binary.t(page: page.title, type: "#{page.mime.comment} (#{page.mime})")) unless page.editable?
       render :edit
     end
 
-    get '/new(/:path)' do
+    get '/new(/(:path))' do
       @page = Page.new(params[:path])
       flash.error! :reserved_path.t if self.class.reserved_path?(page.path)
       params[:path] = !page.root? && Page.find(page.path) ? page.path + '/' : page.path
@@ -222,7 +222,7 @@ module Olelo
       end
     end
 
-    get '/version/:version(/:path)' do
+    get '/version/:version(/(:path))' do
       @page = Page.find!(params[:path], params[:version])
       cache_control etag: page.etag
       show_page
