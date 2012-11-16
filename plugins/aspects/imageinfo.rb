@@ -45,10 +45,10 @@ table
         td.version= @page.version
       tr
         td= :author.t
-        td= truncate(@page.version.author.name, 30)
+        td= @page.version.author.name
       tr
         td= :comment.t
-        td= truncate(@page.version.comment, 30)
+        td= @page.version.comment
 - unless @exif.empty?
   h3= :exif.t
   table
