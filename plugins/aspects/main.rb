@@ -187,15 +187,30 @@ class ::Olelo::Application
 
   hook :menu do |menu|
     if menu.name == :actions && view_menu = menu[:view]
-      aspects = Aspect.find_all(page).select {|a| !a.hidden? || a.name == @selected_aspect || a.name == page.attributes['aspect'] }.map do |a|
-        [Locale.translate("aspect_#{a.name}", fallback: titlecase(a.name)), a]
-      end.sort_by(&:first)
-      aspects.select {|label, a| a.layout? }.each do |label, a|
-        view_menu << MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: a.name == @selected_aspect ? 'selected' : nil)
+      view_menu.append(Cache.cache("aspect-menu-#{page.path}-#{page.etag}-#{@selected_aspect}", update: no_cache?, defer: true) do
+        aspects = Aspect.find_all(page).select {|a| !a.hidden? || a.name == @selected_aspect || a.name == page.attributes['aspect'] }.map do |a|
+          [Locale.translate("aspect_#{a.name}", fallback: titlecase(a.name)), a]
+        end.sort_by(&:first)
+        aspects.select {|label, a| a.layout? }.map do |label, a|
+          MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: a.name == @selected_aspect ? 'selected' : nil)
+        end +
+        aspects.reject {|label, a| a.layout? }.map do |label, a|
+          MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: 'download')
+        end
+      end)
+    end
+  end
+
+  redefine_method :footer do |content = nil, &block|
+    # FIXME: Use block instead of block_given?, block_given? returns always false. Is this a ruby issue?
+    if block || content
+      super(content, &block)
+    elsif page
+      Cache.cache("footer-#{page.path}-#{page.etag}", update: no_cache?) do |cache|
+        super()
       end
-      aspects.reject {|label, a| a.layout? }.each do |label, a|
-        view_menu << MenuItem.new(a.name, label: label, href: build_path(page, aspect: a.name), class: 'download')
-      end
+    else
+      super()
     end
   end
 end

@@ -53,14 +53,18 @@ class ::Olelo::Application
       history_menu = menu.item(:history, href: build_path(page, action: :history), accesskey: 'h')
 
       if @history_versions_menu
-        head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
-        if page.previous_version || head || page.next_version
-          history_menu.item(:older, href: build_path(page, original_params.merge(version: page.previous_version)),
-                            accesskey: 'o') if page.previous_version
-          history_menu.item(:head, href: build_path(page.path, original_params), accesskey: 'c') if head
-          history_menu.item(:newer, href: build_path(page, original_params.merge(version: page.next_version)),
-                            accesskey: 'n') if page.next_version
-        end
+        history_menu.append(Cache.cache("history-menu-#{page.path}-#{page.etag}", update: no_cache?, defer: true) do
+          head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
+          items = []
+          if page.previous_version || head || page.next_version
+            items << MenuItem.new(:older, href: build_path(page, original_params.merge(version: page.previous_version)),
+                                  accesskey: 'o') if page.previous_version
+            items << MenuItem.new(:head, href: build_path(page.path, original_params), accesskey: 'c') if head
+            items << MenuItem.new(:newer, href: build_path(page, original_params.merge(version: page.next_version)),
+                                  accesskey: 'n') if page.next_version
+          end
+          items
+        end)
       end
     end
   end

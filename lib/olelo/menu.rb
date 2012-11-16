@@ -28,6 +28,10 @@ module Olelo
       self << MenuItem.new(name, options)
     end
 
+    def append(items)
+      items.each {|item| self << item }
+    end
+
     def <<(item)
       raise TypeError, "Only items allowed" unless MenuItem === item
       raise "Item #{item.name} exists already in #{path.join('/')}" if @items.include?(item.name)
