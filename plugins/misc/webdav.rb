@@ -18,28 +18,30 @@ class ::Olelo::Application
     :bad_request
   end
 
-  put '/(:path)', tail: true do
-    if request.form_data?
-      :not_implemented
-    else
-      webdav_post
+  get '/webdav(/(:path))' do
+    begin
+      page = Page.find!(params[:path])
+      cache_control etag: page.etag
+      response['Content-Type'] = page.mime.to_s
+      page.content
+    rescue NotFound => ex
+      Olelo.logger.error ex
+      :not_found
+    rescue Exception => ex
+      Olelo.logger.error ex
+      :bad_request
     end
   end
 
-  post '/(:path)', tail: true do
-    if request.form_data?
-      super()
-    else
-      webdav_post
-    end
-  end
+  put('/webdav(/(:path))') { webdav_post }
+  post('/webdav(/(:path))') { webdav_post }
 
   # TODO: Implement more methods if needed
-  add_route('PROPFIND', '/(:path)', tail: true)  { :not_found }
-  add_route('PROPPATCH', '/(:path)', tail: true) { :not_implemented }
-  add_route('MKCOL', '/(:path)', tail: true)     { :not_implemented }
-  add_route('COPY', '/(:path)', tail: true)      { :not_implemented }
-  add_route('MOVE', '/(:path)', tail: true)      { :not_implemented }
-  add_route('LOCK', '/(:path)', tail: true)      { :not_implemented }
-  add_route('UNLOCK', '/(:path)', tail: true)    { :not_implemented }
+  add_route('PROPFIND', '/webdav(/(:path))')  { :not_found }
+  add_route('PROPPATCH', '/webdav(/(:path))') { :not_implemented }
+  add_route('MKCOL', '/webdav(/(:path))')     { :not_implemented }
+  add_route('COPY', '/webdav(/(:path))')      { :not_implemented }
+  add_route('MOVE', '/webdav(/(:path))')      { :not_implemented }
+  add_route('LOCK', '/webdav(/(:path))')      { :not_implemented }
+  add_route('UNLOCK', '/webdav(/(:path))')    { :not_implemented }
 end
