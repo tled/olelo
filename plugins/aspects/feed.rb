@@ -14,8 +14,7 @@ Aspect.create(:feed, cacheable: true, hidden: true) do
     history = page.history((page_nr - 1) * per_page, per_page)
 
     feed = {
-      atom_link: url + build_path(page, aspect: 'feed', format: 'atom'),
-      rss_link: url + build_path(page, aspect: 'feed', format: 'rss'),
+      self_link: url + build_path(page, {aspect: 'feed', format: format}.reject{ |k,v| v.blank? }),
       generator: 'Ōlelo',
       title: Config['title'],
       link: url + '/' + page.path,
@@ -58,7 +57,7 @@ feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1
   generator = feed[:generator]
   id = feed[:link]
   link href=feed[:link] /
-  link href=feed[:atom_link] rel="self" type="application/atom+xml"/
+  link href=feed[:self_link] rel="self" type="application/atom+xml"/
   subtitle = feed[:description]
   title = feed[:title]
   updated = feed[:date].iso8601()
@@ -78,7 +77,7 @@ rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl
     link = feed[:link]
     description = feed[:description]
     pubDate = feed[:date].rfc822()
-    atom:link href=feed[:rss_link] rel="self" type="application/rss+xml"/
+    atom:link href=feed[:self_link] rel="self" type="application/rss+xml"/
     - feed[:items].each do |item|
       item
         title = item[:title]
