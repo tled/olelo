@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Searching via git-grep'
 
 class ::Olelo::Application
@@ -60,7 +61,7 @@ __END__
 @@ git_grep.slim
 - title :search_results.t(pattern: params[:pattern])
 h1= title
-p= :match.t(count: @matches.length)
+p= @matches.length == 1 ? :match.t : :match_plural.t(count: @matches.length)
 .search
   - @matches.each do |path, content|
     .match

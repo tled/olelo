@@ -101,20 +101,21 @@ namespace :locale do
   task :check do
     require File.join(File.dirname(__FILE__), 'lib/olelo/virtualfs')
     require 'yaml'
-    files = {}
+    require 'set'
+
+    locales = {}
     Dir['**/*.rb'].each do |file|
       begin
-        files[file] = Olelo::VirtualFS::Embedded.new(file).read('locale.yml')
+        locales[file] = YAML.load(Olelo::VirtualFS::Embedded.new(file).read('locale.yml'))
       rescue
       end
     end
     Dir['**/locale.yml'].each do |file|
-      files[file] = File.read(file)
+      locales[file] = YAML.load_file(file)
     end
 
-    files.each do |file, content|
+    locales.each do |file, translations|
       puts "Checking #{file}"
-      translations = YAML.load(content)
       en = translations['en']
       raise 'en locale missing' unless en
       en_keys = en.keys
@@ -129,6 +130,38 @@ namespace :locale do
           end
         end
       end
+    end
+
+    locale_defined = {}
+    locales.each do |file,translations|
+      translations.each do |locale, hash|
+        hash.keys.each do |key|
+          (locale_defined[key] ||= Set.new) << file
+        end
+      end
+    end
+
+    locale_used = {}
+    Dir['**/*.rb', '**/*.slim'].each do |file|
+      File.read(file).scan(/:(\w+)\.t[^\w]/) do
+        (locale_used[$1] ||= Set.new) << file
+      end
+    end
+
+    locale_defined.each do |key,files|
+      unless locale_used[key]
+        puts "#{key} defined in #{files.to_a.join(', ')} is unused"
+      end
+    end
+
+    locale_used.each do |key, files|
+      unless locale_defined[key]
+        puts "#{key} used in #{files.to_a.join(', ')} is undefined"
+      end
+    end
+
+    (locale_defined.keys + locale_used.keys).sort.uniq.each do |key|
+      puts "#{key} - defined in #{locale_defined[key].to_a.join(', ')} - used in #{locale_used[key].to_a.join(', ')}"
     end
   end
 end
