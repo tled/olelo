@@ -160,8 +160,11 @@ namespace :locale do
       end
     end
 
-    (locale_defined.keys + locale_used.keys).sort.uniq.each do |key|
-      puts "#{key} - defined in #{locale_defined[key].to_a.join(', ')} - used in #{locale_used[key].to_a.join(', ')}"
+    (locale_defined.keys & locale_used.keys).sort.each do |key|
+      if locale_defined[key] != locale_used[key] &&
+          !(locale_defined[key].all? {|file| file =~ %r{^lib} } && locale_used[key].any? {|file| file =~ %r{^lib} })
+        puts "#{key} - defined in #{locale_defined[key].to_a.join(', ')} - used in #{locale_used[key].to_a.join(', ')}"
+      end
     end
   end
 end

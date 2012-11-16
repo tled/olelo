@@ -1,0 +1,20 @@
+cs_CZ:
+  author:          'Autor'
+  last_modified:   'Poslední modifikace'
+  name:            'Jméno'
+  version:         'Verze'
+de:
+  author:          'Autor'
+  last_modified:   'Letzte Änderung'
+  name:            'Name'
+  version:         'Version'
+en:
+  author:          'Author'
+  last_modified:   'Last modified'
+  name:            'Name'
+  version:         'Version'
+fr:
+  author:          "Auteur"
+  last_modified:   "Dernière modification"
+  name:            "Nom"
+  version:         "Version"

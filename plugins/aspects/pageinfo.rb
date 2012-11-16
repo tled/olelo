@@ -16,10 +16,10 @@ table
       td= :name.t
       td= @page.name
     tr
-      td= :title.t
+      td= :attribute_title.t
       td= @page.title
     tr
-      td= :description.t
+      td= :attribute_description.t
       td= @page.attributes['description']
     - if @page.version
       tr
@@ -28,6 +28,12 @@ table
       tr
         td= :version.t
         td.version = @page.version
+      tr
+        td= :author.t
+        td= truncate(@page.version.author.name, 30)
+      tr
+        td= :comment.t
+        td= truncate(@page.version.comment, 30)
     tr
       td= :type.t
       td= @page.mime.comment.blank? ? @page.mime : "#{@page.mime.comment} (#{@page.mime})"

@@ -37,10 +37,10 @@ table
       td= :name.t
       td= @page.name
     tr
-      td= :title.t
+      td= :attribute_title.t
       td= @page.title
     tr
-      td= :description.t
+      td= :attribute_description.t
       td= @page.attributes['description']
     - if @page.version
       tr

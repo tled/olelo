@@ -37,8 +37,9 @@ module Olelo
     def init_plugins
       # Load locale provided by plugin
       Plugin.after(:load) do
-        locale = virtual_fs.read('locale.yml') rescue nil
-        Locale.add(YAML.load(locale)) if locale
+        virtual_fs.glob('locale.yml') do |fs, name|
+          Locale.add(YAML.load(fs.read(name)))
+        end
       end
 
       # Configure plugin system

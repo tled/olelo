@@ -1,6 +1,5 @@
 cs_CZ:
   access_denied:          'Přístup odepřen'
-  actions:                'Akce'
   already_exists:         'Stránka %{page} již existuje'
   attribute_mime:         'Mime-Type'
   attribute_no_title:     'Skrýt titulek'
@@ -17,7 +16,7 @@ cs_CZ:
   delete:                 'Smazat'
   delete_page:            'Smazat stránku %{page}'
   deleted:                'Smazáno'
-  description:            'Popis'
+  attribute_description:  'Popis'
   destination:            'Cíl'
   edit:                   'Editovat'
   edit_page:              'Editace stránky %{page}'
@@ -27,13 +26,11 @@ cs_CZ:
   error_occurred:         'Ouvej! Vyskytla se chyba.'
   file:                   'Soubor'
   groups:                 'Skupiny'
-  history:                'Historie'
   info_binary:            'Stránka %{page} je binární typ %{type} a nemůže být editována jako textový soubor.'
   invalid_email:          'e-mail je neplatný'
   invalid_mime_type:      'mime-type je neplatný'
   invalid_name:           'Jméno je neplatné'
   invalid_path:           'Neplatná cesta'
-  last_modified:          'Poslední modifikace'
   login:                  'Přihlášení'
   logout:                 'Odhlášení'
   menu_actions_edit:      'Editovat'
@@ -43,7 +40,6 @@ cs_CZ:
   menu_actions_view:      'Zobrazit'
   move:                   'Přesunout'
   move_page:              'Přesunout stránku %{page}'
-  name:                   'Jméno'
   new_page:               'Nová stránka'
   no_changes:             'Žádné změny'
   not_found_text:         'Pardon, stránka, kterou hledáte, nebyla nalezena.'
@@ -68,21 +64,15 @@ cs_CZ:
   settings:               'Nastavení'
   signup:                 'Registrovat se'
   summary:                'Souhrn'
-  title:                  'Titulek'
   type_select:            'Vybrat hodnotu'
   type_stringlist:        'Řetězce oddělené čárkou'
   upload:                 'Nahrát'
   upload_file:            'Nahrát soubor'
   user:                   'Uživatel'
-  user_already_exists:    'Uživatel %{name} již existuje'
-  version:                'Verze'
   version_by:             'Verze %{version} od %{author}, %{date}'
   version_conflict:       'Detekován konflikt verzí'
-  wrong_password:         'Chybné heslo'
-  wrong_user_or_pw:       'Chybné jméno uživatele nebo heslo'
 de:
   access_denied:          'Zugriff verweigert'
-  actions:                'Aktionen'
   already_exists:         '%{page} existiert bereits'
   attribute_mime:         'Mime-Typ'
   attribute_no_title:     'Titel deaktivieren'
@@ -99,7 +89,7 @@ de:
   delete:                 'Löschen'
   delete_page:            'Lösche %{page}'
   deleted:                'Gelöscht'
-  description:            'Beschreibung'
+  attribute_description:  'Beschreibung'
   destination:            'Ziel'
   edit:                   'Bearbeiten'
   edit_page:              'Bearbeite %{page}'
@@ -109,13 +99,11 @@ de:
   error_occurred:         'Hoppla! Es ist ein Fehler aufgetreten.'
   file:                   'Datei'
   groups:                 'Gruppen'
-  history:                'Historie'
   info_binary:            '%{page} ist eine Datei mit dem Typ %{type} und kann nicht wie eine Textdatei bearbeitet werden.'
   invalid_email:          'E-Mail ist ungültig'
   invalid_mime_type:      'Mime-Typ ist ungültig'
   invalid_name:           'Name ist ungültig'
   invalid_path:           'Ungültiger Pfad'
-  last_modified:          'Letzte Änderung'
   login:                  'Anmelden'
   logout:                 'Abmelden'
   menu_actions_edit:      'Bearbeiten'
@@ -125,7 +113,6 @@ de:
   menu_actions_view:      'Ansicht'
   move:                   'Verschieben'
   move_page:              'Verschiebe %{page}'
-  name:                   'Name'
   new_page:               'Neue Seite'
   no_changes:             'Keine Änderungen'
   not_found_text:         'Die Seite wurde leider nicht gefunden.'
@@ -150,21 +137,15 @@ de:
   settings:               'Einstellungen'
   signup:                 'Konto anlegen'
   summary:                'Zusammenfassung'
-  title:                  'Titel'
   type_select:            'Wert auswählen'
   type_stringlist:        'Durch Komma getrennte Strings'
   upload:                 'Hochladen'
   upload_file:            'Datei hochladen'
   user:                   'Benutzer'
-  user_already_exists:    'Benutzer %{name} existiert bereits'
-  version:                'Version'
   version_by:             'Version %{version} von %{author}, %{date}'
   version_conflict:       'Versionskonflikt aufgetreten'
-  wrong_password:         'Falsches Passwort'
-  wrong_user_or_pw:       'Falscher Benutzername oder falsches Passwort'
 en:
   access_denied:          'Access denied'
-  actions:                'Actions'
   already_exists:         '%{page} exists already'
   attribute_mime:         'Mime-Type'
   attribute_no_title:     'Disable title'
@@ -181,7 +162,7 @@ en:
   delete:                 'Delete'
   delete_page:            'Delete %{page}'
   deleted:                'Deleted'
-  description:            'Description'
+  attribute_description:  'Description'
   destination:            'Destination'
   edit:                   'Edit'
   edit_page:              'Editing %{page}'
@@ -191,19 +172,16 @@ en:
   error_occurred:         'Oh snap! An error occurred.'
   file:                   'File'
   groups:                 'Groups'
-  history:                'History'
   info_binary:            '%{page} is a binary %{type} and cannot be edited like a text file.'
   invalid_email:          'E-Mail is invalid'
   invalid_mime_type:      'Invalid mime type'
   invalid_name:           'Name is invalid'
   invalid_path:           'Invalid path'
-  last_modified:          'Last modified'
   login:                  'Login'
   logout:                 'Logout'
   menu_actions_edit_new:  'New Page'
   move:                   'Move'
   move_page:              'Move %{page}'
-  name:                   'Name'
   new_page:               'New Page'
   no_changes:             'No changes'
   not_found_text:         'Sorry, the page you were looking for was not found.'
@@ -228,21 +206,15 @@ en:
   settings:               'Settings'
   signup:                 'Sign up'
   summary:                'Summary'
-  title:                  'Title'
   type_select:            'Select value'
   type_stringlist:        'Comma-separated strings'
   upload:                 'Upload'
   upload_file:            'Upload file'
   user:                   'User'
-  user_already_exists:    'User %{name} already exists'
-  version:                'Version'
   version_by:             'Version %{version} by %{author}, %{date}'
   version_conflict:       'Version conflict detected'
-  wrong_password:         'Wrong password'
-  wrong_user_or_pw:       'Wrong username or password'
 fr:
   access_denied:          "Accès refusé"
-  actions:                "Actions"
   already_exists:         "%{page} existe déjà"
   attribute_mime:         "Type MIME"
   attribute_no_title:     "Désactiver le titre"
@@ -259,7 +231,7 @@ fr:
   delete:                 "Effacer"
   delete_page:            "Effacer %{page}"
   deleted:                "Supprimé"
-  description:            "Description"
+  attribute_description:  "Description"
   destination:            "Destination"
   edit:                   "Éditer"
   edit_page:              "Modifier %{page}"
@@ -269,19 +241,16 @@ fr:
   error_occurred:         "Oops ! Une erreur est survenue."
   file:                   "Fichier"
   groups:                 "Groupes"
-  history:                "Historique"
   info_binary:            "%{page} est un binaire %{type} et ne peut pas être édité comme un fichier texte."
   invalid_email:          "Courriel invalide"
   invalid_mime_type:      "Type MIME invalide"
   invalid_name:           "Nom invalide"
   invalid_path:           "Chemin invalide"
-  last_modified:          "Dernière modification"
   login:                  "Connexion"
   logout:                 "Déconnexion"
   menu_actions_edit_new:  "Nouvelle page"
   move:                   "Déplacer"
   move_page:              "Déplacer %{page}"
-  name:                   "Nom"
   new_page:               "Nouvelle page"
   no_changes:             "Aucun changement"
   not_found_text:         "Désolé, la page que vous recherchez n'a pas été trouvée."
@@ -306,15 +275,10 @@ fr:
   settings:               "Paramètres"
   signup:                 "S'enregistrer"
   summary:                "Sommaire"
-  title:                  "Titre"
   type_select:            "Sélectionnez une valeur"
   type_stringlist:        "Chaînes séparées par des virgules"
   upload:                 "Téléverser"
   upload_file:            "Téléverser un fichier"
   user:                   "Utilisateur"
-  user_already_exists:    "L'utilisateur %{name} existe déjà"
-  version:                "Version"
   version_by:             'Version %{version} par %{author}, %{date}'
   version_conflict:       "Conflit de version détecté"
-  wrong_password:         "Mot de passe incorect"
-  wrong_user_or_pw:       "Nom d'utilisateur ou mot de passe incorect"

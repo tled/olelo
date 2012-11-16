@@ -44,10 +44,10 @@ end
 __END__
 @@ locale.yml
 cs_CZ:
-  aspect_image: 'Stažení obrázku'
+  aspect_image: 'Stažení'
 de:
   aspect_image: 'Bild'
 en:
-  aspect_image: 'Raw Image'
+  aspect_image: 'Image'
 fr:
-  aspect_image: "Image brute"
+  aspect_image: "Image"

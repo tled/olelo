@@ -20,7 +20,7 @@ table#subpages
   thead
     tr
       th= :name.t
-      th= :description.t
+      th= :attribute_description.t
       th= :last_modified.t
       th= :author.t
       th= :comment.t
@@ -47,14 +47,18 @@ table#subpages
 __END__
 @@ locale.yml
 cs_CZ:
+  actions:         'Akce'
   aspect_subpages: 'Podstránky'
-  author:          'Autor'
+  history:         'Historie'
 de:
+  actions:         'Aktionen'
   aspect_subpages: 'Unterseiten'
-  author:          'Autor'
+  history:         'Historie'
 en:
+  actions:         'Actions'
   aspect_subpages: 'Subpages'
-  author:          'Author'
+  history:         'History'
 fr:
+  actions:         "Actions"
   aspect_subpages: "Sous-pages"
-  author:          "Auteur"
+  history:         "Historique"

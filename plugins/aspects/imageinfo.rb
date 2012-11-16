@@ -25,10 +25,10 @@ table
       td= :name.t
       td= @page.name
     tr
-      td= :title.t
+      td= :attribute_title.t
       td= @page.title
     tr
-      td= :description.t
+      td= :attribute_description.t
       td= @page.attributes['description']
     tr
       td= :type.t
@@ -43,6 +43,12 @@ table
       tr
         td= :version.t
         td.version= @page.version
+      tr
+        td= :author.t
+        td= truncate(@page.version.author.name, 30)
+      tr
+        td= :comment.t
+        td= truncate(@page.version.comment, 30)
 - unless @exif.empty?
   h3= :exif.t
   table

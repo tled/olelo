@@ -1,0 +1,16 @@
+cs_CZ:
+  user_already_exists:    'Uživatel %{name} již existuje'
+  wrong_password:         'Chybné heslo'
+  wrong_user_or_pw:       'Chybné jméno uživatele nebo heslo'
+de:
+  user_already_exists:    'Benutzer %{name} existiert bereits'
+  wrong_password:         'Falsches Passwort'
+  wrong_user_or_pw:       'Falscher Benutzername oder falsches Passwort'
+en:
+  user_already_exists:    'User %{name} already exists'
+  wrong_password:         'Wrong password'
+  wrong_user_or_pw:       'Wrong username or password'
+fr:
+  user_already_exists:    "L'utilisateur %{name} existe déjà"
+  wrong_password:         "Mot de passe incorect"
+  wrong_user_or_pw:       "Nom d'utilisateur ou mot de passe incorect"

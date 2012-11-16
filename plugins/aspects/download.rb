@@ -18,6 +18,6 @@ cs_CZ:
 de:
   aspect_download: 'Herunterladen'
 en:
-  aspect_download: 'Raw Download'
+  aspect_download: 'Download'
 fr:
-  aspect_download: "Téléchargement brut"
+  aspect_download: "Téléchargement"
