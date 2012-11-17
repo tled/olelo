@@ -11,19 +11,7 @@ class ::Olelo::Application
   attr_reader? :disable_assets
 
   hook :head, 2 do
-    return if disable_assets?
-    js = Application.scripts['js']
-    css = Application.scripts['css']
-    result = ''
-    if css
-      path = build_path "_/assets-#{css.first}/assets.css"
-      result << %{<link rel="stylesheet" href="#{escape_html path}" type="text/css"/>}
-    end
-    if js
-      path = build_path "_/assets-#{js.first}/assets.js"
-      result << %{<script src="#{escape_html path}" type="text/javascript"></script>}
-    end
-    result
+    render_partial(:assets, locals: {scripts: Application.scripts}) unless disable_assets?
   end
 
   get "/_/assets(-:version)/assets.:type", type: 'js|css' do
@@ -72,3 +60,10 @@ class ::Olelo::Plugin
     end
   end
 end
+
+__END__
+@@ assets.slim
+- if scripts['css']
+  link rel="stylesheet" type="text/css" href=build_path("_/assets-#{scripts['css'].first}/assets.css")
+- if scripts['js']
+  script type="text/javascript" src=build_path("_/assets-#{scripts['js'].first}/assets.js")

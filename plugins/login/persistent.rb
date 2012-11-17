@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description  'Persistent login'
 
 class ::Olelo::Application
@@ -14,11 +15,6 @@ class ::Olelo::Application
     end
   end
 
-  before :login_buttons do
-    %{<input type="checkbox" name="persistent" id="persistent" value="1"/>
-<label for="persistent">#{escape_html :persistent_login.t}</label><br/>}
-  end
-
   after :action do |method, path|
     if path == '/login'
       if User.logged_in? && params[:persistent]
@@ -29,9 +25,15 @@ class ::Olelo::Application
       response.delete_cookie(TOKEN_NAME)
     end
   end
+
+  before(:login_buttons) { render_partial :persistent_login }
 end
 
 __END__
+@@ persistent_login.slim
+&checkbox#persistent name="persistent" value="1"
+label for="persistent" = :persistent_login.t
+br
 @@ locale.yml
 cs:
   persistent_login:     'Trvalé přihlášení'
