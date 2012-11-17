@@ -85,13 +85,14 @@ module Olelo
     end
 
     get '/login' do
+      session[:olelo_goto] ||= env['HTTP_REFERER']
       render :login
     end
 
     post '/login' do
       on_error :login
       User.current = User.authenticate(params[:user], params[:password])
-      redirect build_path(session.delete(:olelo_goto))
+      redirect(session.delete(:olelo_goto) || build_path('/'))
     end
 
     post '/signup' do
@@ -99,12 +100,12 @@ module Olelo
       raise 'Sign-up is disabled' if !Config['authentication.enable_signup']
       User.current = User.signup(params[:user], params[:password],
                                  params[:confirm], params[:email])
-      redirect build_path('/')
+      redirect(session.delete(:olelo_goto) || build_path('/'))
     end
 
     get '/logout' do
       User.current = User.anonymous(request)
-      redirect build_path('/')
+      redirect(env['HTTP_REFERER'] || build_path('/'))
     end
 
     get '/profile' do

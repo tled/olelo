@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 description 'Forbid anonymous access, redirect to login'
 
 class ::Olelo::Application
@@ -15,7 +16,7 @@ class ::Olelo::Application
     if !User.logged_in?
       if !PUBLIC_ACCESS.include?(request.path_info)
         flash.error :login_first.t
-        session[:olelo_goto] = request.path_info if request.get? && request.path_info !~ %r{^/_/}
+        session[:olelo_goto] = build_path(request.path_info) if request.get? && request.path_info !~ %r{^/_/}
         redirect build_path(:login)
       end
       @disable_assets = true
