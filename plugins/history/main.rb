@@ -53,7 +53,7 @@ class ::Olelo::Application
       history_menu = menu.item(:history, href: build_path(page, action: :history), accesskey: 'h')
 
       if @history_versions_menu
-        history_menu.append(Cache.cache("history-menu-#{page.path}-#{page.etag}", update: no_cache?, defer: true) do
+        history_menu.append(cache("history-menu-#{page.path}-#{page.etag}", update: no_cache?, defer: true) do
           head = !page.head? && (Olelo::Page.find(page.path) rescue nil)
           items = []
           if page.previous_version || head || page.next_version

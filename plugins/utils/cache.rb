@@ -2,13 +2,8 @@ description  'Caching support'
 dependencies 'utils/worker', 'utils/store'
 
 class Cache
-  def initialize(store)
-    @store = store
-    @disabled = false
-  end
-
-  def disable!
-    @disabled = true
+  def initialize(store = nil)
+    @store = store || default_store
   end
 
   # Block around cacheable return value identified by a <i>key</i>.
@@ -38,19 +33,26 @@ class Cache
   private
 
   def update(key, options = {}, &block)
-    content = block.call(self)
-    @store[key] = content if !@disabled
+    disabler = Disabler.new
+    content = block.call(disabler)
+    @store[key] = content unless disabler.disabled?
     content
   end
 
-  class<< self
-    def store
-      @store ||= Store.create(Config['cache_store'])
-    end
+  def default_store
+    @@store ||= Store.create(Config['cache_store'])
+  end
 
-    def cache(*args, &block)
-      Cache.new(store).cache(*args, &block)
-    end
+  class Disabler
+    attr_reader? :disabled
+    def initialize; @disabled = false end
+    def disable!; @disabled = true end
+  end
+end
+
+module ::Olelo::Util
+  def cache(key, options = {}, &block)
+    Cache.new.cache(key, options = {}, &block)
   end
 end
 

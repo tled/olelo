@@ -10,7 +10,7 @@ end
 Tags::Tag.define 'menu', optional: 'path', description: 'Show blog menu', dynamic: true do |context, attrs, content|
   page = Page.find(attrs[:path]) rescue nil
   if page
-    Cache.cache("blog-#{page.path}-#{page.etag}", update: no_cache?(context.request.env), defer: true) do
+    cache("blog-#{page.path}-#{page.etag}", update: no_cache?(context.request.env), defer: true) do
       years = {}
       page.children.each do |child|
         (years[child.version.date.year] ||= [])[child.version.date.month] = true
