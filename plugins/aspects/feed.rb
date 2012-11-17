@@ -13,12 +13,13 @@ Aspect.create(:feed, cacheable: true, hidden: true) do
     page_nr = [context.params[:page].to_i, 1].max
     history = page.history((page_nr - 1) * per_page, per_page)
 
+    title = page.root? ? Config['Title'] : page.title
     feed = {
       self_link: url + build_path(page, {aspect: 'feed', format: format}.reject{ |k,v| v.blank? }),
       generator: 'Ōlelo',
-      title: Config['title'],
+      title: title,
+      description: :feed_description.t(title: title),
       link: url + '/' + page.path,
-      description: Config['title'] + ' Feed',
       date: Time.now,
       author: Config['title'],
       items: []
@@ -37,18 +38,16 @@ Aspect.create(:feed, cacheable: true, hidden: true) do
 end
 
 Application.hook :head do
-  result = %{<link rel="alternate" type="application/atom+xml" title="Sitewide Atom Feed"
-href="#{escape_html build_path('/', aspect: 'feed', format: 'atom')}"/>
-<link rel="alternate" type="application/rss+xml" title="Sitewide RSS Feed"
-href="#{escape_html build_path('/', aspect: 'feed', format: 'rss')}"/>}
-  result << %{<link rel="alternate" type="application/atom+xml" title="#{escape_html page.path} Atom Feed"
-href="#{escape_html(build_path(page.path, aspect: 'feed', format: 'atom'))}"/>
-<link rel="alternate" type="application/rss+xml" title="#{escape_html page.path} RSS Feed"
-href="#{escape_html(build_path(page.path, aspect: 'feed', format: 'rss'))}"/>} if page && !page.new? && !page.root?
-  result
+  render_partial :feed_header
 end
 
 __END__
+@@ feed_header.slim
+link rel="alternate" type="application/atom+xml" title=:sitewide_atom_feed.t href=build_path('/', aspect: 'feed', format: 'atom')
+link rel="alternate" type="application/rss+xml" title=:sitewide_rss_feed.t href=build_path('/', aspect: 'feed', format: 'rss')
+- if page && !page.new? && !page.root?
+  link rel="alternate" type="application/atom+xml" title=:page_atom_feed.t(page: page.path) href=build_path(page.path, aspect: 'feed', format: 'atom')
+  link rel="alternate" type="application/rss+xml" title=:page_rss_feed.t(page: page.path) href=build_path(page.path, aspect: 'feed', format: 'rss')
 @@ feed_atom.slim
 doctype xml
 feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -85,3 +84,17 @@ rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl
         link = item[:link]
         pubDate = item[:date].rfc822()
         dc:creator = item[:author]
+@@ locale.yml
+de:
+  feed_description:   'Newsfeed für %{title}'
+  sitewide_rss_feed:  'RSS-Newsfeed für die ganze Seite'
+  sitewide_atom_feed: 'Atom-Newsfeed für die ganze Seite'
+  sitewide_rss_feed:  'RSS-Newsfeed für die ganze Seite'
+  page_atom_feed:     '%{page} Atom-Newsfeed'
+  page_rss_feed:      '%{page} RSS-Newsfeed'
+en:
+  feed_description:   '%{title} Newsfeed'
+  sitewide_atom_feed: 'Sitewide Atom Feed'
+  sitewide_rss_feed:  'Sitewide RSS Feed'
+  page_atom_feed:     '%{page} Atom Feed'
+  page_rss_feed:      '%{page} RSS Feed'
