@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('redcarpet', ['~> 2.2.2'])
   s.add_runtime_dependency('rugged', ['~> 0.17.0.b7'])
   s.add_runtime_dependency('slim', ['~> 1.3.3'])
+  s.add_runtime_dependency('juno', ['~> 0.1.0'])
 
   s.add_development_dependency('bacon', ['~> 1.1.0'])
   s.add_development_dependency('rack-test', ['~> 0.6.2'])

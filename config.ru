@@ -30,14 +30,14 @@ if Dir.pwd == app_path
   puts "Serving from Olelo application directory #{app_path}"
   data_path = File.join(app_path, '.wiki')
   Olelo::Config.instance['repository.git'] = { path: ::File.join(data_path, 'repository'), bare: false }
-  Olelo::Config.instance['cache_store'] = { type: 'file', 'file.root' => ::File.join(data_path, 'cache') }
+  Olelo::Config.instance['cache_store'] = { type: 'HashFile', 'HashFile.dir' => ::File.join(data_path, 'cache') }
   Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(data_path, 'users.yml')
   Olelo::Config.instance['log.file'] = ::File.join(data_path, 'log')
 elsif File.directory?(::File.join(Dir.pwd, '.git'))
   puts "Serving out of repository #{Dir.pwd}"
   data_path = File.join(Dir.pwd, '.wiki')
   Olelo::Config.instance['repository.git'] = { path: Dir.pwd, bare: false }
-  Olelo::Config.instance['cache_store'] = { type: 'file', 'file.root' => ::File.join(data_path, 'cache') }
+  Olelo::Config.instance['cache_store'] = { type: 'HashFile', 'HashFile.dir' => ::File.join(data_path, 'cache') }
   Olelo::Config.instance['authentication.yamlfile.store'] = ::File.join(data_path, 'users.yml')
   Olelo::Config.instance['log.file'] = ::File.join(data_path, 'log')
 elsif !config_file

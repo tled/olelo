@@ -1,5 +1,6 @@
 description  'Caching support'
-dependencies 'utils/worker', 'utils/store'
+dependencies 'utils/worker'
+require 'juno'
 
 class Cache
   def initialize(store = nil)
@@ -40,7 +41,13 @@ class Cache
   end
 
   def default_store
-    @@store ||= Store.create(Config['cache_store'])
+    @@store ||=
+      begin
+        type = Config['cache_store.type']
+        klass = Juno.const_get(type) rescue nil
+        raise "Configure a valid cache_store: #{Juno.constants.join(', ')}" unless klass
+        klass.new(Config['cache_store'][type])
+      end
   end
 
   class Disabler

@@ -25,16 +25,16 @@ sidebar_page:    'Sidebar'
 base_path:      '/'
 
 # Main cache store. Uncomment this!
-# Available caches: memory, file, memcached, pstore
+# Available caches: Memory, File, Memcached, PStore, ... (see juno gem)
 #cache_store:
-#  type:   file
-#  file:
-#    root: '/home/user/wiki/cache'
-#  memcached:
+#  type:   HashFile
+#  HashFile:
+#    dir: '/home/user/wiki/cache'
+#  Memcached:
 #    prefix: ''
 #    server: localhost:11211
-#  memory:
-#  pstore:
+#  Memory:
+#  PStore:
 #    file: '/home/user/wiki/cache.pstore'
 
 # Default math renderer
