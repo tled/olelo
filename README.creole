@@ -110,6 +110,7 @@ Some dependencies are optional, for example depending on the markup you want to 
 * [[http://www.imagemagick.org/|ImageMagick for image resizing]]
 * [[http://nokogiri.org/|Nokogiri for auto-generated table of contents]]
 * [[http://pygments.org/|Pygments for syntax highlighting of code blocks]]
+* [[https://github.com/minad/juno/|Juno Storage Interface]]
 
 == Development
 
