@@ -92,6 +92,40 @@ export OLELO_CONFIG=/home/olelo/olelo_config.yml
 
 You can also use the '$OLELO_CONFIG' environment variable if you want to run multiple Ōlelo instances with different configurations, for example to serve different pages from different repositories.
 
+== Setting up a private wiki using Apache
+
+Assuming the wiki server is running on localhost:5000 (e.g. unicorn), we can redirect Apache requests by adding the following
+lines to your virtual host. This works also with https.
+
+{{{
+# Private wiki
+ProxyPass /wiki http://localhost:5000
+ProxyPassReverse /wiki http://localhost:5000
+ProxyPreserveHost On
+ProxyRequests Off
+RequestHeader set X-Forwarded-Proto https
+<Proxy *>
+  Order deny,allow
+  Allow from all
+</Proxy>
+}}}
+
+In your Ōlelo 'config.yml' you should set the following options:
+
+{{{
+base_path: '/wiki'
+
+# Enable the private wiki plugin
+disabled_plugins:
+  - security/readonly_wiki
+  #- security/private_wiki
+  - editor/recaptcha
+  - editor/ace
+
+authentication:
+  enable_signup: false
+}}}
+
 == Dependencies
 
 If you installed Ōlelo as gem or used Bundler you don't really have to care about the dependencies. The standard installation provides the core dependencies and a good selection of optional dependencies.
