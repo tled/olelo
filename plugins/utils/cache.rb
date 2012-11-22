@@ -41,7 +41,7 @@ class Cache
   end
 
   def default_store
-    @@store ||= Juno.new(Config['cache_store.type'], Config['cache_store'][Config['cache_store.type']])
+    @@store ||= Juno.new(Config['cache_store.type'].to_sym, Config['cache_store'][Config['cache_store.type']])
   end
 
   class Disabler
