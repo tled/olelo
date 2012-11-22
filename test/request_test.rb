@@ -22,7 +22,7 @@ describe 'requests' do
       views_path:        File.join(@app_path, 'views'),
       theme:             'atlantis',
       cache_store:       {
-        type: 'file',
+        type: 'HashFile',
         file: {
           root: File.join(@test_path, 'cache')
         }
