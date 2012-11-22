@@ -23,8 +23,8 @@ describe 'requests' do
       theme:             'atlantis',
       cache_store:       {
         type: 'HashFile',
-        file: {
-          root: File.join(@test_path, 'cache')
+        HashFile: {
+          dir: File.join(@test_path, 'cache')
         }
       },
       base_path:          '/',
