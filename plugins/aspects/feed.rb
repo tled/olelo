@@ -13,7 +13,7 @@ Aspect.create(:feed, cacheable: true, hidden: true) do
     page_nr = [context.params[:page].to_i, 1].max
     history = page.history((page_nr - 1) * per_page, per_page)
 
-    title = page.root? ? Config['Title'] : page.title
+    title = page.root? ? Config['title'] : page.title
     feed = {
       self_link: url + build_path(page, {aspect: 'feed', format: format}.reject{ |k,v| v.blank? }),
       generator: 'Ōlelo',
