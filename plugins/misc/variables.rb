@@ -32,7 +32,7 @@ end
 Application.hook :head, 1 do
   vars = params.merge(PLUGIN.exported_global_variables)
   if page
-    vars.merge!(cache("variables-#{page.path}-#{page.etag}", update: no_cache?, defer: true) do
+    vars.merge!(cache(['variables', page.path, page.etag], update: no_cache?, defer: true) do
       PLUGIN.exported_page_variables(page)
     end)
   end
