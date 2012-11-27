@@ -213,7 +213,7 @@ module Olelo
       end
 
       unless options.empty?
-        query = build_query(options)
+        query = Rack::Utils.build_query(options)
         path += '?' + query unless query.empty?
       end
       '/' + (Config['base_path'] / path)

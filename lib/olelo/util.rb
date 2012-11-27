@@ -125,24 +125,6 @@ module Olelo
       s
     end
 
-    # Build query from parameter hash
-    #
-    # Similar to {Rack::Utils#build_query} but sorts parameters.
-    # This allows the query string to be used as key for caching etc.
-    #
-    # @param [Hash] params Parameter hash
-    # @return [String] query string
-    #
-    def build_query(params)
-      params.map {|k,v| [k.to_s, v ] }.sort.map do |k, v|
-        if v.class == Array
-          build_query(v.map { |x| [k, x] })
-        else
-          "#{escape(k)}=#{escape(v.to_s)}"
-        end
-      end.join('&')
-    end
-
     # Creates deep copy of object by abusing `Marshal`
     # This method is slow and not adequate for huge objects.
     # It can only copy objects which are serializable.
