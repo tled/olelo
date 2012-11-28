@@ -117,6 +117,7 @@ disabled_plugins:
   - editor/ace
   - filters/remind
   - tags/fortune
+  - blog
 
 ##################################################
 # Rack middleware configurations
