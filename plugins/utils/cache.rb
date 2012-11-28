@@ -41,7 +41,18 @@ class Cache
   end
 
   def default_store
-    @@store ||= Juno.new(Config['cache_store.type'].to_sym, Config['cache_store'][Config['cache_store.type']].to_hash)
+    @@store ||=
+      begin
+        type = Config['cache_store.type'].to_sym
+        config = Config['cache_store'][type].to_hash
+        # FIXME: Deprecated :file store config
+        if type == :file
+          puts 'WARNING: You are using the deprecated \'file\' store as cache_store in your configuration.'
+          type = :HashFile
+          config[:dir] = config.delete(:root)
+        end
+        Juno.new(type, config)
+      end
   end
 
   class Disabler
