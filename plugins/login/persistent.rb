@@ -11,8 +11,8 @@ class ::Olelo::Application
       token = request.cookies[TOKEN_NAME]
       if token
         hash, user = token.split('-', 2)
-        User.current = User.find(user) if hash == OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new('sha256'),
-                                                                       Config['rack.session_secret'], user)
+        User.current = User.find(user) if hash == OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha256'),
+                                                                          Config['rack.session_secret'], user)
       end
     end
   end
@@ -20,8 +20,8 @@ class ::Olelo::Application
   after :action do |method, path|
     if path == '/login'
       if User.logged_in? && params[:persistent]
-        hash = OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new('sha256'),
-                                    Config['rack.session_secret'], User.current.name)
+        hash = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha256'),
+                                       Config['rack.session_secret'], User.current.name)
         response.set_cookie(TOKEN_NAME, value: "#{hash}-#{User.current.name}", expires: Time.now + TOKEN_LIFETIME)
       end
     elsif path == '/logout'
