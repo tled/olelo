@@ -1,6 +1,6 @@
 description  'Caching support'
 dependencies 'utils/worker'
-require 'juno'
+require 'moneta'
 
 class Cache
   def initialize(store = nil)
@@ -51,7 +51,7 @@ class Cache
           type = :HashFile
           config[:dir] = config.delete(:root)
         end
-        Juno.new(type, config)
+        Moneta.new(type, config)
       end
   end
 
