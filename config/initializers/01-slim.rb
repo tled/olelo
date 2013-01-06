@@ -1,2 +1,2 @@
 Slim::Engine.set_default_options format: :xhtml,
-                                 shortcut: {'&' => 'input type', '#' => 'id', '.' => 'class'}
+                                 shortcut: {'&' => {:tag=>'input', :attr=>'type'}, '#' => {:attr=>'id'}, '.' => {:attr=>'class'}}
