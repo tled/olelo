@@ -4,7 +4,7 @@ h1= title
 form action=build_path(page, action: :move) method='post'
   .box
     label for='destination' = :destination.t
-    &text#destination name='destination' value={params[:destination] || page.path}
+    &text#destination name='destination' value=(params[:destination] || page.path)
     br
     button&submit accesskey='m' = :move.t
     button&button accesskey='c' onclick='history.back()' = :cancel.t

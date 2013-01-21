@@ -1,5 +1,5 @@
 doctype 5
-html.no-js lang=Olelo::Config['locale'].sub('_', '-') class={page && !page.head? ? 'archive' : nil} xmlns='http://www.w3.org/1999/xhtml'
+html.no-js lang=Olelo::Config['locale'].sub('_', '-') class=(page && !page.head? ? 'archive' : nil) xmlns='http://www.w3.org/1999/xhtml'
   head
     title= Olelo::Config['title'] + ' - ' + title
     = head
@@ -18,7 +18,7 @@ html.no-js lang=Olelo::Config['locale'].sub('_', '-') class={page && !page.head?
         form action=build_path(:search) method='get'
           div
             label.hidden for='pattern' = :search.t
-            &text id='pattern' name='pattern' value={params[:pattern]} placeholder=:search.t
+            &text id='pattern' name='pattern' value=params[:pattern] placeholder=:search.t
     #menu
       = breadcrumbs(page)
       - if page && !page.head?
