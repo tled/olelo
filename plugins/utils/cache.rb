@@ -64,7 +64,7 @@ end
 
 module ::Olelo::Util
   def cache(key, options = {}, &block)
-    Cache.new.cache(key, options = {}, &block)
+    Cache.new.cache(key, options, &block)
   end
 end
 

@@ -1,6 +1,6 @@
 description  'Code tag with syntax highlighting'
-dependencies 'utils/pygments'
+dependencies 'utils/rouge'
 
-Tag.define :code, requires: 'lang' do |context, attrs, content|
-  Pygments.pygmentize(content, attrs['lang'])
+Tag.define :code, optional: 'lang' do |context, attrs, content|
+  ::Rouge.highlight(content, attrs['lang'] || ::Rouge::Lexer.guess_by_source(content), 'html')
 end

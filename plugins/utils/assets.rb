@@ -51,12 +51,16 @@ class ::Olelo::Plugin
     end
   end
 
+  def export_code(type, code)
+    type = type.to_s
+    code = [Application.scripts[type].to_a[1], code].compact.join("\n")
+    Application.scripts[type] = [md5(Olelo::VERSION + code), code]
+  end
+
   def export_scripts(*files)
     virtual_fs.glob(*files) do |fs, name|
       raise 'Invalid script type' if name !~ /\.(css|js)$/
-      scripts = Application.scripts[$1].to_a
-      code = "#{scripts[1]}/* #{path/name} */\n#{fs.read(name)}\n"
-      Application.scripts[$1] = [md5(Olelo::VERSION + code), code]
+      export_code($1, "/* #{path/name} */\n#{fs.read(name)}\n")
     end
   end
 end

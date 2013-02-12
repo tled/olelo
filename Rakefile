@@ -14,10 +14,6 @@ def spew(file, content)
   File.open(file, 'w') {|f| f.write(content) }
 end
 
-file 'plugins/utils/pygments.scss' do
-  sh "pygmentize -S default -f html -a .highlight > plugins/utils/pygments.scss"
-end
-
 file('static/themes/atlantis/style.css' => Dir.glob('static/themes/atlantis/*.scss') + Dir.glob('static/themes/lib/*.scss')) do |t|
   puts "Creating #{t.name}..."
   content = "@media screen{#{sass(t.name.gsub('style.css', 'screen.scss'))}}@media print{#{sass(t.name.gsub('style.css', 'print.scss'))}}"
@@ -42,7 +38,6 @@ namespace :gen do
   desc('Compile CSS files')
   task css: %w(static/themes/atlantis/style.css
                   plugins/treeview/treeview.css
-                  plugins/utils/pygments.css
                   plugins/aspects/gallery/gallery.css
                   plugins/misc/fancybox/jquery.fancybox.css
                   plugins/blog/blog.css)

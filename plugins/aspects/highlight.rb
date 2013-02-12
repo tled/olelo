@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 description  'Source code highlighting aspect'
-dependencies 'utils/pygments'
+dependencies 'utils/rouge'
 
 Aspect.create(:highlight, priority: 2, layout: true, cacheable: true) do
-  def accepts?(page); !page.content.empty? && Pygments.file_format(page.name); end
-  def call(context, page); Pygments.pygmentize(page.content, Pygments.file_format(page.name)); end
+  def accepts?(page)
+    !page.content.empty? && ::Rouge::Lexer.guess_by_filename(page.name)
+  end
+
+  def call(context, page)
+    ::Rouge.highlight(page.content, ::Rouge::Lexer.guess_by_filename(page.name), 'html')
+  end
 end
 
 __END__
