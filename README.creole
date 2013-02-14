@@ -3,7 +3,7 @@
 [[http://rubygems.org/gems/olelo|{{https://badge.fury.io/rb/olelo.png|Gem}}]]
 [[https://travis-ci.org/minad/olelo|{{https://secure.travis-ci.org/minad/olelo.png?branch=master|Build Status}}]]
 [[https://gemnasium.com/minad/olelo|{{https://gemnasium.com/minad/olelo.png?travis|Dependency Status}}]]
-[[https://codeclimate.com/github/minad/olelo|{{https://codeclimate.com/badge.png|Code Climate}}]]
+[[https://codeclimate.com/github/minad/olelo|{{https://codeclimate.com/github/minad/moneta.png|Code Climate}}]]
 
 Ōlelo is a wiki that stores pages in a [[http://git-scm.org/|Git]] repository, supports many markup styles and has an extensible, hackable architecture!
 If you want to see a demo installation go to http://www.gitwiki.org/.
