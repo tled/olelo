@@ -24,6 +24,10 @@ sidebar_page:    'Sidebar'
 # e.g. /wiki
 base_path:      '/'
 
+# Interwiki link for the root of this (the current) wiki
+# e.g. r (for root)
+interwiki:		'r'
+
 # Main cache store. Uncomment this!
 # Available caches: Memory, File, Memcached, PStore, ... (see juno gem)
 #cache_store:

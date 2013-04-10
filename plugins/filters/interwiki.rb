@@ -4,6 +4,7 @@ class Interwiki < Filter
   def configure(options)
     super
     @map = options[:map]
+    @map[Config['interwiki']] = Config['base_path']
     @regexp = /href="\/?(#{@map.keys.join('|')}):([^"]+)"/
   end
 
